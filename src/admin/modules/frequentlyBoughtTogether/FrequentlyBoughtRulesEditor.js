@@ -28,7 +28,6 @@ const newFBTRule = () => ({
     categories: [],
     tags: [],
 
-
     flexible_id: crypto.randomUUID(),
     open: true,
 
@@ -60,11 +59,10 @@ const newFBTRule = () => ({
 
     /* -----------------------
      * SINGLE PAGE SETTINGS
-     * (from your panel)
      * ---------------------- */
     single_enabled: true,
 
-    placement: "after_summary",    // After Product Summary
+    placement: "after_summary",
     priority: 10,
 
     bundle_title: "Frequently Bought Together",
@@ -82,15 +80,18 @@ const newFBTRule = () => ({
 
     plus_bg_color: "#212121",
     plus_text_color: "#ffffff",
-
     border_color: "#f9f9f9",
-    // ⭐ responsive border radius default
+    background: {
+    color: "#ffffff",
+    },
     border_radius: {
         Desktop: "0px",
         Tablet: "0px",
         Mobile: "0px",
-    }
+    },
+   
 });
+
 
 /* Sortable */
 function SortableWrapper({ items, onSortEnd, children }) {
@@ -161,7 +162,7 @@ export default function FrequentlyBoughtRulesEditor({ rules, onChange }) {
     }, []);
 
     return (
-        <div className="store-one-rules-container" style={{ marginTop: 30 }}>
+        <div className="store-one-rules-container">
 
             <h3 className="store-one-section-title">{__('Offer Bundle', 'store-one')}</h3>
 
@@ -340,12 +341,12 @@ export default function FrequentlyBoughtRulesEditor({ rules, onChange }) {
                                         label: __('Single Page', 'store-one'),
                                         icon: '',
                                         content: (
-                                            <div className="store-one-rule-body">
+                                            
                                             <SingleProductSettings
-                settings={rule}
-                updateSetting={(key, val) => updateField(index, key, val)}
-            />
-                                            </div>
+                        settings={rule}
+                        updateSetting={(key, val) => updateField(index, key, val)}
+                    />
+                                                   
                                         ),
                                     },
                                 ]}
