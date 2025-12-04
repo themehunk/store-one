@@ -93,6 +93,7 @@ const newFBTRule = () => ({
         Tablet: "0px",
         Mobile: "0px",
     },
+    display_style: "style_1",
    
 });
 
@@ -378,7 +379,20 @@ export default function FrequentlyBoughtRulesEditor({ rules, onChange }) {
                                         content: (
                                             <div className="store-one-rule-body">
                                                 
-                                            </div>
+
+                                                <S1Field label={__('Display Style', 'store-one')}>
+                                                    <SelectControl
+                                                        value={rule.display_style}
+                                                        options={[
+                                                            { label: __('Style1', 'store-one'), value: 'style_1' },
+                                                            { label: __('Style2', 'store-one'), value: 'style_2' },
+                                                            { label: __('Style3', 'store-one'), value: 'style_3' },
+                                                        ]}
+                                                        onChange={(v) => updateField(index, 'display_style', v)}
+                                                    />
+                                                </S1Field>
+                                                </div>
+                                            
                                         ),
                                     },
 
