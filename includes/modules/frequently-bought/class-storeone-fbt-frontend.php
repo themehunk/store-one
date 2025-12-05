@@ -277,173 +277,350 @@ class Store_One_FBT_Frontend {
         return true;
     }
 
+   
+
     /* --------------------------------------------------------------------
-     * RENDER – THBT style_2 type layout (without thbt-wrapper, prefixed s1-fbt)
-     * ------------------------------------------------------------------ */
-    protected function render_bundle_box( $product_id, $rule ) {
+ * RENDER — choose style per-rule (store-one / s1- classnames)
+ * ------------------------------------------------------------------ */
+protected function render_bundle_box( $product_id, $rule ) {
 
-        if ( ! $product_id ) {
-            return;
+    if ( ! $product_id ) {
+        return;
+    }
+
+    $main = wc_get_product( $product_id );
+    if ( ! $main ) {
+        return;
+    }
+
+    // Bundle products (same logic as before)
+    $bundle_ids = [ $product_id ];
+    $offer_raw  = $rule['offer_products'] ?? [];
+
+    if ( ! empty( $offer_raw ) && is_array( $offer_raw ) ) {
+        foreach ( $offer_raw as $item ) {
+            if ( ! empty( $item['id'] ) ) {
+                $bundle_ids[] = absint( $item['id'] );
+            }
         }
+    }
 
-        $main = wc_get_product( $product_id );
-        if ( ! $main ) {
-            return;
+    $bundle_ids = array_unique( array_filter( $bundle_ids ) );
+
+    $bundle_products = [];
+    foreach ( $bundle_ids as $id ) {
+        $p = wc_get_product( $id );
+        if ( ! $p ) {
+            continue;
         }
+        if ( ! $p->is_purchasable() || ! $p->is_in_stock() ) {
+            continue;
+        }
+        $bundle_products[] = $p;
+    }
 
-        // Bundle products
-        $bundle_ids = [ $product_id ];
-        $offer_raw  = $rule['offer_products'] ?? [];
+    if ( count( $bundle_products ) <= 1 ) {
+        return;
+    }
 
-        if ( ! empty( $offer_raw ) && is_array( $offer_raw ) ) {
-            foreach ( $offer_raw as $item ) {
-                if ( ! empty( $item['id'] ) ) {
-                    $bundle_ids[] = absint( $item['id'] );
+    // Title / styling defaults (keep same keys as your rule)
+    $bundle_title = ! empty( $rule['bundle_title'] )
+        ? $rule['bundle_title']
+        : __( 'Frequently Bought Together', 'store-one' );
+
+    // style: read from rule (this is set by your SelectControl)
+    $style = ! empty( $rule['display_style'] ) ? $rule['display_style'] : 'style_2';
+
+    // Dispatch to actual renderer that outputs the HTML
+    switch ( $style ) {
+        case 'style_1':
+            $this->s1_render_style_1( $product_id, $rule, $bundle_products, $bundle_title );
+            break;
+
+        case 'style_3':
+            $this->s1_render_table_style( $product_id, $rule, $bundle_products, $bundle_title );
+            break;
+
+        case 'style_2':
+        default:
+            $this->s1_render_style_2( $product_id, $rule, $bundle_products, $bundle_title );
+            break;
+    }
+}
+
+/* --------------------------------------------------------------------
+ * STYLE 1 (cards/grid layout) — MATCHED TO THBT STYLE_1
+ * ------------------------------------------------------------------ */
+private function s1_render_style_1( $product_id, $rule, $bundle_products, $bundle_title ) {
+?>
+<section class="s1-fbt-box style_1">
+    
+    <h2 class="s1-fbt-title"><?php echo esc_html( $bundle_title ); ?></h2>
+
+    <div class="s1-fbt-content s1-fbt-product-wrap" data-id="<?php echo esc_attr($product_id); ?>">
+
+        <!-- LEFT: PRODUCT GRID -->
+        <div class="s1-fbt-content-one">
+            <?php
+            $index = 0;
+            foreach ( $bundle_products as $p ) {
+                $pid = $p->get_id();
+
+                $cls = "s1-fbt-product ";
+                $cls .= ($index === 0) ? "s1-fbt-active" : "s1-fbt-inactive";
+                if ( $pid === $product_id ) {
+                    $cls .= " dltprd";
                 }
+            ?>
+            <div <?php wc_product_class($cls, $pid); ?>>
+                <div class="s1-fbt-image">
+                    <?php echo wp_kses_post( $p->get_image() ); ?>
+                </div>
+
+                <h4 class="s1-fbt-name">
+                    <a href="<?php echo esc_url( $p->get_permalink() ); ?>">
+                        <?php echo esc_html( $p->get_name() ); ?>
+                    </a>
+                </h4>
+
+                <div class="s1-fbt-price">
+                    <?php echo wp_kses_post( $p->get_price_html() ); ?>
+                </div>
+            </div>
+            <?php
+            $index++;
             }
-        }
+            ?>
+        </div>
 
-        $bundle_ids = array_unique( array_filter( $bundle_ids ) );
+        <!-- RIGHT: CHECKBOX LIST -->
+        <div class="s1-fbt-content-two s1-fbt-products">
+            <div class="s1-fbt-product-list">
+                <?php foreach ( $bundle_products as $p ) {
+                    $pid = $p->get_id();
+                    $is_var = $p->is_type("variable");
+                    $price_value = (!$is_var && $p->is_in_stock()) ? wc_get_price_to_display($p) : "";
+                ?>
+                <div class="s1-fbt-product-list-add">
+                    <label>
+                        <input type="checkbox"
+                            class="product-checkbox s1-fbt-checkbox"
+                            data-product-id="<?php echo esc_attr($pid); ?>"
+                            value="<?php echo esc_attr($price_value); ?>"
+                            checked
+                            <?php echo ($pid === $product_id) ? "disabled" : ""; ?>
+                        >
 
-        $bundle_products = [];
-        foreach ( $bundle_ids as $id ) {
-            $p = wc_get_product( $id );
-            if ( ! $p ) {
-                continue;
-            }
-            if ( ! $p->is_purchasable() || ! $p->is_in_stock() ) {
-                continue;
-            }
-            $bundle_products[] = $p;
-        }
+                        <span class="s1-fbt-product-title">
+                            <a href="<?php echo esc_url($p->get_permalink()); ?>">
+                                <?php echo esc_html( $p->get_name() ); ?>
+                            </a>
+                        </span>
 
-        if ( count( $bundle_products ) <= 1 ) {
-            return;
-        }
+                        <span class="s1-fbt-product-price">
+                            <?php echo wp_kses_post( $p->get_price_html() ); ?>
+                        </span>
 
-        $bundle_title = ! empty( $rule['bundle_title'] )
-            ? $rule['bundle_title']
-            : __( 'Frequently Bought Together', 'store-one' );
+                        <?php if ($is_var) $this->render_variation_fields($p); ?>
+                    </label>
+                </div>
+                <?php } ?>
 
-        // Styling options
-        $bg_color      = $rule['background']['color'] ?? '#ffffff';
-        $border_color  = $rule['border_color'] ?? '#f9f9f9';
-        $border_radius = $rule['border_radius']['Desktop'] ?? '0px';
-        ?>
-        <section
-            class="s1-fbt-box"
-            style="background-color: <?php echo esc_attr( $bg_color ); ?>;
-                   border: 1px solid <?php echo esc_attr( $border_color ); ?>;
-                   border-radius: <?php echo esc_attr( $border_radius ); ?>;">
+                <?php $this->render_total_wrap( $bundle_products[0], $rule ); ?>
+            </div>
+        </div>
 
-            <h2 class="s1-fbt-title"><?php echo esc_html( $bundle_title ); ?></h2>
+    </div>
+</section>
+<?php
+}
 
-            <div class="s1-fbt-content s1-fbt-product-wrap"
-                 data-id="<?php echo esc_attr( $product_id ); ?>"
-                 data-s1fbt-order="0">
+/* --------------------------------------------------------------------
+ * STYLE 2 (horizontal row) — MATCHED TO THBT STYLE_2
+ * ------------------------------------------------------------------ */
+private function s1_render_style_2( $product_id, $rule, $bundle_products, $bundle_title ) {
+?>
+<section class="s1-fbt-box style_2">
+    
+    <h2 class="s1-fbt-title"><?php echo esc_html( $bundle_title ); ?></h2>
 
-                <!-- Images + plus signs -->
-                <div class="s1-fbt-content-one">
-                    <div class="s1-fbt-product-row">
-                        <?php
-                        $current_index = 0;
-                        foreach ( $bundle_products as $p ) {
-                            $pid  = $p->get_id();
-                            $type = $p->get_type();
+    <div class="s1-fbt-content s1-fbt-product-wrap">
 
-                            if ( $current_index > 0 ) {
-                                echo '<span class="s1-fbt-plus-sign" data-rel="' . esc_attr( $pid ) . '">+</span>';
-                            }
+        <!-- IMAGES + TOTAL -->
+        <div class="s1-fbt-content-one">
 
-                            $fbt_class = 's1-fbt-product s1-fbt-active';
-                            if ( $pid === $product_id ) {
-                                $fbt_class .= ' dltprd';
-                            }
-                            ?>
-                            <div <?php wc_product_class( $fbt_class, $pid ); ?>>
-                                <div class="s1-fbt-image">
-                                    <?php echo wp_kses_post( $p->get_image() ); ?>
-                                </div>
-                            </div>
-                            <?php
-                            $current_index++;
-                        }
-                        ?>
+            <div class="s1-fbt-product-row">
+                <?php
+                $i = 0;
+                foreach ( $bundle_products as $p ) {
+                    $pid = $p->get_id();
+
+                    if ($i > 0) {
+                        echo '<span class="s1-fbt-plus-sign">+</span>';
+                    }
+                ?>
+                    <div class="s1-fbt-product s1-fbt-active <?php echo ($pid==$product_id?'dltprd':''); ?>">
+                        <div class="s1-fbt-image">
+                            <?php echo $p->get_image(); ?>
+                        </div>
                     </div>
+                <?php
+                $i++;
+                }
+                ?>
+            </div>
 
-                    <?php
-                    // Total + button area
-                    $this->render_total_wrap( $main, $rule );
-                    ?>
-                </div><!-- .s1-fbt-content-one -->
+            <!-- TOTAL BOX -->
+            <?php $this->render_total_wrap( $bundle_products[0], $rule ); ?>
+        </div>
 
-                <!-- Checkbox list -->
-                <div class="s1-fbt-content-two s1-fbt-products">
-                    <div class="s1-fbt-product-list">
+        <!-- CHECKBOX LIST -->
+        <div class="s1-fbt-content-two">
+            <div class="s1-fbt-product-list">
+
+                <?php foreach ( $bundle_products as $p ) {
+                    $pid = $p->get_id();
+                    $is_var = $p->is_type("variable");
+                    $price_value = (!$is_var && $p->is_in_stock()) ? wc_get_price_to_display($p) : "";
+                ?>
+                <div class="s1-fbt-product-list-add">
+                    <label>
+                        <input type="checkbox"
+                               class="product-checkbox s1-fbt-checkbox"
+                               value="<?php echo esc_attr($price_value); ?>"
+                               checked
+                               <?php echo ($pid==$product_id) ? "disabled" : ""; ?>>
+
+                        <span class="s1-fbt-product-title">
+                            <a href="<?php echo esc_url($p->get_permalink()); ?>">
+                                <?php echo esc_html($p->get_name()); ?>
+                            </a>
+                        </span>
+
+                        <span class="s1-fbt-product-price">
+                            <?php echo $p->get_price_html(); ?>
+                        </span>
+
+                        <?php if ($p->is_type("variable")) $this->render_variation_fields($p); ?>
+                    </label>
+                </div>
+                <?php } ?>
+
+            </div>
+        </div>
+
+    </div>
+</section>
+<?php
+}
+
+/* --------------------------------------------------------------------
+ * STYLE 3 (table) — s1 classes
+ * ------------------------------------------------------------------ */
+private function s1_render_table_style( $product_id, $rule, $bundle_products, $bundle_title ) {
+    ?>
+   <section class="s1-fbt-box <?php echo esc_attr($rule['display_style']); ?>">
+
+        <h2 class="s1-fbt-title"><?php echo esc_html( $bundle_title ); ?></h2>
+
+        <div class="s1-fbt-content s1-fbt-product-wrap"
+             data-id="<?php echo esc_attr( $product_id ); ?>"
+             data-s1fbt-order="0">
+
+            <div class="s1-fbt-content-table s1-fbt-products">
+                <div class="s1-fbt-product-list">
+
+                    <table class="s1-fbt-product-table">
+                        <tbody>
                         <?php
                         foreach ( $bundle_products as $p ) {
 
-                            $pid      = $p->get_id();
-                            $ptype    = $p->get_type();
-                            $is_main  = ( $pid === $product_id );
-                            $is_var   = $p->is_type( 'variable' );
+                            if ( ! $p || ! $p->is_purchasable() || ! $p->is_in_stock() ) {
+                                continue;
+                            }
 
-                            $price_value = ( ! $is_var && $p->is_in_stock() )
-                                ? wc_get_price_to_display( $p )
-                                : '';
+                            $pid = $p->get_id();
+                            $is_main = ( $pid === $product_id );
+                            $is_var  = $p->is_type( 'variable' );
 
-                            $checked  = 'checked';
+                            $checked  = $is_main ? 'checked' : '';
                             $disabled = $is_main ? 'disabled' : '';
 
-                            $data_id = ( $is_var || ! $p->is_in_stock() )
-                                ? 0
-                                : $pid;
+                            $price_value = (! $is_var && $p->is_in_stock())
+                                ? wc_get_price_to_display( $p )
+                                : '';
                             ?>
-                            <div class="s1-fbt-product-list-add">
-                                <label>
+                            <tr class="s1-fbt-product-list-add">
+
+                                <!-- checkbox -->
+                                <td class="s1-fbt-check">
                                     <input
+                                        type="checkbox"
+                                        class="product-checkbox s1-fbt-checkbox"
                                         id="<?php echo esc_attr( $pid ); ?>"
                                         name="product-checkbox[<?php echo esc_attr( $pid ); ?>]"
                                         value="<?php echo esc_attr( $price_value ); ?>"
-                                        type="checkbox"
-                                        class="s1-fbt-checkbox product-checkbox"
                                         data-name="<?php echo esc_attr( $p->get_name() ); ?>"
                                         data-price="<?php echo esc_attr( $price_value ); ?>"
                                         data-product-id="<?php echo esc_attr( $pid ); ?>"
-                                        data-product-type="<?php echo esc_attr( $ptype ); ?>"
-                                        data-id="<?php echo esc_attr( $data_id ); ?>"
+                                        data-product-type="<?php echo esc_attr( $p->get_type() ); ?>"
+                                        data-id="<?php echo esc_attr( $is_var ? 0 : $pid ); ?>"
                                         data-product-quantity="1"
                                         <?php echo $checked; ?>
                                         <?php echo $disabled; ?>
-                                    />
+                                    >
+                                </td>
 
-                                    <span class="s1-fbt-product-title">
-                                        <a href="<?php echo esc_url( $p->get_permalink() ); ?>">
-                                            <?php echo esc_html( $p->get_name() ); ?>
-                                        </a>
-                                    </span>
+                                <!-- image + title + variations -->
+                                <td class="s1-fbt-td-title">
+                                    <label>
 
+                                        <div <?php wc_product_class( 's1-fbt-product', $pid ); ?>>
+                                            <div class="s1-fbt-image">
+                                                <?php echo wp_kses_post( $p->get_image() ); ?>
+                                            </div>
+                                        </div>
+
+                                        <span class="s1-fbt-product-title">
+                                            <a href="<?php echo esc_url( $p->get_permalink() ); ?>">
+                                                <?php echo esc_html( $p->get_name() ); ?>
+                                            </a>
+                                        </span>
+
+                                        <?php if ( $is_var ) { $this->render_variation_fields( $p ); } ?>
+
+                                    </label>
+                                </td>
+
+                                <!-- price -->
+                                <td class="s1-fbt-last">
                                     <span class="s1-fbt-product-price">
                                         <?php echo wp_kses_post( $p->get_price_html() ); ?>
                                     </span>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                        </tbody>
 
-                                    <?php
-                                    if ( $is_var ) {
-                                        $this->render_variation_fields( $p );
-                                    }
-                                    ?>
-                                </label>
-                            </div>
-                            <?php
-                        }
-                        ?>
-                    </div>
-                </div><!-- .s1-fbt-content-two -->
-            </div><!-- .s1-fbt-content -->
-        </section>
-        <?php
-    }
+                        <tfoot>
+                        <tr class="s1-fbt-total-row">
+                            <td></td>
+                            <td></td>
+                            <td class="s1-fbt-total-wrap">
+                                <?php $this->render_total_wrap( wc_get_product( $product_id ), $rule ); ?>
+                            </td>
+                        </tr>
+                        </tfoot>
 
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <?php
+}
     /* --------------------------------------------------------------------
      * Variation dropdowns (THBT se port, prefixed)
      * ------------------------------------------------------------------ */
@@ -642,119 +819,55 @@ class Store_One_FBT_Frontend {
      * AJAX: Add bundle to cart (THBT style logic)
      * ------------------------------------------------------------------ */
     public function ajax_add_bundle() {
+       
 
-        if ( ! isset( $_POST['product_id'] ) ) {
-            return;
-        }
+    check_ajax_referer( 'storeone_fbt_add_bundle', 'nonce' );
 
-        check_ajax_referer( 'storeone_fbt_add_bundle', 'nonce' );
-
-        if ( ! empty( $_POST['thbt_ids'] ) ) {
-
-            if ( ! class_exists( 'WC_Form_Handler' ) || empty( $_REQUEST['thbt_ids'] ) ) {
-                return;
-            }
-
-            remove_action( 'wp_loaded', [ 'WC_Form_Handler', 'add_to_cart_action' ], 20 );
-
-            $product_ids   = explode( ',', $_REQUEST['thbt_ids'] );
-            $quantity      = empty( $_POST['quantity'] ) ? 1 : wc_stock_amount( wp_unslash( $_POST['quantity'] ) );
-            $variation_id  = isset( $_POST['variation_id'] ) ? wc_clean( wp_unslash( $_POST['variation_id'] ) ) : 0;
-            $variation     = isset( $_POST['variation'] ) ? (array) $_POST['variation'] : [];
-
-            foreach ( $product_ids as $product_id ) {
-
-                $product_id     = apply_filters( 'woocommerce_add_to_cart_product_id', absint( $product_id ) );
-                $adding_to_cart = wc_get_product( $product_id );
-
-                if ( ! $adding_to_cart ) {
-                    continue;
-                }
-
-                if ( $adding_to_cart->get_type() === 'simple' ) {
-                    $variation_id = 0;
-                    $variation    = [];
-                }
-
-                if ( $adding_to_cart && 'variation' === $adding_to_cart->get_type() ) {
-                    $variation_id = $product_id;
-                    $product_id   = $adding_to_cart->get_parent_id();
-
-                    if ( empty( $variation ) ) {
-                        $variation = $adding_to_cart->get_variation_attributes();
-                    }
-                }
-
-                $passed_validation = apply_filters(
-                    'woocommerce_add_to_cart_validation',
-                    true,
-                    $product_id,
-                    $quantity,
-                    $variation_id,
-                    $variation
-                );
-
-                if ( $passed_validation && false !== WC()->cart->add_to_cart( $product_id, $quantity, $variation_id, $variation ) ) {
-
-                    do_action( 'woocommerce_ajax_added_to_cart', $product_id );
-
-                    wc_add_to_cart_message(
-                        [ $product_id => $quantity ],
-                        true
-                    );
-                }
-            }
-
-        } else {
-
-            // Fallback: sirf ek product
-            $product_id = (int) apply_filters(
-                'woocommerce_add_to_cart_product_id',
-                absint( $_POST['product_id'] )
-            );
-
-            $product      = wc_get_product( $product_id );
-            $quantity     = empty( $_POST['quantity'] ) ? 1 : wc_stock_amount( wp_unslash( $_POST['quantity'] ) );
-            $variation_id = isset( $_POST['variation_id'] ) ? wc_clean( wp_unslash( $_POST['variation_id'] ) ) : 0;
-            $variation    = isset( $_POST['variation'] ) ? (array) $_POST['variation'] : [];
-
-            if ( $product && $product->get_type() === 'simple' ) {
-                $variation_id = 0;
-                $variation    = [];
-            }
-
-            if ( $product && 'variation' === $product->get_type() ) {
-                $variation_id = $product_id;
-                $product_id   = $product->get_parent_id();
-
-                if ( empty( $variation ) ) {
-                    $variation = $product->get_variation_attributes();
-                }
-            }
-
-            $passed_validation = apply_filters(
-                'woocommerce_add_to_cart_validation',
-                true,
-                $product_id,
-                $quantity,
-                $variation_id,
-                $variation
-            );
-
-            if ( $passed_validation && WC()->cart->add_to_cart( $product_id, $quantity, $variation_id, $variation ) ) {
-
-                do_action( 'woocommerce_ajax_added_to_cart', $product_id );
-
-                if ( 'yes' === get_option( 'woocommerce_cart_redirect_after_add' ) ) {
-                    wc_add_to_cart_message(
-                        [ $product_id => $quantity ],
-                        true
-                    );
-                }
-            }
-        }
-
-        WC_AJAX::get_refreshed_fragments();
-        wp_die();
+    if ( empty($_POST['main_id']) ) {
+        wp_send_json_error(['msg' => 'Missing main_id']);
     }
+
+    $main_id = absint($_POST['main_id']);
+    
+    $selected_ids = isset($_POST['selected_ids']) ? (array) $_POST['selected_ids'] : [];
+
+    if (empty($selected_ids)) {
+        wp_send_json_error(['msg' => 'No selected products']);
+    }
+
+    foreach ($selected_ids as $pid) {
+
+        $pid = absint($pid);
+        if (!$pid) continue;
+
+        $product = wc_get_product($pid);
+        if (!$product) continue;
+
+        // Always quantity = 1
+        $quantity = 1;
+
+        // Variable support (basic)
+        $variation_id = 0;
+        $variation_data = [];
+
+        if ($product->is_type('variation')) {
+            $variation_id = $pid;
+            $pid = $product->get_parent_id();
+            $variation_data = $product->get_variation_attributes();
+        }
+
+        WC()->cart->add_to_cart(
+            $pid,
+            $quantity,
+            $variation_id,
+            $variation_data
+        );
+    }
+
+    WC_AJAX::get_refreshed_fragments();
+    wp_die();
+}
+
+
+
 }
