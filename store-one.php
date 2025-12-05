@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // ------------------ Constants ------------------.
-define( 'STORE_ONE_VERSION', '1.0.2' );
+define( 'STORE_ONE_VERSION', '1.0.4' );
 define( 'STORE_ONE_PLUGIN_FILE', __FILE__ );
 define( 'STORE_ONE_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'STORE_ONE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -50,14 +50,7 @@ add_action(
 add_action(
 	'woocommerce_init',
 	function () {
-		if ( is_admin() ) {
-			return;
-		}
-
-		if ( ! class_exists( 'WooCommerce' ) ) {
-			return;
-		}
-
+		
 		// Frontend class include + init.
 		require_once STORE_ONE_PLUGIN_DIR . 'includes/modules/frequently-bought/class-storeone-fbt-frontend.php';
 
