@@ -27,8 +27,24 @@
     padding-right: 1.4rem ;
 }
 
-.th-bg-control {
-    margin: 1.5rem 0;
+/** radio box style **/
+
+.components-form-toggle.is-checked .components-form-toggle__track {
+    background-color: var(--s1-color-primary);
+    border-color: var(--s1-color-primary);
+}
+
+.components-form-toggle .components-form-toggle__track{
+    background-color:#e5e7eb;
+    border-color:#e5e7eb;
+}
+
+.components-form-toggle .components-form-toggle__thumb{
+background-color: #fff;
+      transition-property: transform;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+
 }
 
 .th-bg-control .color-box {

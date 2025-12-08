@@ -4,7 +4,7 @@
 /* ------------------------------------------
    STORE-ONE FBT — STYLE 1
 ------------------------------------------- */
-.s1-fbt-box.style_1 {
+.s1-fbt-box {
     padding: 20px;
 }
 .s1-fbt-box.style_1 .s1-fbt-content {
@@ -75,13 +75,14 @@
 .s1-fbt-box.style_2 .s1-fbt-product-row {
     display: flex;
     align-items: center;
+    width: 70%;
 }
 .s1-fbt-box.style_2 .s1-fbt-product {
-    width: 70px;
+    width: 150px;
 }
 .s1-fbt-box.style_2 .s1-fbt-product img {
-    width: 70px;
-    height: 70px;
+    width: 150px;
+    height: 150px;
     -o-object-fit: cover;
        object-fit: cover;
 }
@@ -119,13 +120,6 @@
    STYLE 3 — TABLE LAYOUT (s1-fbt classes)
    NOW WITH PARENT CLASS: .style_3
    ========================================================== */
-.s1-fbt-box.style_3 {
-    padding: 0;
-}
-.s1-fbt-box.style_3 .s1-fbt-title {
-    font-size: 1.4rem;
-    margin-bottom: 1rem;
-}
 /* Table container */
 .s1-fbt-box.style_3 .s1-fbt-content-table {
     width: 100%;
@@ -318,6 +312,43 @@
     color: #ff2a2a;
     text-decoration: underline;
 }
+.s1-fbt-total-label{
+    display: flex;
+    margin-bottom: 20px;
+   
+}
+.style_3 .s1-fbt-total-label{
+    
+    justify-content: end;
+}
+.s1-fbt-add-btn {
+  background: #111;
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  letter-spacing: 0.3px;
+}
+.s1-fbt-add-btn:hover {
+  background: #000;
+  transform: translateY(-1px);
+}
+.s1-fbt-add-btn:active {
+  transform: translateY(0);
+}
+.s1-fbt-add-btn:disabled {
+  background: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  transform: none;
+}
+.s1-fbt-product-title{
+margin-left:10px;
+}
 /* Responsive */
 @media(max-width: 768px) {
     .s1-fbt-box.style_3 .s1-fbt-td-title label {
@@ -336,9 +367,9 @@
 ------------------------------------------------------------- */
 :root {
   /* BRAND PALETTE */
-  --s1-color-primary: #2271b1;
+  --s1-color-primary: #3858e9;
   --s1-color-primary-light: #e7f3ff;
-  --s1-color-primary-dark: #1a5d8f;
+  --s1-color-primary-dark: #2a49d1;
   /* GRAY SCALE */
   --s1-gray-50: #fafafa;
   --s1-gray-100: #f3f4f6;
@@ -386,8 +417,8 @@
   --s1-shadow-md: 0 6px 18px rgba(15, 23, 42, 0.08);
   --s1-shadow-lg: 0 10px 24px rgba(15, 23, 42, 0.12);
   /* INPUT THEME */
-  --s1-input-bg: #464646;
-  --s1-input-text: #ffffff;
+  --s1-input-bg: #f0f0f1 ;
+  --s1-input-text: #686868;
   --s1-input-placeholder: #ffffff;
   --s1-input-border: var(--s1-gray-300);
   /* SPACING SYSTEM */
@@ -419,6 +450,8 @@
   --s1-anim-fast: 0.15s ease;
   --s1-anim-normal: 0.25s ease;
   --s1-anim-slow: 0.35s ease;
+  /** shadow **/
+  --s1-box-shadow:0 1px 2px rgba(0, 0, 0, 0.05);
 }
 /* ------------------------------------------------------------
    WORDPRESS ADMIN LAYOUT FIXES (DO NOT REMOVE)
@@ -429,6 +462,7 @@
 .wrap.store-one-wrap {
   padding: 0;
   margin: 0;
+  background-color: rgba(249, 250, 251, 0.5);
 }
 .store-module-wrap {
   margin: var(--s1-space-40);
@@ -549,7 +583,7 @@
 /* ------------------------------------------------------------
    MODULE GRID — WRAPPER
 ------------------------------------------------------------- */
-.s1-modules {
+.s1-modules, .settings-global-wrap {
   padding: var(--s1-space-18);
   background: #fff;
   border: var(--s1-border);
@@ -853,10 +887,14 @@
 /* ------------------------------------------------------------
    TERTIARY BUTTONS (Back button etc.)
 ------------------------------------------------------------- */
+/** back button */
+.store-module-wrap .back-btn {
+  background-color: #fff !important;
+  box-shadow: var(--s1-box-shadow);
+}
 .s1-btn-tertiary,
 button.is-tertiary,
 .components-button.is-tertiary {
-  background: transparent !important;
   border: 1px solid var(--s1-gray-300) !important;
   border-radius: var(--s1-radius-md) !important;
   color: var(--s1-gray-700) !important;
@@ -1002,6 +1040,9 @@ button.is-tertiary:focus,
 ------------------------------------------- */
 .store-one-rule-body {
   padding: var(--s1-space-16);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 /* Add rule */
 .store-one-add-rule {
@@ -1020,9 +1061,6 @@ button.is-tertiary:focus,
 /* ------------------------------------------
    Field Wrapper
 ------------------------------------------- */
-.s1-field-wrapper {
-  margin-bottom: var(--s1-space-16);
-}
 .s1-field-label {
   display: block;
   margin-bottom: var(--s1-space-6);
@@ -1075,7 +1113,6 @@ button.is-tertiary:focus,
    EXCLUDE CONDITION BOX
 ------------------------------------------- */
 .s1-exclude-wrapper {
-  margin-top: var(--s1-space-20);
   border-radius: var(--s1-radius-md);
 }
 .s1-exclude-header {
@@ -1518,9 +1555,6 @@ button.is-tertiary:focus,
   align-items: center;
 }
 /* INACTIVE LOOK */
-.s1-accordion.is-inactive {
-  opacity: 0.7;
-}
 .s1-accordion-status.on {
   background: #4CAF50;
   color: #fff;
@@ -1536,4 +1570,28 @@ button.is-tertiary:focus,
   border-radius: 4px;
   font-size: 10px;
   margin-left: 8px;
+}
+.s1-fbt-preview-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 160px;
+  background: #fafafa;
+  border-radius: 8px;
+}
+.s1-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid #ddd;
+  border-top: 3px solid #111;
+  border-radius: 50%;
+  animation: s1spin 0.8s linear infinite;
+}
+@keyframes s1spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
 }
