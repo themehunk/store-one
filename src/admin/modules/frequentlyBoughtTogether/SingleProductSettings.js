@@ -7,6 +7,7 @@ import { __ } from '@wordpress/i18n';
 import MiniColorPicker from '@storeone-global/MiniColorPicker';
 import UniversalRangeControl from '@storeone-global/UniversalRangeControl';
 import THBackgroundControl from '../../components/background/color';
+import THRangeControl from '../../components/background/rangeControl';
 
 export default function SingleProductSettings({
     settings,
@@ -149,6 +150,9 @@ export default function SingleProductSettings({
                 value={settings.background}
                 onChange={(v) => updateSetting('background', v)}
             />
+
+
+            <THRangeControl  label={__('Bundle border radius', 'store-one')} defaultValue={10} value={20} onChange={(v) => updateSetting("border_radius", v)}/>
         
             {/* BORDER RADIUS */}
             <div className="s1-field-control">
