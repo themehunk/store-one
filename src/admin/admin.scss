@@ -1658,7 +1658,19 @@ input.components-text-control__input {
        color:#fff;
        font-weight: 700;
 }
+.multi-search-selector .instock{
+   color:#50b810;
+    
+}
+.multi-search-selector .outofstock{
+   color:#ff9d9d;
+ 
+}
 
+.multi-search-selector .s1-product-stock{
+     padding: 0.1em 0.5em;
+    font-size: 0.66rem;
+}
 @keyframes s1SavebarSlide {
     from {
         opacity: 0;
