@@ -41,6 +41,8 @@ export default function MultiWooSearchSelector({
         image: p.images?.[0]?.src || "",
         type: p.type,
         link: p.permalink,
+        stock_status: p.stock_status,          
+        in_stock: p.stock_status === "Instock",
     });
 
     const normalizerMap = {
@@ -247,9 +249,9 @@ useEffect(() => {
                                             dangerouslySetInnerHTML={{ __html: item.price_html }}
                                         />
                                     )}
+                                    <div className={`s1-product-stock ${item.stock_status}`}>{item.stock_status}</div>
                                 </div>
                             </div>
-
                             <div className="s1-product-right">
                                 <span className="s1-product-type">{item.type} #{item.id}</span>
                                 <span className="remove-chip" onClick={() => removeItem(item.id)}>×</span>
@@ -304,6 +306,7 @@ useEffect(() => {
                                                 dangerouslySetInnerHTML={{ __html: r.price_html }}
                                             />
                                         )}
+                                        <div className={`s1-product-stock ${r.stock_status}`}>{r.stock_status} </div>
                                     </div>
                                 </div>
                                 <span className="s1-product-type">{r.type}</span>
