@@ -17,6 +17,8 @@ import S1Accordion from "@storeone-global/S1Accordion";
 import { CopyIcon, TrashIcon, DragHandleDots2Icon ,ChevronDownIcon,
     ChevronUpIcon } from "@radix-ui/react-icons";
 import {S1Field, S1FieldGroup} from '@storeone-global/S1Field';
+import { ICONS } from '@storeone-global/icons';
+
 /* Default Rule */
 const newFBTRule = () => ({
     status: 'active',
@@ -119,6 +121,8 @@ const newFBTRule = () => ({
     prd_tle_clr: "#6C7280",
     prd_tle_clr_auto: true,
 });
+/** menu tabs */
+
 
 /* ================= STYLE DEFAULTS (ADDED) ================= */
 const STYLE_DEFAULTS = {
@@ -164,6 +168,13 @@ function SortableWrapper({ items, onSortEnd, children }) {
 
 /* ------------------------ Main Component ------------------------ */
 export default function FrequentlyBoughtRulesEditor({ rules, onChange, onLivePreview }) {
+
+const menuItems = [
+  { id: 'settings', label: 'Settings', icon: 'SETTINGS' },
+  { id: 'user', label: 'User Condition', icon: 'USER' },
+  { id: 'single', label: 'Display Page', icon: 'DISPLAY' },
+  { id: 'design', label: 'Design', icon: 'DESIGN' },
+];
 
     const updateAll = (arr) => onChange([...arr]);
 
@@ -285,12 +296,12 @@ export default function FrequentlyBoughtRulesEditor({ rules, onChange, onLivePre
                         {/* ---------------------- Body ---------------------- */}
                         {rule.open && (
                             <TabSwitcher
-                                defaultTab="settings"
+                                defaultTab={menuItems[0].id}
                                 tabs={[
                                     {
-                                        id: 'settings',
-                                        label: __('Settings', 'store-one'),
-                                        icon: '',
+                                        id: menuItems[0].id,
+                                        label: menuItems[0].label,
+                                        icon:ICONS[menuItems[0].icon],
                                         content: (
                                             <div className="store-one-rule-body">
 
@@ -418,9 +429,9 @@ export default function FrequentlyBoughtRulesEditor({ rules, onChange, onLivePre
                                     },
 
                                     {
-                                        id: 'user',
-                                        label: __('User Condition', 'store-one'),
-                                        icon: '',
+                                        id: menuItems[1].id,
+                                        label:  menuItems[1].label,
+                                        icon: ICONS[menuItems[1].icon],
                                         content: (
                                             <div className="store-one-rule-body">
                                             <UserCondition
@@ -433,9 +444,9 @@ export default function FrequentlyBoughtRulesEditor({ rules, onChange, onLivePre
                                         ),
                                     },
                                     {
-                                        id: 'single',
-                                        label: __('Display Page', 'store-one'),
-                                        icon: '',
+                                        id: menuItems[2].id,
+                                        label: menuItems[2].label,
+                                        icon: ICONS[menuItems[2].icon],
                                         content: (
                                             <>
                                             <S1Accordion title={__("Single Product Page Settings", "store-one")} status={rule.single_enabled} defaultOpen={true}>
@@ -463,9 +474,9 @@ export default function FrequentlyBoughtRulesEditor({ rules, onChange, onLivePre
                                         ),
                                     },
                                     {
-                                        id: 'design',
-                                        label: __('Design', 'store-one'),
-                                        icon: '',
+                                        id: menuItems[3].id,
+                                        label: menuItems[3].label,
+                                        icon: ICONS[menuItems[3].icon],
                                         content: (
                                             <div className="store-one-rule-body">
 
