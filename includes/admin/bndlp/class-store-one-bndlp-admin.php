@@ -50,6 +50,10 @@ class Store_One_BNDLP_Admin {
     }
 
     public function add_tab( $tabs ) {
+        // ✅ GENERAL TAB SHOW FOR BUNDLE
+        if ( isset( $tabs['general']['class'] ) ) {
+        $tabs['general']['class'][] = 'show_if_storeone_bundle';
+    }
         $tabs['storeone_bundle'] = [
             'label'  => __( 'Bundled Products', 'store-one' ),
             'target' => 'storeone_bundle_product_data',
@@ -485,9 +489,7 @@ private function render_bundle_item_settings( $pid, $item = [] ) {
 
     </div>
     <?php
-}
-
-
+    }
 
     public function store_one_save( $post_id ) {
 
@@ -546,8 +548,6 @@ private function render_bundle_item_settings( $pid, $item = [] ) {
     }
 
    }
-
-
 
 
     /* -----------------------------------------

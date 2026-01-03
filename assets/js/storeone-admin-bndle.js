@@ -1,5 +1,16 @@
 jQuery(function ($) {
 
+    /* --------------------------------
+     * Tell Woo this product type exists
+     * -------------------------------- */
+    if (typeof wc_product_types !== 'undefined') {
+        if (!wc_product_types.includes('storeone_bundle')) {
+            wc_product_types.push('storeone_bundle');
+        }
+    }
+
+    $('.options_group.pricing').addClass('show_if_storeone_bundle').removeClass('hide_if_external hide_if_grouped hide_if_variable');
+
     /* -----------------------------
      * Auto open Bundle tab
      * ----------------------------- */
@@ -14,6 +25,7 @@ jQuery(function ($) {
     /* -----------------------------
      * Show / Hide selected box
      * ----------------------------- */
+
     function toggleSelectedBox() {
         if ($('.storeone-bundle-selected .bundle-item').length) {
             $('.storeone-bundle-selected-wrap').slideDown(150);
@@ -23,10 +35,9 @@ jQuery(function ($) {
     }
 
     /* -----------------------------
-     * 🔥 REGULAR PRICE CALCULATION
-     * ----------------------------- */
-    
-    function calculateBundleRegularPrice() {
+ * 🔥 REGULAR PRICE CALCULATION
+ * ----------------------------- */
+function calculateBundleRegularPrice() {
 
     let total = 0;
 
@@ -44,18 +55,25 @@ jQuery(function ($) {
 
         total += price * qty;
 
+        // sync hidden qty
         $item.find('.qty-hidden').val(qty);
     });
 
-    jQuery('.storeone-bundle-regular-input').val(total.toFixed(2));
+    const finalPrice = total.toFixed(2);
+
+    /* --------------------------------
+     * 🔥 AUTO SET WC PRICE FIELDS
+     * -------------------------------- */
+    jQuery('#_regular_price').val(finalPrice);
+    jQuery('#_price').val(finalPrice).trigger('change');
+
+    // optional: clear sale price
+    jQuery('#_sale_price').val('');
+
+    // optional: your custom readonly display
+    jQuery('.storeone-bundle-regular-input').val(finalPrice);
 }
 
-
-    /* -----------------------------
-     * Initial load (delay for WP admin)
-     * ----------------------------- */
-    toggleSelectedBox();
-    setTimeout(calculateBundleRegularPrice, 80);
 
     /* -----------------------------
      * Add product from search
