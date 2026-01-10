@@ -390,3 +390,74 @@ jQuery(function ($) {
     });
 
 });
+
+
+// min max quantity logic
+jQuery(document).ready(function ($) {
+
+    function syncQtyWithMinMax($item) {
+
+        const $qtyInput = $item.find('.qty');
+
+        // read min / max
+        const minQty = parseInt(
+            $item.find('input[name*="[min_qty]"]').val(),
+            10
+        );
+
+        const maxQty = parseInt(
+            $item.find('input[name*="[max_qty]"]').val(),
+            10
+        );
+
+        let qtyVal = parseInt($qtyInput.val(), 10);
+
+        // safety
+        if (isNaN(qtyVal) || qtyVal < 1) {
+            qtyVal = 1;
+        }
+
+        /* ===============================
+         * MIN QTY (ALWAYS ENFORCE)
+         * =============================== */
+        if (!isNaN(minQty) && minQty > 0) {
+            qtyVal = minQty;
+        }
+
+        /* ===============================
+         * MAX QTY (ONLY IF > 0)
+         * =============================== */
+        if (!isNaN(maxQty) && maxQty > 0 && qtyVal > maxQty) {
+            qtyVal = maxQty;
+        }
+
+        // apply value
+        $qtyInput.val(qtyVal);
+
+        // sync hidden field
+        $item.find('.qty-hidden').val(qtyVal);
+    }
+
+    /* ----------------------------------
+     * RUN WHEN:
+     * - page load
+     * - min_qty changes
+     * ---------------------------------- */
+
+    // on load
+    $('.bundle-item').each(function () {
+        syncQtyWithMinMax($(this));
+    });
+
+    // when min_qty changes
+    $(document).on(
+        'input change',
+        'input[name*="[min_qty]"]',
+        function () {
+            const $item = $(this).closest('.bundle-item');
+            syncQtyWithMinMax($item);
+        }
+    );
+
+});
+
