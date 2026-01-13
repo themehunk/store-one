@@ -55,6 +55,14 @@ class StoreOne_Bundle_Frontend {
             3
         );
 
+
+        add_filter(
+            'woocommerce_cart_item_hash',
+            [ $this, 'add_cart_item_hash' ],
+            10,
+            2
+        );
+
         add_filter( 'woocommerce_quantity_input_args', [ $this, 'custom_woocommerce_quantity_limits' ], 10, 2 );
 
     }
@@ -278,15 +286,34 @@ class StoreOne_Bundle_Frontend {
      * ============================= */
     public function add_bundle_to_cart_item( $cart_item_data ) {
 
-        if ( empty( $_POST['storeone_bundle_data'] ) ) return $cart_item_data;
+    if ( empty( $_POST['storeone_bundle_data'] ) ) return $cart_item_data;
 
-        $bundle = json_decode( wp_unslash( $_POST['storeone_bundle_data'] ), true );
-        if ( empty( $bundle['items'] ) ) return $cart_item_data;
+    $bundle = json_decode( wp_unslash( $_POST['storeone_bundle_data'] ), true );
+    if ( empty( $bundle['items'] ) ) return $cart_item_data;
 
-        $cart_item_data['storeone_bundle'] = $bundle;
-        $cart_item_data['unique_key'] = md5( microtime() . rand() );
+    // 🔥 MAKE SCOPE PART OF CART DATA
+    $bundle['scope'] = get_post_meta(
+        absint( $_POST['add-to-cart'] ),
+        '_storeone_discount_scope',
+        true
+    ) ?: 'store_bundle';
 
-        return $cart_item_data;
+    $cart_item_data['storeone_bundle'] = $bundle;
+
+    // 🔥 stable unique key (not random on refresh)
+    $cart_item_data['storeone_bundle_key'] = md5( wp_json_encode( $bundle ) );
+
+    return $cart_item_data;
+   }
+
+
+   public function add_cart_item_hash ( $hash, $cart_item ) {
+
+        if ( isset( $cart_item['storeone_bundle'] ) ) {
+            $hash .= md5( wp_json_encode( $cart_item['storeone_bundle'] ) );
+        }
+
+        return $hash;
     }
 
     /* =============================
@@ -344,8 +371,8 @@ class StoreOne_Bundle_Frontend {
         }
 
         $cart_item['data']->set_price( $total );
-    }
-}
+      }
+   }
 
     public function display_bundle_in_cart( $item_data, $cart_item ) {
 
