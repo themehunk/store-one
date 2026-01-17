@@ -98,43 +98,38 @@ jQuery(function ($) {
         const p = res.data;
 
         $('.storeone-bundle-selected').append(`
-            <li class="bundle-item" data-id="${p.id}">
-                <span class="drag">☰</span>
+<li class="bundle-item" data-id="${p.id}">
+    <span class="drag">☰</span>
 
-                <input type="number" class="qty" min="1" value="1">
+    <input type="number" class="qty" min="1" value="1">
 
-                <img src="${p.image}" alt="">
+    <img src="${p.image}" alt="">
 
-                <a href="${p.edit}" target="_blank" class="title">${p.title}</a>
+    <a href="${p.edit}" target="_blank" class="title">${p.title}</a>
 
-                <span class="bundle-price" data-price="${p.regular_price}">
-                    ${p.price_html}
-                </span>
+    <span class="bundle-price" data-price="${p.regular_price}">
+        ${p.price_html}
+    </span>
 
-                <span class="type">${p.type}</span>
+    <span class="type">${p.type}</span>
 
-                <button type="button" class="bundle-item-settings-toggle">
-                    <!-- SAME SVG -->
-                    ${$('.bundle-item-settings-toggle svg').first().prop('outerHTML') || ''}
-                </button>
+    ${p.settings_html}
 
-                <a href="#" class="remove">
-                    ${$('.bundle-item .remove svg').first().prop('outerHTML') || '×'}
-                </a>
+    <input type="hidden"
+           name="_storeone_bundle_products[${p.id}][id]"
+           value="${p.id}">
 
-                <input type="hidden"
-                       name="_storeone_bundle_products[${p.id}][id]"
-                       value="${p.id}">
+    <input type="hidden"
+           class="qty-hidden"
+           name="_storeone_bundle_products[${p.id}][qty]"
+           value="1">
+</li>
+`);
 
-                <input type="hidden"
-                       class="qty-hidden"
-                       name="_storeone_bundle_products[${p.id}][qty]"
-                       value="1">
-            </li>
-        `);
 
         toggleSelectedBox();
         calculateBundleRegularPrice();
+        initAll();
 
         $('.storeone-bundle-search').val(null).trigger('change');
     });
@@ -157,6 +152,7 @@ jQuery(function ($) {
 
         toggleSelectedBox();
         calculateBundleRegularPrice();
+        initAll();
     });
 
     /* -----------------------------
@@ -372,7 +368,11 @@ jQuery(function ($) {
     e.preventDefault();
 
     const $item = $(this).closest('.bundle-item');
-    $item.find('.bundle-item-settings').stop(true, true).slideToggle(150);
+    const $settings = $item.find('.bundle-item-settings');
+
+    if (!$settings.length) return;
+
+    $settings.stop(true, true).slideToggle(150);
     });
 
     // Quantity toggle

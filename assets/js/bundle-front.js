@@ -1,64 +1,106 @@
 jQuery(function ($) {
 
+    /* =====================================================
+     * BASE ELEMENTS
+     * ===================================================== */
     const $bundle = $('.storeone-bundle-frontend');
     if (!$bundle.length) return;
 
+    const isStoreBundle =
+    $bundle.data('discount-scope') === 'store_bundle';
+
     const $addToCartBtn = $('.single_add_to_cart_button');
-    const $hiddenInput = $('#storeone_bundle_data');
+    const $hiddenInput  = $('#storeone_bundle_data');
 
-    /* ---------------------------------
-     * Woo Price Formatter (safe)
-     * --------------------------------- */
-    function wc_price_format(amount) {
+    /* =====================================================
+     * PRICE FORMATTER (FROM PHP TEMPLATE)
+     * ===================================================== */
+    function formatPrice(amount) {
         amount = parseFloat(amount) || 0;
-        if (window.wc_price_params && wc_price_params.currency_format_symbol) {
-            return wc_price_params.currency_format_symbol + amount.toFixed(2);
+
+        const $tpl = $('.s1-currency-template');
+        if (!$tpl.length) {
+            return amount.toFixed(2);
         }
-        return amount.toFixed(2);
+
+        const html = $tpl.html(); // e.g. ₹0.00
+        return html.replace(/0+([.,]0+)?/, amount.toFixed(2));
     }
 
-    /* ---------------------------------
-     * Get qty from item
-     * --------------------------------- */
+    /* =====================================================
+     * HELPERS
+     * ===================================================== */
     function getQty($item) {
-        const qty = parseInt($item.attr('data-qty'), 10);
-        return qty > 0 ? qty : 1;
+        return parseInt($item.attr('data-qty'), 10) || 1;
     }
 
-    /* ---------------------------------
-     * Update line price UI
-     * --------------------------------- */
+    function clampQty($item, qty) {
+        const allow = parseInt($item.data('allow-qty'), 10) || 0;
+        const min   = parseInt($item.data('min'), 10) || 0;
+        const max   = parseInt($item.data('max'), 10) || 0;
+
+        // Quantity change not allowed → fixed
+        if (!allow) {
+            return getQty($item);
+        }
+
+        if (min > 0 && qty < min) qty = min;
+        if (max > 0 && qty > max) qty = max;
+
+        return qty;
+    }
+
+    /* =====================================================
+     * APPLY STRIKE (ONLY TOTAL)
+     * ===================================================== */
+    function applyStrikeToTotal() {
+        if (!isStoreBundle) return;
+
+        $bundle.find('.s1-line-total').each(function () {
+            const $el = $(this);
+
+            if ($el.find('del').length) return;
+
+            const html = $el.html();
+            if (!html) return;
+
+            $el.html('<del>' + html + '</del>');
+        });
+    }
+
+    /* =====================================================
+     * UPDATE LINE PRICE (UNIT × QTY)
+     * ===================================================== */
     function updateLinePrice($item) {
         const unit = parseFloat($item.data('price')) || 0;
         const qty  = getQty($item);
 
         $item.find('.s1-line-qty').text(qty);
-        $item.find('.s1-line-total').html(wc_price_format(unit * qty));
+
+        const totalHtml = formatPrice(unit * qty);
+        $item.find('.s1-line-total').html(totalHtml);
     }
 
-    /* ---------------------------------
-     * Build bundle JSON
-     * --------------------------------- */
+    /* =====================================================
+     * BUILD BUNDLE JSON
+     * ===================================================== */
     function buildBundleData() {
 
         let items = [];
-        let totalQty = 0;
 
         $('.s1-bundle-item').each(function () {
 
             const $item = $(this);
-            const isOptional = $item.data('optional') == 1;
+            const isOptional =
+                $item.find('.s1-bundle-check').length
+                    ? $item.find('.s1-bundle-check').is(':checked')
+                    : true;
 
-            if (isOptional && !$item.find('.s1-bundle-check').is(':checked')) {
-                return;
-            }
-
-            const qty = getQty($item);
-            totalQty += qty;
+            if (!isOptional) return;
 
             items.push({
-                id: $item.data('id'),
-                qty: qty
+                id:  $item.data('id'),
+                qty: getQty($item)
             });
         });
 
@@ -68,105 +110,74 @@ jQuery(function ($) {
             return;
         }
 
-        $hiddenInput.val(JSON.stringify({
-            items: items
-        }));
-
+        $hiddenInput.val(JSON.stringify({ items }));
         $addToCartBtn.prop('disabled', false);
     }
 
-    /* ---------------------------------
-     * Qty buttons (+ / -)
-     * --------------------------------- */
+    /* =====================================================
+     * QTY BUTTONS (+ / -)
+     * ===================================================== */
     $(document).on('click', '.s1-qty-btn', function () {
 
         const $item = $(this).closest('.s1-bundle-item');
         let qty = getQty($item);
 
-        if ($(this).hasClass('plus')) qty++;
+        if ($(this).hasClass('plus'))  qty++;
         if ($(this).hasClass('minus')) qty--;
 
-        if (qty < 1) qty = 1;
+        qty = clampQty($item, qty);
 
         $item.attr('data-qty', qty);
+        $item.find('.s1-line-qty').text(qty);
+
         updateLinePrice($item);
         buildBundleData();
+        applyStrikeToTotal();
     });
 
-    /* ---------------------------------
-     * Optional checkbox
-     * --------------------------------- */
+    /* =====================================================
+     * OPTIONAL ITEM TOGGLE
+     * ===================================================== */
     $(document).on('change', '.s1-bundle-check', function () {
         buildBundleData();
+        applyStrikeToTotal();
     });
 
-    /* ---------------------------------
-     * Variable product price support
-     * --------------------------------- */
+    /* =====================================================
+     * VARIABLE PRODUCT SUPPORT
+     * ===================================================== */
     $(document).on('found_variation', '.variations_form', function (e, variation) {
 
-        const price = parseFloat(variation.display_price);
+        const price = parseFloat(variation.display_price) || 0;
+        const $item = $('.s1-bundle-item[data-id="' + variation.product_id + '"]');
 
-        $('.s1-bundle-item[data-id="' + variation.product_id + '"]')
-            .attr('data-price', price)
-            .find('.s1-line-unit')
-            .html(wc_price_format(price));
+        if (!$item.length) return;
 
+        $item.attr('data-price', price);
+
+        // Unit price untouched (no del)
+        $item.find('.s1-line-unit').html(formatPrice(price));
+
+        updateLinePrice($item);
         buildBundleData();
+        applyStrikeToTotal();
     });
 
-    /* ---------------------------------
-     * Init
-     * --------------------------------- */
+    /* =====================================================
+     * INIT (IMPORTANT)
+     * ===================================================== */
     $('.s1-bundle-item').each(function () {
-        updateLinePrice($(this));
+        const $item = $(this);
+
+        let qty = getQty($item);
+        qty = clampQty($item, qty);
+
+        $item.attr('data-qty', qty);
+        $item.find('.s1-line-qty').text(qty);
+
+        updateLinePrice($item);
     });
 
     buildBundleData();
-
-});
-
-
-jQuery(function ($) {
-
-    function recalcBundleTotal() {
-        let total = 0;
-
-        $('.s1-bundle-item').each(function () {
-            const $item = $(this);
-
-            const optional = $item.find('.s1-bundle-check').length
-                ? $item.find('.s1-bundle-check').is(':checked')
-                : true;
-
-            if (!optional) return;
-
-            const price = parseFloat($item.data('price')) || 0;
-            const qty   = parseInt($item.data('qty'), 10) || 1;
-
-            total += price * qty;
-        });
-
-        $('.s1-bundle-total-amount').text(
-            wc_price(total)
-        );
-    }
-
-    /* ==========================
-     * VARIABLE PRODUCT SUPPORT
-     * ========================== */
-    $(document).on('found_variation', '.variations_form', function (e, variation) {
-
-        const $form = $(this);
-        const productId = variation.product_id;
-        const price = parseFloat(variation.display_price);
-
-        $('.s1-bundle-item[data-id="' + productId + '"]')
-            .attr('data-price', price)
-            .find('.s1-line-unit')
-            .html(wc_price(price));
-
-        recalcBundleTotal();
-    });
-
+    applyStrikeToTotal();
 });
