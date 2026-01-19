@@ -8,6 +8,10 @@ jQuery(function ($) {
             wc_product_types.push('storeone_bundle');
         }
     }
+    
+    $('.show_if_simple').addClass('show_if_storeone_bundle'); 
+    $('.inventory_options').addClass('show_if_storeone_bundle');
+    $('.stock_fields').addClass('show_if_storeone_bundle');
 
     $('.options_group.pricing').addClass('show_if_storeone_bundle').removeClass('hide_if_external hide_if_grouped hide_if_variable');
 
@@ -35,7 +39,7 @@ jQuery(function ($) {
     }
 
     /* -----------------------------
-    * 🔥 REGULAR PRICE CALCULATION
+    * REGULAR PRICE CALCULATION
     * ----------------------------- */
     function calculateBundleRegularPrice() {
 

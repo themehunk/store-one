@@ -8,8 +8,8 @@ class StoreOne_Bundle_Frontend {
         $settings = $this->get_bundle_settings();
 
         $hook = $settings['product_page']['position'] === 'after_cart'
-        ? 'woocommerce_after_add_to_cart_form'
-        : 'woocommerce_before_add_to_cart_form';
+        ? 'woocommerce_after_add_to_cart_button'
+        : 'woocommerce_before_add_to_cart_button';
 
         add_action( $hook, [ $this, 'render_bundle' ], 5 );
 
@@ -40,7 +40,7 @@ class StoreOne_Bundle_Frontend {
         add_filter(
             'woocommerce_get_cart_item_from_session',
             [ $this, 'restore_bundle_from_session' ],
-            10,
+            20,
             2
         );
 
@@ -79,6 +79,7 @@ class StoreOne_Bundle_Frontend {
         add_filter( 'woocommerce_quantity_input_args', [ $this, 'bundle_woocommerce_quantity_limits' ], 10, 2 );
 
     }
+    
     /* =============================
      * ASSETS
      * ============================= */
@@ -360,37 +361,32 @@ class StoreOne_Bundle_Frontend {
     /* =============================
      * ADD TO CART
      * ============================= */
-    public function add_bundle_to_cart_item( $cart_item_data ) {
-
-    if ( empty( $_POST['storeone_bundle_data'] ) ) return $cart_item_data;
+    public function add_bundle_to_cart_item( $cart_item_data, $product_id ) {
+   
+    if ( ! isset( $_POST['storeone_bundle_data'] ) || empty( $_POST['storeone_bundle_data'] ) ) {
+        return $cart_item_data;
+    }
 
     $bundle = json_decode( wp_unslash( $_POST['storeone_bundle_data'] ), true );
     if ( empty( $bundle['items'] ) ) return $cart_item_data;
 
-    // 🔥 MAKE SCOPE PART OF CART DATA
-    $bundle['scope'] = get_post_meta(
-        absint( $_POST['add-to-cart'] ),
-        '_storeone_discount_scope',
-        true
-    ) ?: 'store_bundle';
+    
+    $bundle['scope'] = get_post_meta( $product_id, '_storeone_discount_scope', true ) ?: 'store_bundle';
 
     $cart_item_data['storeone_bundle'] = $bundle;
-
-    // 🔥 stable unique key (not random on refresh)
+    
     $cart_item_data['storeone_bundle_key'] = md5( wp_json_encode( $bundle ) );
 
     return $cart_item_data;
    }
 
 
-   public function add_cart_item_hash ( $hash, $cart_item ) {
-
-        if ( isset( $cart_item['storeone_bundle'] ) ) {
-            $hash .= md5( wp_json_encode( $cart_item['storeone_bundle'] ) );
-        }
-
-        return $hash;
+   public function add_cart_item_hash( $hash, $cart_item ) {
+    if ( ! empty( $cart_item['storeone_bundle'] ) ) {
+        return md5( $hash . serialize( $cart_item['storeone_bundle'] ) );
     }
+    return $hash;
+}
 
     /* =============================
      * SET CART PRICE
@@ -410,14 +406,15 @@ class StoreOne_Bundle_Frontend {
          * STORE BUNDLE → USE WC PRICE
          * -------------------------------- */
         if ( $scope === 'store_bundle' ) {
-
-            $product = $cart_item['data'];
-            if ( ! $product ) continue;
-
-            // WC price already correct
-            return;
+                if ( isset( $cart_item['data'] ) && is_object( $cart_item['data'] ) ) {
+                $product = $cart_item['data'];
+                $base_price = (float) get_post_meta( $product->get_id(), '_price', true );
+                $product->set_price( $base_price );
+            }
+            continue;
         }
 
+        
         /* --------------------------------
          * STORE PRODUCT → CALCULATE ITEMS
          * -------------------------------- */
@@ -458,7 +455,7 @@ class StoreOne_Bundle_Frontend {
         ! empty( $settings['cart_page']['hide_products'] ) &&
         isset( $cart_item['storeone_bundle'] )
     ) {
-        echo"shivam";
+
         return $item_data;
     }
 
@@ -625,10 +622,13 @@ class StoreOne_Bundle_Frontend {
     }
 
     public function restore_bundle_from_session( $cart_item, $session_item ) {
-        if ( isset( $session_item['storeone_bundle'] ) ) {
-            $cart_item['storeone_bundle'] = $session_item['storeone_bundle'];
-        }
-        return $cart_item;
+    if ( isset( $session_item['storeone_bundle'] ) ) {
+        $cart_item['storeone_bundle'] = $session_item['storeone_bundle'];
+    }
+    if ( isset( $session_item['storeone_bundle_key'] ) ) {
+        $cart_item['storeone_bundle_key'] = $session_item['storeone_bundle_key'];
+    }
+    return $cart_item;
     }
 
     public function save_bundle_to_order( $order_item, $cart_item_key, $values ) {
