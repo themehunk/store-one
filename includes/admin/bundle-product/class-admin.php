@@ -1,11 +1,12 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
-
 /* -----------------------------------------
  * Product Class
  * ----------------------------------------- */
-if ( class_exists('WC_Product') && ! class_exists('WC_Product_StoreOne_Bundle') ) {
-    class WC_Product_StoreOne_Bundle extends WC_Product {
+if ( class_exists( 'WC_Product_Simple' ) && ! class_exists( 'WC_Product_StoreOne_Bundle' ) ) {
+
+    class WC_Product_StoreOne_Bundle extends WC_Product_Simple {
+
         public function get_type() {
             return 'storeone_bundle';
         }
@@ -19,30 +20,56 @@ class Store_One_BNDLP_Admin {
     add_filter( 'product_type_selector', [ $this, 'add_product_type' ] );
     add_filter( 'woocommerce_product_data_tabs', [ $this, 'add_tab' ] );
     add_action( 'woocommerce_product_data_panels', [ $this, 'render_panel' ] );
+    add_filter( 'woocommerce_product_class', function( $classname, $product_type ) {
+    if ( $product_type === 'storeone_bundle' ) {
+        return 'WC_Product_StoreOne_Bundle';
+    }
+    return $classname;
+    }, 10, 2 );
 
+    add_filter( 'woocommerce_is_purchasable', function( $purchasable, $product ) {
+        if ( $product->get_type() === 'storeone_bundle' ) {
+            return true;
+        }
+        return $purchasable;
+    }, 10, 2 );
     
-    add_filter(
-        'woocommerce_product_class',
-        function ( $classname, $product_type ) {
-            if ( $product_type === 'storeone_bundle' ) {
-                return 'WC_Product_StoreOne_Bundle';
-            }
-            return $classname;
-        },
-        10,
-        2
-    );
-    
-
-    // ✅ ONLY THIS HOOK
     add_action(
         'woocommerce_process_product_meta_storeone_bundle',
         [ $this, 'store_one_save' ]
     );
 
+    add_action( 'init', function() {
+
+    if ( ! term_exists( 'storeone_bundle', 'product_type' ) ) {
+        wp_insert_term( 'storeone_bundle', 'product_type' );
+    }
+
+    });
+
+    add_action(
+    'woocommerce_process_product_meta_storeone_bundle',
+    function ( $post_id ) {
+
+        wp_delete_object_term_relationships(
+            $post_id,
+            'product_type'
+        );
+
+        wp_set_object_terms(
+            $post_id,
+            'storeone_bundle',
+            'product_type',
+            false
+        );
+
+        wc_delete_product_transients( $post_id );
+    }
+   );
+
     add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_assets' ] );
     add_action( 'wp_ajax_storeone_get_product_data', [ $this, 'ajax_get_product_data' ] );
-}
+    }
 
 
     public function add_product_type( $types ) {
@@ -51,18 +78,30 @@ class Store_One_BNDLP_Admin {
     }
 
     public function add_tab( $tabs ) {
-        // ✅ GENERAL TAB SHOW FOR BUNDLE
-        if ( isset( $tabs['general']['class'] ) ) {
+    // 1. General Tab (Pricing) 
+    if ( isset( $tabs['general'] ) ) {
         $tabs['general']['class'][] = 'show_if_storeone_bundle';
     }
-        $tabs['storeone_bundle'] = [
-            'label'  => __( 'Bundled Products', 'store-one' ),
-            'target' => 'storeone_bundle_product_data',
-            'class'  => [ 'show_if_storeone_bundle' ],
-        ];
-        return $tabs;
+
+    // 2. Inventory Tab 
+    if ( isset( $tabs['inventory'] ) ) {
+        $tabs['inventory']['class'][] = 'show_if_storeone_bundle';
     }
 
+    // 3. Shipping Tab 
+    if ( isset( $tabs['shipping'] ) ) {
+        $tabs['shipping']['class'][] = 'show_if_storeone_bundle';
+    }
+
+    // 4. Custom Bundle Tab
+    $tabs['storeone_bundle'] = [
+        'label'  => __( 'Bundled Products', 'store-one' ),
+        'target' => 'storeone_bundle_product_data',
+        'class'  => [ 'show_if_storeone_bundle' ],
+    ];
+
+    return $tabs;
+    }
     public function render_panel() {
     global $post, $product_object;
     if ( ! is_a( $product_object, 'WC_Product' ) ) {
@@ -469,7 +508,7 @@ private function render_bundle_item_settings( $pid, $item = [] ) {
     $fixed   = floatval( get_post_meta( $post_id, '_storeone_discount_fixed', true ) );
 
     /* ======================================================
-     * 1️⃣ STORE BUNDLE (AS IT IS)
+     * 1STORE BUNDLE (AS IT IS)
      * ====================================================== */
     if ( $scope === 'store_bundle' ) {
 
@@ -543,12 +582,12 @@ private function render_bundle_item_settings( $pid, $item = [] ) {
 
             $qty     = max( 1, absint( $item['qty'] ?? 1 ) );
 
-            // 🔥 ALWAYS base on REGULAR PRICE
+            //ALWAYS base on REGULAR PRICE
             $regular = (float) $product->get_regular_price();
             if ( ! $regular ) continue;
 
             /* ---------------------------------
-            * 🔥 USE ITEM LEVEL DISCOUNT (NOT GLOBAL)
+            * USE ITEM LEVEL DISCOUNT (NOT GLOBAL)
             * --------------------------------- */
             $item_type    = $item['discount_type'] ?? 'percent';
             $item_percent = floatval( $item['discount_percent'] ?? 0 );
@@ -611,7 +650,7 @@ private function render_bundle_item_settings( $pid, $item = [] ) {
         }
     }
 
-    // 🔥 READ BUNDLE REGULAR PRICE (AUTO OR MANUAL)
+    //READ BUNDLE REGULAR PRICE (AUTO OR MANUAL)
         $bundle_regular = null;
 
         if ( isset($_POST['_storeone_bundle_regular_price']) && $_POST['_storeone_bundle_regular_price'] !== '' ) {
@@ -626,13 +665,13 @@ private function render_bundle_item_settings( $pid, $item = [] ) {
             $items[] = [
                 'id'  => absint($row['id']),
                 'qty' => max(1, absint($row['qty'] ?? 1)),
-                // ✅ Optional product
+                //Optional product
                 'optional' => isset( $row['optional'] ) ? 1 : 0,
-                // ✅ Quantity settings
+                //Quantity settings
                 'allow_change_quantity' => isset( $row['allow_change_quantity'] ) ? 1 : 0,
                 'min_qty'               => absint( $row['min_qty'] ?? 0 ),
                 'max_qty'               => absint( $row['max_qty'] ?? 0 ),
-                // ✅ Discount settings
+                //Discount settings
                 'discount_type'    => sanitize_text_field( $row['discount_type'] ?? 'percent' ),
                 'discount_percent' => floatval( $row['discount_percent'] ?? 0 ),
                 'discount_fixed'   => floatval( $row['discount_fixed'] ?? 0 ),

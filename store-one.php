@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // ------------------ Constants ------------------.
-define( 'STORE_ONE_VERSION', '1.0.28' );
+define( 'STORE_ONE_VERSION', '1.0.42' );
 define( 'STORE_ONE_PLUGIN_FILE', __FILE__ );
 define( 'STORE_ONE_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'STORE_ONE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -29,7 +29,8 @@ require_once STORE_ONE_PLUGIN_DIR . 'includes/class-store-one.php';
 require_once STORE_ONE_PLUGIN_DIR . 'includes/store-one-function.php';
 
 function store_one_run() {
-	Store_One::get_instance();
+	      Store_One::get_instance();
+		
 }
 add_action( 'plugins_loaded', 'store_one_run' );
 
@@ -49,11 +50,12 @@ add_action(
 
 // ------------------ FBT Frontend Loader ------------------.
 add_action(
-	'woocommerce_init',
+	'init',
 	function () {
 		// Frontend class include + init.
 		require_once STORE_ONE_PLUGIN_DIR . 'includes/modules/frequently-bought/class-frontend.php';
 		require_once STORE_ONE_PLUGIN_DIR . 'includes/modules/bundle-product/class-frontend.php';
+		
 		if ( class_exists( 'Store_One_FBT_Frontend' ) ) {
 			new Store_One_FBT_Frontend();
 		}
