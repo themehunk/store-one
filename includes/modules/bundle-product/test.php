@@ -739,3 +739,472 @@ class StoreOne_Bundle_Frontend {
    }
    
 }
+
+
+
+
+jQuery(function ($) {
+
+    /* =====================================================
+     * BASE ELEMENTS
+     * ===================================================== */
+    const $bundle = $('.storeone-bundle-frontend');
+    if (!$bundle.length) return;
+
+    const isStoreBundle =
+        $bundle.data('discount-scope') === 'store_bundle';
+
+    const $addToCartBtn = $('.single_add_to_cart_button');
+    const $hiddenInput  = $('#storeone_bundle_data');
+
+    /* =====================================================
+     * PRICE FORMATTER (Woo Compatible)
+     * ===================================================== */
+        function formatPrice(amount) {
+        amount = parseFloat(amount) || 0;
+
+        const $tpl = $('.s1-currency-template');
+
+        if (!$tpl.length) {
+            return amount.toFixed(2);
+        }
+
+        // ₹0.00 / $0.00 / 0,00 € etc
+        const html = $tpl.html();
+
+        return html.replace(/0+([.,]0+)?/, amount.toFixed(2));
+    }
+
+
+    /* =====================================================
+     * HELPERS
+     * ===================================================== */
+    function getQty($item) {
+        const qty = parseInt($item.attr('data-qty'), 10);
+        return qty > 0 ? qty : 1;
+    }
+
+    /* =====================================================
+     * APPLY STRIKE (ONLY TOTAL)
+     * ===================================================== */
+    function applyStrikeToTotal() {
+        if (!isStoreBundle) return;
+
+        $bundle.find('.s1-line-total').each(function () {
+            const $el = $(this);
+
+            if ($el.find('del').length) return;
+
+            const html = $el.html();
+            if (!html) return;
+
+            $el.html('<del>' + html + '</del>');
+        });
+    }
+
+    /* =====================================================
+     * UPDATE LINE PRICE (UNIT × QTY)
+     * ===================================================== */
+    function updateLinePrice($item) {
+        const unit = parseFloat($item.data('price')) || 0;
+        const qty  = getQty($item);
+
+        $item.find('.s1-line-qty').text(qty);
+
+        const totalHtml = formatPrice(unit * qty);
+
+        console.log(totalHtml);
+
+        // IMPORTANT: total normal rakho, strike baad me lagegi
+        $item.find('.s1-line-total').html(totalHtml);
+    }
+
+    /* =====================================================
+     * BUILD BUNDLE JSON
+     * ===================================================== */
+    function buildBundleData() {
+
+        let items = [];
+
+        $('.s1-bundle-item').each(function () {
+
+            const $item = $(this);
+            const isOptional =
+                $item.find('.s1-bundle-check').length
+                    ? $item.find('.s1-bundle-check').is(':checked')
+                    : true;
+
+            if (!isOptional) return;
+
+            items.push({
+                id:  $item.data('id'),
+                qty: getQty($item)
+            });
+        });
+
+        if (!items.length) {
+            $hiddenInput.val('');
+            $addToCartBtn.prop('disabled', true);
+            return;
+        }
+
+        $hiddenInput.val(JSON.stringify({ items }));
+        $addToCartBtn.prop('disabled', false);
+    }
+
+    /* =====================================================
+     * QTY BUTTONS
+     * ===================================================== */
+    $(document).on('click', '.s1-qty-btn', function () {
+
+        const $item = $(this).closest('.s1-bundle-item');
+        let qty = getQty($item);
+
+        if ($(this).hasClass('plus'))  qty++;
+        if ($(this).hasClass('minus')) qty--;
+
+        qty = Math.max(1, qty);
+        $item.attr('data-qty', qty);
+
+        updateLinePrice($item);
+        buildBundleData();
+        applyStrikeToTotal();
+    });
+
+    /* =====================================================
+     * OPTIONAL ITEM TOGGLE
+     * ===================================================== */
+    $(document).on('change', '.s1-bundle-check', function () {
+        buildBundleData();
+        applyStrikeToTotal();
+    });
+
+    /* =====================================================
+     * VARIABLE PRODUCT SUPPORT
+     * (UNIT PRICE UNTOUCHED)
+     * ===================================================== */
+    $(document).on('found_variation', '.variations_form', function (e, variation) {
+
+        const price = parseFloat(variation.display_price) || 0;
+        const $item = $('.s1-bundle-item[data-id="' + variation.product_id + '"]');
+
+        if (!$item.length) return;
+
+        $item.attr('data-price', price);
+
+        // ⚠️ unit price normal hi rahe
+        $item.find('.s1-line-unit').html(formatPrice(price));
+
+        updateLinePrice($item);
+        buildBundleData();
+        applyStrikeToTotal();
+    });
+
+    /* =====================================================
+     * MUTATION OBSERVER (OVERWRITE SAFE)
+     * ===================================================== */
+    if (isStoreBundle) {
+        const observer = new MutationObserver(function () {
+            applyStrikeToTotal();
+        });
+
+        observer.observe($bundle[0], {
+            childList: true,
+            subtree: true,
+            characterData: true
+        });
+    }
+
+    /* =====================================================
+     * INIT
+     * ===================================================== */
+    $('.s1-bundle-item').each(function () {
+        updateLinePrice($(this));
+    });
+
+    buildBundleData();
+    applyStrikeToTotal();
+
+});
+
+
+// ///////////
+/* =============================
+     * ADD TO CART
+     * ============================= */
+    public function add_bundle_to_cart_item( $cart_item_data ) {
+
+    if ( empty( $_POST['storeone_bundle_data'] ) ) return $cart_item_data;
+
+    $bundle = json_decode( wp_unslash( $_POST['storeone_bundle_data'] ), true );
+    if ( empty( $bundle['items'] ) ) return $cart_item_data;
+
+    // 🔥 MAKE SCOPE PART OF CART DATA
+    $bundle['scope'] = get_post_meta(
+        absint( $_POST['add-to-cart'] ),
+        '_storeone_discount_scope',
+        true
+    ) ?: 'store_bundle';
+
+    $cart_item_data['storeone_bundle'] = $bundle;
+
+    // 🔥 stable unique key (not random on refresh)
+    $cart_item_data['storeone_bundle_key'] = md5( wp_json_encode( $bundle ) );
+
+    return $cart_item_data;
+   }
+
+    /* =============================
+     * SET CART PRICE
+     * ============================= */
+    public function set_bundle_price( $cart ) {
+
+    if ( is_admin() && ! defined( 'DOING_AJAX' ) ) return;
+
+    foreach ( $cart->get_cart() as $cart_item ) {
+
+        if ( empty( $cart_item['storeone_bundle'] ) ) continue;
+
+        $bundle = $cart_item['storeone_bundle'];
+        $scope  = $bundle['scope'] ?? 'store_bundle';
+
+        /* --------------------------------
+         * STORE BUNDLE → USE WC PRICE
+         * -------------------------------- */
+        if ( $scope === 'store_bundle' ) {
+
+            $product = $cart_item['data'];
+            if ( ! $product ) continue;
+        }
+
+        /* --------------------------------
+         * STORE PRODUCT → CALCULATE ITEMS
+         * -------------------------------- */
+        $total = 0;
+
+        foreach ( $bundle['items'] as $item ) {
+
+            $product = wc_get_product( $item['id'] );
+            if ( ! $product ) continue;
+
+            $qty   = max( 1, absint( $item['qty'] ?? 1 ) );
+            $price = (float) $product->get_regular_price();
+            if ( ! $price ) {
+                $price = (float) $product->get_price();
+            }
+
+            if ( ( $item['discount_type'] ?? '' ) === 'percent' ) {
+                $price -= $price * floatval( $item['discount_percent'] ?? 0 ) / 100;
+            }
+
+            if ( ( $item['discount_type'] ?? '' ) === 'fixed' ) {
+                $price -= floatval( $item['discount_fixed'] ?? 0 );
+            }
+
+            $price = max( 0, $price );
+            $total += $price * $qty;
+        }
+
+        $cart_item['data']->set_price( $total );
+      }
+   }
+
+    public function display_bundle_in_cart( $item_data, $cart_item ) {
+
+    $settings = $this->get_bundle_settings();
+
+    if (
+        ! empty( $settings['cart_page']['hide_products'] ) &&
+        isset( $cart_item['storeone_bundle'] )
+    ) {
+        return $item_data;
+    }
+
+    if ( empty( $cart_item['storeone_bundle'] ) ) {
+        return $item_data;
+    }
+
+    $bundle = $cart_item['storeone_bundle'];
+    $scope  = $bundle['scope'] ?? 'store_bundle';
+
+    $display_type  = $settings['cart_page']['display_type'] ?? 'list';
+    $include_links = ! empty( $settings['cart_page']['include_links'] );
+
+    /* --------------------------------
+     * STORE BUNDLE → SHOW BUNDLE PRICE
+     * -------------------------------- */
+    if ( $scope === 'store_bundle' ) {
+
+    $bundle = $cart_item['storeone_bundle'];
+    $qty    = max( 1, absint( $cart_item['quantity'] ) );
+
+    $items_html = '';
+
+    /* --------------------------------
+     * 1️⃣ SHOW BUNDLE ITEMS (NO PRICE)
+     * -------------------------------- */
+    foreach ( $bundle['items'] as $item ) {
+
+            $product = wc_get_product( $item['id'] );
+            if ( ! $product ) continue;
+
+            $item_qty = max( 1, absint( $item['qty'] ?? 1 ) ) * $qty;
+
+            $name = esc_html( $product->get_name() );
+
+            if ( $include_links ) {
+                $name = '<a href="' . esc_url( $product->get_permalink() ) . '">' . $name . '</a>';
+            }
+            $is_block_cart = function_exists( 'wc_current_theme_is_fse' ) && wc_current_theme_is_fse();
+
+
+            if ( $display_type === 'bullet' ) {
+
+                if ( $is_block_cart ) {
+                    // ✅ Block Cart SAFE bullets
+                    $items_html .= '• ' . $name . ' × ' . $item_qty . '<br>';
+                } else {
+                    // ✅ Normal Cart REAL bullets
+                    $items_html .= '<li>' . $name . ' × ' . $item_qty . '</li>';
+                }
+
+            } else {
+                // ✅ List mode (both carts)
+                $items_html .= '<span class="s1-bundle-item">' . $name . ' × ' . $item_qty . '</span><br>';
+            }
+        }
+    if ( $display_type === 'bullet' && ! $is_block_cart ) {
+    $items_html = '<ul class="s1-bundle-cart-list">' . $items_html . '</ul>';
+    }
+
+    /* --------------------------------
+     * 2️⃣ SHOW BUNDLE TOTAL PRICE
+     * -------------------------------- */
+    $item_data[] = [
+            'name'  => __( 'Bundle items', 'store-one' ),
+            'value' => $items_html,
+        ];
+
+        $product = $cart_item['data'];
+        $price   = (float) $product->get_price() * $qty;
+
+        $item_data[] = [
+            'name'  => __( 'Bundle price', 'store-one' ),
+            'value' => wc_price( $price ),
+        ];
+
+        return $item_data;
+    }
+    /* --------------------------------
+     * STORE PRODUCT → PER ITEM DISPLAY
+     * -------------------------------- */
+    foreach ( $bundle['items'] as $item ) {
+
+        $product = wc_get_product( $item['id'] );
+        if ( ! $product ) continue;
+
+        $qty = max( 1, absint( $item['qty'] ?? 1 ) );
+
+        $regular = (float) $product->get_regular_price();
+        if ( ! $regular ) {
+            $regular = (float) $product->get_price();
+        }
+
+        $final = $regular;
+
+        if ( ( $item['discount_type'] ?? '' ) === 'percent' ) {
+            $final -= $regular * floatval( $item['discount_percent'] ?? 0 ) / 100;
+        }
+
+        if ( ( $item['discount_type'] ?? '' ) === 'fixed' ) {
+            $final -= floatval( $item['discount_fixed'] ?? 0 );
+        }
+
+        $final = max( 0, $final );
+
+        $regular_total = $regular * $qty;
+        $final_total   = $final * $qty;
+        $name = esc_html( $product->get_name() ) . ' × ' . $qty;
+
+        if ( $include_links ) {
+            $name = '<a href="' . esc_url( $product->get_permalink() ) . '">' . $name . '</a>';
+        }
+
+        $item_data[] = [
+            'name'  => $name,
+            'value' => $final_total < $regular_total
+                ? '<del>' . wc_price( $regular_total ) . '</del> <ins>' . wc_price( $final_total ) . '</ins>'
+                : wc_price( $regular_total ),
+        ];
+    }
+
+    return $item_data;
+
+   }
+
+   public function bundle_cart_count( $count ) {
+
+    $settings = $this->get_bundle_settings();
+
+    if ( ( $settings['cart_page']['cart_count'] ?? 'bundle' ) !== 'items' ) {
+        return $count;
+    }
+
+    $total = 0;
+
+    foreach ( WC()->cart->get_cart() as $cart_item ) {
+
+        if ( empty( $cart_item['storeone_bundle'] ) ) {
+            $total += $cart_item['quantity'];
+            continue;
+        }
+
+        foreach ( $cart_item['storeone_bundle']['items'] as $item ) {
+            $total += max( 1, absint( $item['qty'] ?? 1 ) );
+        }
+    }
+
+    return $total;
+    
+    }
+
+   public function hide_bundle_in_mini_cart( $quantity_html, $cart_item, $cart_item_key ) {
+
+        $settings = $this->get_bundle_settings();
+
+        if (
+            ! empty( $settings['cart_page']['hide_products_mini'] ) &&
+            isset( $cart_item['storeone_bundle'] )
+        ) {
+            return '';
+        }
+
+        return $quantity_html;
+    }
+
+    public function restore_bundle_from_session( $cart_item, $session_item ) {
+        if ( isset( $session_item['storeone_bundle'] ) ) {
+            $cart_item['storeone_bundle'] = $session_item['storeone_bundle'];
+        }
+        return $cart_item;
+    }
+
+    public function save_bundle_to_order( $order_item, $cart_item_key, $values ) {
+        if ( empty( $values['storeone_bundle'] ) ) return;
+
+        $order_item->add_meta_data(
+            __( 'Bundle Items', 'store-one' ),
+            wp_json_encode( $values['storeone_bundle'] )
+        );
+    }
+
+    <strong class="s1-line-total">
+            <?php
+            if ( $discount_scope === 'store_bundle' ) {
+                echo '<del>' . wc_price( $price * $qty ) . '</del>';
+            } else {
+                echo wc_price( $price * $qty );
+            }
+            ?>
+        </strong>
+        

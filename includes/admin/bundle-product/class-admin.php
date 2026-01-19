@@ -210,7 +210,7 @@ $discount_type  = get_post_meta( $post->ID, '_storeone_discount_type', true ) ?:
 woocommerce_wp_select( [
     'id'      => '_storeone_discount_type',
     'label'   => __( 'Discount Type', 'store-one' ),
-    'class'   => 's1-discount-type s1-discount-type-global',
+    'class'   => 'select short s1-discount-type s1-discount-type-global',
     'options' => [
         'percent' => __( 'Percentage', 'store-one' ),
         'fixed'   => __( 'Fixed Amount', 'store-one' ),
@@ -392,7 +392,7 @@ private function render_bundle_item_settings( $pid, $item = [] ) {
     <!-- Discount type -->
     <p class="form-field">
         <label><?php _e( 'Discount Type', 'store-one' ); ?></label>
-        <select class="s1-discount-type"
+        <select class="select short s1-discount-type"
                 name="_storeone_bundle_products[<?php echo esc_attr( $pid ); ?>][discount_type]">
             <option value="percent" <?php selected( $item['discount_type'] ?? '', 'percent' ); ?>>
                 <?php _e( 'Percentage', 'store-one' ); ?>
@@ -691,6 +691,10 @@ private function render_bundle_item_settings( $pid, $item = [] ) {
 
     $price = floatval( $price );
 
+    ob_start();
+    $this->render_bundle_item_settings( $product->get_id(), [] );
+    $settings_html = ob_get_clean();
+
     wp_send_json_success([
         'id'            => $product->get_id(),
         'title'         => $product->get_formatted_name(),
@@ -699,6 +703,7 @@ private function render_bundle_item_settings( $pid, $item = [] ) {
         'image'         => wp_get_attachment_image_url( $product->get_image_id(), 'thumbnail' ),
         'edit'          => get_edit_post_link( $product->get_id() ),
         'type'          => $product->is_type('variation') ? 'variation' : 'simple',
+        'settings_html' => $settings_html,
     ]);
 }
 
