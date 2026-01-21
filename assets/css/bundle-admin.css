@@ -3,8 +3,8 @@
    Scoped & Safe CSS
    ================================================== */
 .show_if_storeone_bundle{
-            display: block !important;
-        }
+            display:inline!important;
+}
 /* List reset */
 #storeone_bundle_product_data .storeone-bundle-selected {
     margin: 0rem 1rem;

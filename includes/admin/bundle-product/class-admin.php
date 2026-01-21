@@ -1,48 +1,72 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-/* -----------------------------------------
- * Product Class
- * ----------------------------------------- */
-if ( class_exists('WC_Product') && ! class_exists('WC_Product_StoreOne_Bundle') ) {
-    class WC_Product_StoreOne_Bundle extends WC_Product {
-        public function get_type() {
-            return 'storeone_bundle';
-        }
-    }
-}
-
 class Store_One_BNDLP_Admin {
 
-    public function __construct() {
+    private static $instance = null;
 
-    add_filter( 'product_type_selector', [ $this, 'add_product_type' ] );
-    add_filter( 'woocommerce_product_data_tabs', [ $this, 'add_tab' ] );
-    add_action( 'woocommerce_product_data_panels', [ $this, 'render_panel' ] );
+    public static function instance() {
+        if ( self::$instance === null ) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
 
-    
-    add_filter(
-        'woocommerce_product_class',
-        function ( $classname, $product_type ) {
-            if ( $product_type === 'storeone_bundle' ) {
-                return 'WC_Product_StoreOne_Bundle';
-            }
-            return $classname;
-        },
-        10,
-        2
-    );
-    
+    private function __construct() {
 
-    // ✅ ONLY THIS HOOK
-    add_action(
-        'woocommerce_process_product_meta_storeone_bundle',
-        [ $this, 'store_one_save' ]
-    );
+        // Product type dropdown mein add
+        add_filter( 'product_type_selector', [ $this, 'add_product_type' ] );
 
-    add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_assets' ] );
-    add_action( 'wp_ajax_storeone_get_product_data', [ $this, 'ajax_get_product_data' ] );
+        // Tabs
+        add_filter( 'woocommerce_product_data_tabs', [ $this, 'add_tab' ] );
+        add_action( 'woocommerce_product_data_panels', [ $this, 'render_panel' ] );
+
+        // Custom class mapping – high priority
+        add_filter( 'woocommerce_product_class', [ $this, 'custom_product_class' ], 9999, 4 );
+
+        // Force purchasable – high priority
+        add_filter( 'woocommerce_is_purchasable', [ $this, 'force_purchasable' ], 9999, 2 );
+
+        // Save meta
+        add_action( 'woocommerce_process_product_meta_storeone_bundle', [ $this, 'store_one_save' ],30 );
+
+        // Term ensure (sirf ek baar)
+        add_action( 'init', [ $this, 'ensure_product_type_term' ] );
+
+        // Admin assets + AJAX
+        add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_assets' ] );
+        add_action( 'wp_ajax_storeone_get_product_data', [ $this, 'ajax_get_product_data' ] );
+
+    }
+
+    public function ensure_product_type_term() {
+        if ( ! term_exists( 'storeone_bundle', 'product_type' ) ) {
+            wp_insert_term( 'storeone_bundle', 'product_type' );
+        }
+    }
+
+    public function custom_product_class( $classname, $product_type, $post_type = 'product', $product_id = 0 ) {
+    // Extra check: agar post meta ya term mein bundle hai to force
+    $terms = wp_get_object_terms( $product_id, 'product_type', [ 'fields' => 'slugs' ] );
+    if ( in_array( 'storeone_bundle', (array) $terms ) || get_post_meta( $product_id, '_storeone_bundle_products', true ) ) {
+        error_log( 'Forced custom class for ID ' . $product_id . ' (term/meta check passed)' );
+        return 'WC_Product_StoreOne_Bundle';
+    }
+
+    if ( $product_type === 'storeone_bundle' ) {
+        error_log( 'Custom class mapped for ID ' . $product_id . ': WC_Product_StoreOne_Bundle' );
+        return 'WC_Product_StoreOne_Bundle';
+    }
+
+    return $classname;
 }
+
+    public function force_purchasable( $purchasable, $product ) {
+        if ( $product && $product->get_type() === 'storeone_bundle' ) {
+            return true;
+        }
+        return $purchasable;
+    }
 
 
     public function add_product_type( $types ) {
@@ -51,18 +75,30 @@ class Store_One_BNDLP_Admin {
     }
 
     public function add_tab( $tabs ) {
-        // ✅ GENERAL TAB SHOW FOR BUNDLE
-        if ( isset( $tabs['general']['class'] ) ) {
+    // 1. General Tab (Pricing) 
+    if ( isset( $tabs['general'] ) ) {
         $tabs['general']['class'][] = 'show_if_storeone_bundle';
     }
-        $tabs['storeone_bundle'] = [
-            'label'  => __( 'Bundled Products', 'store-one' ),
-            'target' => 'storeone_bundle_product_data',
-            'class'  => [ 'show_if_storeone_bundle' ],
-        ];
-        return $tabs;
+
+    // 2. Inventory Tab 
+    if ( isset( $tabs['inventory'] ) ) {
+        $tabs['inventory']['class'][] = 'show_if_storeone_bundle';
     }
 
+    // 3. Shipping Tab 
+    if ( isset( $tabs['shipping'] ) ) {
+        $tabs['shipping']['class'][] = 'show_if_storeone_bundle';
+    }
+
+    // 4. Custom Bundle Tab
+    $tabs['storeone_bundle'] = [
+        'label'  => __( 'Bundled Products', 'store-one' ),
+        'target' => 'storeone_bundle_product_data',
+        'class'  => [ 'show_if_storeone_bundle' ],
+    ];
+
+    return $tabs;
+    }
     public function render_panel() {
     global $post, $product_object;
     if ( ! is_a( $product_object, 'WC_Product' ) ) {
@@ -469,7 +505,7 @@ private function render_bundle_item_settings( $pid, $item = [] ) {
     $fixed   = floatval( get_post_meta( $post_id, '_storeone_discount_fixed', true ) );
 
     /* ======================================================
-     * 1️⃣ STORE BUNDLE (AS IT IS)
+     * 1STORE BUNDLE (AS IT IS)
      * ====================================================== */
     if ( $scope === 'store_bundle' ) {
 
@@ -543,12 +579,12 @@ private function render_bundle_item_settings( $pid, $item = [] ) {
 
             $qty     = max( 1, absint( $item['qty'] ?? 1 ) );
 
-            // 🔥 ALWAYS base on REGULAR PRICE
+            //ALWAYS base on REGULAR PRICE
             $regular = (float) $product->get_regular_price();
             if ( ! $regular ) continue;
 
             /* ---------------------------------
-            * 🔥 USE ITEM LEVEL DISCOUNT (NOT GLOBAL)
+            * USE ITEM LEVEL DISCOUNT (NOT GLOBAL)
             * --------------------------------- */
             $item_type    = $item['discount_type'] ?? 'percent';
             $item_percent = floatval( $item['discount_percent'] ?? 0 );
@@ -611,7 +647,7 @@ private function render_bundle_item_settings( $pid, $item = [] ) {
         }
     }
 
-    // 🔥 READ BUNDLE REGULAR PRICE (AUTO OR MANUAL)
+    //READ BUNDLE REGULAR PRICE (AUTO OR MANUAL)
         $bundle_regular = null;
 
         if ( isset($_POST['_storeone_bundle_regular_price']) && $_POST['_storeone_bundle_regular_price'] !== '' ) {
@@ -626,13 +662,13 @@ private function render_bundle_item_settings( $pid, $item = [] ) {
             $items[] = [
                 'id'  => absint($row['id']),
                 'qty' => max(1, absint($row['qty'] ?? 1)),
-                // ✅ Optional product
+                //Optional product
                 'optional' => isset( $row['optional'] ) ? 1 : 0,
-                // ✅ Quantity settings
+                //Quantity settings
                 'allow_change_quantity' => isset( $row['allow_change_quantity'] ) ? 1 : 0,
                 'min_qty'               => absint( $row['min_qty'] ?? 0 ),
                 'max_qty'               => absint( $row['max_qty'] ?? 0 ),
-                // ✅ Discount settings
+                //Discount settings
                 'discount_type'    => sanitize_text_field( $row['discount_type'] ?? 'percent' ),
                 'discount_percent' => floatval( $row['discount_percent'] ?? 0 ),
                 'discount_fixed'   => floatval( $row['discount_fixed'] ?? 0 ),
@@ -643,6 +679,26 @@ private function render_bundle_item_settings( $pid, $item = [] ) {
         update_post_meta( $post_id, '_storeone_bundle_products', [] );
         }
         $this->update_bundle_wc_prices( $post_id );
+
+        $price = get_post_meta( $post_id, '_price', true );
+        if ( '' === $price || ! is_numeric( $price ) ) {
+            $fallback = get_post_meta( $post_id, '_regular_price', true );
+            update_post_meta( $post_id, '_price', $fallback ? wc_format_decimal( $fallback ) : '0' );
+            error_log( 'Forced _price for bundle ' . $post_id );
+        }
+
+        // Cache clear
+        // Extra force
+    update_post_meta( $post_id, '_virtual', 'yes' ); // virtual banao
+    update_post_meta( $post_id, '_stock_status', 'instock' ); // stock force
+
+    // Clear more caches
+    wp_cache_delete( 'wc_product_children_' . $post_id, 'products' );
+    wp_cache_delete( 'wc_product_' . $post_id, 'products' );
+
+    error_log( 'Extra bundle force applied for ID ' . $post_id );
+        wc_delete_product_transients( $post_id );
+        clean_post_cache( $post_id );
         
     }
 
@@ -708,5 +764,3 @@ private function render_bundle_item_settings( $pid, $item = [] ) {
 }
 
 }
-
-new Store_One_BNDLP_Admin();
