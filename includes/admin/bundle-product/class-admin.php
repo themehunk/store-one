@@ -148,7 +148,7 @@ class Store_One_BNDLP_Admin {
                             <span class="drag">☰</span>
 
                             <input type="number"
-                                   class="qty"
+                                   class="qty" hidden
                                    min="1"
                                    value="<?php echo esc_attr( $qty ); ?>">
 

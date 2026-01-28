@@ -171,14 +171,14 @@ class StoreOne_Bundle_Frontend {
     if ( ! $prices ) continue;
 
     $total += (float) $prices['sale'] * $qty;
-}
+   }
 
 
     wp_send_json_success( [
         'price_html' => wc_price( $total ),
         'raw'        => $total,
     ] );
-}
+   }
 
     /* =============================
      * ASSETS
