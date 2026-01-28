@@ -5,19 +5,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Store_One_Admin {
 
-	/**
-	 * Constructor.
-	 */
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'register_menu' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 	}
 
-	/**
-	 * Register admin menu.
-	 */
 	public function register_menu() {
-		// Top-level Menu
+
 		add_menu_page(
 			__( 'Store One', 'store-one' ),
 			__( 'Store One', 'store-one' ),
@@ -28,7 +22,6 @@ class Store_One_Admin {
 			56
 		);
 
-		// Submenu: Dashboard (points to same page)
 		add_submenu_page(
 			'store-one',
 			__( 'Dashboard', 'store-one' ),
@@ -39,10 +32,8 @@ class Store_One_Admin {
 		);
 	}
 
-	/**
-	 * Render admin page (React root div only).
-	 */
 	public function render_admin_page() {
+
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( esc_html__( 'You do not have permission to access this page.', 'store-one' ) );
 		}
@@ -56,22 +47,19 @@ class Store_One_Admin {
 		<?php
 	}
 
-	/**
-	 * Enqueue admin assets.
-	 *
-	 * @param string $hook Current admin page hook.
-	 */
 	public function enqueue_assets( $hook ) {
-		// Allow both Top Menu & Dashboard submenu.
-			if ( ! in_array( $hook, array( 'toplevel_page_store-one', 'store-one_page_store-one' ), true ) ) {
-				return;
-			}
+
+		if ( ! in_array( $hook, array( 'toplevel_page_store-one', 'store-one_page_store-one' ), true ) ) {
+			return;
+		}
 
 		$js_path  = 'build/admin/index.js';
 		$css_path = 'build/admin/index.css';
+		$css_path_style = 'build/admin/style-index.css';
 
 		$js_ver  = file_exists( STORE_ONE_PLUGIN_DIR . $js_path ) ? filemtime( STORE_ONE_PLUGIN_DIR . $js_path ) : STORE_ONE_VERSION;
 		$css_ver = file_exists( STORE_ONE_PLUGIN_DIR . $css_path ) ? filemtime( STORE_ONE_PLUGIN_DIR . $css_path ) : STORE_ONE_VERSION;
+		$css_path_style_var = file_exists( STORE_ONE_PLUGIN_DIR . $css_path_style ) ? filemtime( STORE_ONE_PLUGIN_DIR . $css_path_style ) : STORE_ONE_VERSION;
 
 		wp_register_script(
 			'store-one-admin',
@@ -88,24 +76,36 @@ class Store_One_Admin {
 			$css_ver
 		);
 
-		// Localized data (safe, escaped).
+			wp_register_style(
+			'store-one-admin-style',
+			STORE_ONE_PLUGIN_URL . $css_path_style,
+			array( 'wp-components' ),
+			$css_path_style_var
+		);
+
+		// IMPORTANT: apiFetch({ path }) me sirf relative path jata hai,
+		// isliye yahan domain ke bina sirf "namespace/version" de rahe hain.
 		wp_localize_script(
 			'store-one-admin',
 			'StoreOneAdmin',
+			
 			array(
-				'restUrl' => esc_url_raw( rest_url( 'store-one/v1/' ) ),
+				// e.g. "store-one/v1/"
+				'restUrl' => 'store-one/v1/',
+
+				// Nonce for REST security.
 				'nonce'   => wp_create_nonce( 'wp_rest' ),
+
 				'i18n'    => array(
 					'saveSuccess' => esc_html__( 'Settings saved successfully.', 'store-one' ),
 					'saveError'   => esc_html__( 'Failed to save settings. Please try again.', 'store-one' ),
 				),
+				'homeUrl' => home_url('/'), 
 			)
 		);
 
 		wp_enqueue_script( 'store-one-admin' );
 		wp_enqueue_style( 'store-one-admin' );
-
-		// If you add translations later.
-		// wp_set_script_translations( 'store-one-admin', 'store-one' );
+		wp_enqueue_style( 'store-one-admin-style' );
 	}
 }

@@ -1,0 +1,251 @@
+/* ===============================
+ * StoreOne Bundle – Frontend
+ * =============================== */
+
+.storeone-bundle-frontend {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 24px 0;
+    background: #fff;
+}
+
+.s1-bundle-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.s1-bundle-items {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.s1-bundle-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid #eef0f3;
+    border-radius: 10px;
+    position: relative;
+}
+
+.s1-check-wrap {
+    margin-right: 6px;
+}
+
+.s1-thumb img {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: none;
+}
+
+.s1-info {
+    flex: 1;
+}
+
+.s1-name {
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.s1-unit-price {
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 6px;
+}
+
+/* QTY */
+
+/* ===============================
+ * Qty – WooCommerce Style (Compact)
+ * =============================== */
+
+.s1-qty-wrap {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid #dcdcdc;
+    border-radius: 4px;
+    overflow: hidden;
+    height: 32px;
+    background: #fff;
+    margin-right: 0.5rem;
+}
+
+/* + / - buttons */
+.s1-qty-btn {
+    width: 30px!important;
+    height: 30px!important;
+    padding:0!important;
+    border: none;
+    background: #f7f7f7;
+    color: #333;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.s1-line-qty{
+width: 30px;
+    text-align: center;
+}
+.s1-qty-btn:hover {
+    background: #ececec;
+}
+
+/* Number input */
+.s1-qty-input {
+    width: 30px!important;
+    height: 30px!important;
+    border: none;
+    border-left: 1px solid #dcdcdc;
+    border-right: 1px solid #dcdcdc;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 0!important;;
+    background: #fff;
+    color: #111;
+}
+
+/* Remove browser arrows */
+.s1-qty-input::-webkit-inner-spin-button,
+.s1-qty-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.s1-qty-input[type=number] {
+    -moz-appearance: textfield;
+}
+
+/* Disabled state (optional future use) */
+.s1-qty-wrap.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+
+/* LINE PRICE */
+.s1-line-price {
+    font-weight: 600;
+    min-width: 80px;
+    margin-top: 0.5rem;
+    
+}
+.storeone-bundle-frontend .storeone-bundle-above-text > p{
+    margin-bottom:10px;
+}
+
+.storeone-bundle-frontend .storeone-bundle-below-text > p{
+    margin-bottom:0px;
+    margin-top:10px;
+    
+}
+.storeone-bundle-frontend .storeone-bundle-above-text > p,
+.storeone-bundle-frontend .storeone-bundle-below-text > p{
+font-size:14px;
+    font-weight:500;
+}
+.wc-block-components-product-details__bundle-items,
+.wc-block-components-product-details__bundle-price{
+    display: flex;
+    align-items: start;
+    gap:10px;
+    margin-bottom:10pxpx;
+}
+.s1-bundle-cart-list {
+    margin: 6px 0;
+    padding-left: 18px;
+}
+.s1-desc p{
+   margin:0; 
+}
+.wc-block-components-product-details li{
+    margin-bottom:10px;
+}
+/* ===============================
+ * VARIATION FIELDS (BUNDLE)
+ * =============================== */
+
+.s1-variation-form {
+    margin-top: 8px;
+}
+
+.s1-variation-field {
+    margin-bottom: 10px;
+}
+
+.s1-variation-field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #333;
+}
+
+/* Select dropdown */
+.s1-variation-field select {
+    width: 100%;
+    padding: 7px 10px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: 1px solid #dcdcdc;
+    background-color: #fff;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Hover / focus */
+.s1-variation-field select:hover {
+    border-color: #bbb;
+}
+
+.s1-variation-field select:focus {
+    border-color: #2271b1; /* WP blue */
+    box-shadow: 0 0 0 1px rgba(34,113,177,0.3);
+    outline: none;
+}
+
+/* Disabled option look */
+.s1-variation-field select:disabled {
+    background: #f5f5f5;
+    color: #999;
+    cursor: not-allowed;
+}
+
+.storeone-old-price {
+    text-decoration: line-through;
+    opacity: 0.7;
+    margin-right: 6px;
+}
+
+.storeone-sale-price {
+    font-weight: 600;
+}
+
+/* Mobile friendly */
+@media (max-width: 600px) {
+    .s1-variation-field select {
+        font-size: 16px;
+    }
+}
+
+/* MOBILE */
+@media (max-width: 480px) {
+    .s1-bundle-item {
+        flex-wrap: wrap;
+    }
+
+    .s1-line-price {
+        width: 100%;
+        text-align: left;
+        margin-top: 8px;
+    }
+}
