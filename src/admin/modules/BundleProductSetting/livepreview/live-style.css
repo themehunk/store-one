@@ -61,6 +61,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 24px 66px -20px rgba(0, 0, 0, 0.1);
 }
 
 .storeone-bundle-frontend .s1-thumb img {
@@ -68,8 +69,11 @@
     height: 100%;
     object-fit: contain;
     border-radius: var(--radius-sm);
+    display: block;
 }
-
+.storeone-bundle-frontend a.s1-product-link{
+    text-decoration:none;
+}
 /* =====================================================
    INFO
 ===================================================== */
@@ -137,15 +141,17 @@
     border: 1px solid var(--border-light);
     border-radius: 999px;
     overflow: hidden;
+    box-shadow: 0 24px 66px -20px rgba(0, 0, 0, 0.1);
 }
 
 .storeone-bundle-frontend .s1-qty-btn {
     width: 26px;
     height: 26px;
-    background: #f9fafb;
+    background: #fff;
     border: none;
     font-size: 14px;
     cursor: pointer;
+    
 }
 
 .storeone-bundle-frontend .s1-line-qty {
