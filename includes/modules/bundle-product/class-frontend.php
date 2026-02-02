@@ -291,7 +291,6 @@ class StoreOne_Bundle_Frontend {
                 data-regular="<?php echo esc_attr( $prices['regular'] ); ?>"
                 data-sale="<?php echo esc_attr( $prices['sale'] ); ?>"
               >
-
                 <?php if ( ! empty( $item['optional'] ) ) : ?>
                     <label class="s1-check-wrap">
                         <input type="checkbox" class="s1-bundle-check" checked>
@@ -312,6 +311,8 @@ class StoreOne_Bundle_Frontend {
 
                 <div class="s1-info">
 
+                <div class="s1-header-line"> 
+
                     <div class="s1-name">
                         <?php if ( $settings['product_page']['show_quantities'] ) : ?>
                         <span class="s1-line-qty"><?php echo esc_html( $qty ); ?></span>
@@ -325,7 +326,64 @@ class StoreOne_Bundle_Frontend {
                             echo esc_html( $product_name );
                         }
                     ?>
-                    </div>
+                     </div>
+                     <?php if ( $settings['product_page']['price_display'] !== 'hide' ) : ?>
+                     <div class="s1-line-price">
+                <?php
+                $is_variable = $p->is_type( 'variable' );
+
+                if (
+                    $is_variable &&
+                    ! empty( $settings['product_page']['show_price_range'] )
+                ) {
+
+                    $min = $p->get_variation_price( 'min', true );
+                    $max = $p->get_variation_price( 'max', true );
+
+                    if ( $min !== $max ) {
+                        $price_html = wc_price( $min ) . ' – ' . wc_price( $max );
+                    } else {
+                        $price_html = wc_price( $min );
+                    }
+                } else {
+                    $price_html = wc_price( $price );
+                }
+            ?>
+            <span class="s1-line-unit">
+                <?php
+                if ( $is_variable ) {
+                    echo $price_html;
+                }
+                elseif (
+                    $discount_scope === 'store_product'
+                    && $prices
+                    && (float) $prices['sale'] < (float) $prices['regular']
+                ) {
+                    if ( empty( $item['price_hide'] ) ) {
+                        echo '<del>' . wc_price( $prices['regular'] ) . '</del> ';
+                    }
+                    echo '<ins>' . wc_price( $prices['sale'] ) . '</ins>';
+                }elseif($discount_scope === 'store_bundle' && !empty( $item['price_hide'] )) {
+                    echo wc_price( $prices['regular'] );
+                }
+            ?>
+            </span>
+            <?php if(  $discount_scope === 'store_bundle'
+                    && empty( $item['price_hide'] ) && !$is_variable )  : ?>
+                <strong class="s1-line-total">
+                    <?php
+                    if ( $discount_scope === 'store_bundle' ) {
+                        echo '<del>' . wc_price( $price * $qty ) . '</del>';
+                    } else {
+                        echo wc_price( $price * $qty );
+                    }
+                    ?>
+                </strong>
+            <?php endif; ?>
+         </div>
+          <?php endif; ?>
+
+                </div>
 
                 <?php if ( $settings['product_page']['show_descriptions'] ) : ?>
                         <div class="s1-desc">
@@ -358,8 +416,7 @@ class StoreOne_Bundle_Frontend {
                 <?php endif; ?>
 
             <?php if ( $settings['product_page']['price_display'] !== 'hide' ) : ?>
-            <div class="s1-line-price">
-            
+
             <?php if (
                 ! empty( $item['allow_change_quantity'] ) &&
                 ! (
@@ -374,58 +431,7 @@ class StoreOne_Bundle_Frontend {
                 <button type="button" class="s1-qty-btn plus">+</button>
             </div>
             <?php endif; ?>
-        <?php
-        $is_variable = $p->is_type( 'variable' );
-
-        if (
-            $is_variable &&
-            ! empty( $settings['product_page']['show_price_range'] )
-        ) {
-
-            $min = $p->get_variation_price( 'min', true );
-            $max = $p->get_variation_price( 'max', true );
-
-            if ( $min !== $max ) {
-                $price_html = wc_price( $min ) . ' – ' . wc_price( $max );
-            } else {
-                $price_html = wc_price( $min );
-            }
-        } else {
-            $price_html = wc_price( $price );
-        }
-        ?>
-        <span class="s1-line-unit">
-        <?php
-        if ( $is_variable ) {
-            echo $price_html;
-        }
-        elseif (
-            $discount_scope === 'store_product'
-            && $prices
-            && (float) $prices['sale'] < (float) $prices['regular']
-        ) {
-            if ( empty( $item['price_hide'] ) ) {
-                echo '<del>' . wc_price( $prices['regular'] ) . '</del> ';
-            }
-            echo '<ins>' . wc_price( $prices['sale'] ) . '</ins>';
-        }else {
-            echo wc_price( $prices['regular'] );
-        }
-        ?>
-        </span>
-        <?php if(  $discount_scope === 'store_bundle'
-                && empty( $item['price_hide'] ) && !$is_variable )  : ?>
-        <strong class="s1-line-total">
-            <?php
-            if ( $discount_scope === 'store_bundle' ) {
-                echo '<del>' . wc_price( $price * $qty ) . '</del>';
-            } else {
-                echo wc_price( $price * $qty );
-            }
-            ?>
-        </strong>
-        <?php endif; ?>
-         </div>
+            
         <?php endif; ?>
         </div>  
         </div>

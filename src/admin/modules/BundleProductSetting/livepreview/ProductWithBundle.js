@@ -154,7 +154,7 @@ const ProductWithBundle = ({ settings = {} }) => {
 
                 <div className="s1-main-info">
                     <div className="static-skeleton static-title"></div>
-        <div className="static-skeleton static-price"></div>
+                    <div className="static-skeleton static-price"></div>
 
                     {/*BUNDLE BEFORE ADD TO CART */}
                     {productSettings.position === 'before_cart' && (
@@ -164,7 +164,7 @@ const ProductWithBundle = ({ settings = {} }) => {
                     <div className="s1-main-cart">
                     
                      <div className="static-skeleton static-qty"></div>
-            <div className="static-skeleton static-btn"></div>
+                      <div className="static-skeleton static-btn"></div>
                
                     </div>
                     {productSettings.position === 'after_cart' && (
