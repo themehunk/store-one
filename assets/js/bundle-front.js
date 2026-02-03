@@ -79,7 +79,10 @@ jQuery(function ($) {
                 id: $item.data('id'),
                 qty: getQty($item),
                 variation_id: $item.data('variation-id') || 0,
-                variation: $item.data('variation-attrs') || {}
+                variation: $item.data('variation-attrs') || {},
+                allow_change_quantity: parseInt($item.data('allow-qty'), 10) || 0,
+                price_hide: parseInt($item.data('qty-hide'), 10) || 0
+                
             });
         });
 
@@ -112,7 +115,7 @@ jQuery(function ($) {
             items.push({
                 id: $item.data('id'),
                 qty: getQty($item),
-                variation_id: $item.data('variation-id') || 0
+                variation_id: $item.data('variation-id') || 0,
             });
         });
 

@@ -27,6 +27,8 @@ const DEFAULT_SETTINGS = {
     },
     cart_page: {
         hide_products: false,
+        hide_products_qty: false,
+        hide_products_price: false,
         hide_products_mini: false,
         include_links: true,
         cart_count: 'bundle',     // bundle | items
@@ -326,6 +328,28 @@ export default function BundleProductSettings({
                                     }
                                 />
                             </S1Field>
+                            <S1Field label={__('Hide bundled products in Quantity', 'store-one')} classN="s1-toggle-wrpapper">
+                                <ToggleControl
+                                    checked={settings.cart_page.hide_products_qty}
+                                    onChange={(v) =>
+                                        setSettings({
+                                            ...settings,
+                                            cart_page: { ...settings.cart_page, hide_products_qty: v },
+                                        })
+                                    }
+                                />
+                            </S1Field>
+                            <S1Field label={__('Hide bundled products in Price', 'store-one')} classN="s1-toggle-wrpapper">
+                                <ToggleControl
+                                    checked={settings.cart_page.hide_products_price}
+                                    onChange={(v) =>
+                                        setSettings({
+                                            ...settings,
+                                            cart_page: { ...settings.cart_page, hide_products_price: v },
+                                        })
+                                    }
+                                />
+                            </S1Field>
 
                             <S1Field label={__('Include links to bundled products', 'store-one')} classN="s1-toggle-wrpapper">
                                 <ToggleControl
@@ -355,7 +379,7 @@ export default function BundleProductSettings({
                                 />
                             </S1Field>
 
-                            <S1Field label={__('Show bundled products', 'store-one')}>
+                            {/* <S1Field label={__('Show bundled products', 'store-one')}>
                                 <SelectControl
                                     value={settings.cart_page.display_type}
                                     options={[
@@ -369,7 +393,7 @@ export default function BundleProductSettings({
                                         })
                                     }
                                 />
-                            </S1Field>
+                            </S1Field> */}
 
 
                     </S1FieldGroup>
