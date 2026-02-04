@@ -764,7 +764,7 @@ class StoreOne_Bundle_Frontend {
             . '</span>';
 
         } else {
-        $price_html = wc_price( $sale_line_total );
+        $price_html = '<span class="storeone-main-price">' . wc_price( $sale_line_total ) . '</span> ';
         }
 
         }
@@ -772,27 +772,41 @@ class StoreOne_Bundle_Frontend {
 
         /* --------------------------------
          * ITEM NAME + VARIATION
+         * !empty( $item['allow_change_quantity'] ) &&
          * -------------------------------- */
-        if (!empty( $item['allow_change_quantity'] ) && !$hide_products_qty ) {
 
-            $name = $qty . ' × ' . esc_html( $product->get_name() );
+          if ( wp_doing_ajax() ) {
+                        $cart_page = "store-one-cart-traditional";
+
+            // Cart Block Logic
         } else {
-            $name = esc_html( $product->get_name() );
+                            $cart_page = "store-one-cart-block";
+            // Traditional Cart Logic
         }
-        //$name = $qty . ' × ' . esc_html( $product->get_name() );
 
+
+        
+        //$name = esc_html( $product->get_name() ) . ' × ' .$qty;
+        $attrlist = '';
         if ( ! empty( $item['variation'] ) ) {
             $attrs = [];
             foreach ( $item['variation'] as $k => $v ) {
                 if ( $v ) {
                     $attrs[] = wc_attribute_label(
                         str_replace( 'attribute_', '', $k )
-                    ) . ': ' . esc_html( $v );
+                    ) . esc_html( $v );
                 }
             }
             if ( $attrs ) {
-                $name .= ' <small>(' . implode( ', ', $attrs ) . ')</small>';
+                $attrlist = ' <small>(' . implode( ', ', $attrs ) . ')</small>';
             }
+        }
+
+
+        if ( !$hide_products_qty ) {
+            $name = esc_html( $product->get_name() ) .$attrlist.' <span class="store-one-cart-qty '.$cart_page.'">× ' .$qty.'</span>';
+        } else {
+            $name = esc_html( $product->get_name() ).$attrlist;
         }
 
         if($hide_products_price){

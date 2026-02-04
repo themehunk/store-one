@@ -288,6 +288,17 @@ font-size:14px;
 .wc-block-components-product-details li{
     margin-bottom:10px;
 }
+/** cart page style **/
+
+span.store-one-cart-qty {
+    font-weight: 400;
+    color: #b9b9b9;
+}
+
+dl.variation dd{
+    margin: 0 !important;
+}
+
 /* ===============================
  * VARIATION FIELDS (BUNDLE)
  * =============================== */
@@ -358,11 +369,11 @@ font-size:14px;
 
 .storeone-old-price {
     text-decoration:line-through;
-    opacity: 0.7;
+    opacity: 0.4;
     margin-right: 6px;
 }
-.storeone-sale-price {
-    font-weight: 600;
+.storeone-sale-price,.storeone-main-price {
+    font-weight: 500;
 }
 .s1-qty-btn:focus{
     outline:none;
