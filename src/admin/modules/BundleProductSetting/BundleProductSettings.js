@@ -29,7 +29,6 @@ const DEFAULT_SETTINGS = {
         hide_products: false,
         hide_products_qty: false,
         hide_products_price: false,
-        hide_products_mini: false,
         include_links: true,
         cart_count: 'bundle',     // bundle | items
         display_type: 'list',     // list | bullet
@@ -68,6 +67,10 @@ export default function BundleProductSettings({
                     product_page: {
                         ...DEFAULT_SETTINGS.product_page,
                         ...(s.product_page || {}),
+                    },
+                    cart_page: {
+                        ...DEFAULT_SETTINGS.cart_page,
+                        ...(s.cart_page || {}),
                     },
                 });
             })
@@ -317,17 +320,6 @@ export default function BundleProductSettings({
                                 />
                             </S1Field>
 
-                            <S1Field label={__('Hide bundled products in mini cart', 'store-one')} classN="s1-toggle-wrpapper">
-                                <ToggleControl
-                                    checked={settings.cart_page.hide_products_mini}
-                                    onChange={(v) =>
-                                        setSettings({
-                                            ...settings,
-                                            cart_page: { ...settings.cart_page, hide_products_mini: v },
-                                        })
-                                    }
-                                />
-                            </S1Field>
                             <S1Field label={__('Hide bundled products in Quantity', 'store-one')} classN="s1-toggle-wrpapper">
                                 <ToggleControl
                                     checked={settings.cart_page.hide_products_qty}
@@ -398,7 +390,7 @@ export default function BundleProductSettings({
 
                     </S1FieldGroup>
                     </div>
-                   
+
                 </>
             )}
         </div>

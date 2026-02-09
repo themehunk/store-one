@@ -6,7 +6,6 @@ import './live-style.css';
 import { __ } from '@wordpress/i18n';
 
 const PreviewBndl = ({ settings = {} }) => {
-     console.log(settings);
     const [style, setStyle] = useState('product');
     return (
         <div className="s1-preview-wrap">
@@ -63,7 +62,7 @@ const PreviewBndl = ({ settings = {} }) => {
             </div>
 
             {/* ================= PREVIEW ================= */}
-            
+
             {style === 'product' && <Product settings={settings} />}
             {style === 'cart' && <Cart settings={settings} />}
 

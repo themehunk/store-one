@@ -803,10 +803,15 @@ class StoreOne_Bundle_Frontend {
         }
 
 
+        $product_label = esc_html( $product->get_name() );
+        if ( $include_links ) {
+            $product_label = '<a href="' . esc_url( $product->get_permalink() ) . '" class="s1-bundle-link">' . $product_label . '</a>';
+        }
+
         if ( !$hide_products_qty ) {
-            $name = esc_html( $product->get_name() ) .$attrlist.' <span class="store-one-cart-qty '.$cart_page.'">× ' .$qty.'</span>';
+            $name = '<span class="s1-bundle-item-name">' . $product_label .$attrlist.' <span class="store-one-cart-qty '.$cart_page.'">× ' .$qty.'</span></span>';
         } else {
-            $name = esc_html( $product->get_name() ).$attrlist;
+            $name = '<span class="s1-bundle-item-name">' . $product_label .$attrlist . '</span>';
         }
 
         if($hide_products_price){
@@ -855,7 +860,7 @@ class StoreOne_Bundle_Frontend {
         $settings = $this->storeone_get_bundle_settings();
 
         if (
-            ! empty( $settings['cart_page']['hide_products_mini'] ) &&
+            ! empty( $settings['cart_page']['hide_products'] ) &&
             isset( $cart_item['storeone_bundle'] )
         ) {
             return '';
@@ -1032,16 +1037,25 @@ class StoreOne_Bundle_Frontend {
             'position'             => 'before_cart',
         ],
         'cart_page' => [
-            'hide_products'       => false,
-            'hide_products_mini'  => false,
-            'include_links'       => true,
-            'cart_count'          => 'bundle', // bundle | items
-            'display_type'        => 'list',   // list | bullet
+            'hide_products'         => false,
+            'hide_products_qty'     => false,
+            'hide_products_price'   => false,
+            'include_links'         => true,
+            'cart_count'            => 'bundle', // bundle | items
+            'display_type'          => 'list',   // list | bullet
         ],
-        
     ];
 
-    return wp_parse_args( $bundle, $defaults );
+    $merged = [];
+    foreach ( $defaults as $key => $value ) {
+        if ( is_array( $value ) && isset( $bundle[ $key ] ) && is_array( $bundle[ $key ] ) ) {
+            $merged[ $key ] = wp_parse_args( $bundle[ $key ], $value );
+        } else {
+            $merged[ $key ] = isset( $bundle[ $key ] ) ? $bundle[ $key ] : $value;
+        }
+    }
+
+    return $merged;
 
    }
    

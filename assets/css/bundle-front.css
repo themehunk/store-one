@@ -295,8 +295,32 @@ span.store-one-cart-qty {
     color: #b9b9b9;
 }
 
+/* Hide WooCommerce colon after bundle item name */
+dl.variation dt:has(.s1-bundle-item-name) {
+    font-size: 0;
+    line-height: 0;
+}
+dl.variation dt:has(.s1-bundle-item-name) > * {
+    font-size: 14px;
+    line-height: normal;
+}
+/* Block cart colon hide */
+.wc-block-components-product-details li span:has(.s1-bundle-item-name) {
+    font-size: 0;
+}
+.wc-block-components-product-details li span:has(.s1-bundle-item-name) > * {
+    font-size: 13px;
+}
+
 dl.variation dd{
     margin: 0 !important;
+}
+a.s1-bundle-link {
+    text-decoration: none;
+    color: inherit;
+}
+a.s1-bundle-link:hover {
+    text-decoration: underline;
 }
 
 /* ===============================
