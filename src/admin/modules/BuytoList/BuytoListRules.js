@@ -402,9 +402,11 @@ const menuItems = [
                                                 <div className="store-one-rule-header">
                                                     <DragHandleDots2Icon className="drag-handle s1-icon" />
 
-                                                    <strong>
-                                                        {sprintf(__('Item %d', 'store-one'), i + 1)}
-                                                    </strong>
+                                                    <strong className="s1-rule-title">
+                                                    {sprintf(__('Item %d', 'store-one'), i + 1)}
+                                                </strong>
+
+                
 
                                                     <CopyIcon
                                                         className="s1-icon"
