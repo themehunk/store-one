@@ -2,6 +2,7 @@ import { Card, CardHeader, CardBody } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import PreviewFBT from '../../modules/frequentlyBoughtTogether/livepreview/PreviewFBT';
 import PreviewBndl from '../../modules/BundleProductSetting/livepreview/PreviewBndl';
+import PreviewBuyToList from '../../modules/BuytoList/livepreview/PreviewBuyToList';
 const PreviewPane = ({ currentModule, settings }) => {
 
 
@@ -41,6 +42,12 @@ const PreviewPane = ({ currentModule, settings }) => {
                                 <PreviewBndl
                                     key={(activeRule.flexible_id || 'rule') + (activeRule.display_style || '')}
                                     settings={settings}
+                                />
+                            )}
+                            {currentModule?.id === "buy-to-list" && activeRule && (
+                                <PreviewBuyToList
+                                    key={(activeRule.flexible_id || 'rule') + (activeRule.display_style || '')}
+                                    settings={activeRule}
                                 />
                             )}
                         </div>

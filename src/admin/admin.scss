@@ -1718,6 +1718,28 @@ input.components-text-control__input {
     }
 }
 
+.s1-field-wrapper.list-icon .s1-field-control{
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.s1-field-wrapper.list-icon .s1-field-control .s1-icon-option {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.s1-field-wrapper.list-icon .s1-field-control .s1-icon-option.active {
+    border-color: #2563eb;
+    background: #eff6ff;
+}
 
 /** responsive css **/
 

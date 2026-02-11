@@ -23,4 +23,33 @@ export const ICONS = {
       <path strokeLinecap="round" strokeLinejoin="round" d="M9.53 16.122a3 3 0 0 0-5.78 1.128 2.25 2.25 0 0 1-2.4 2.245 4.5 4.5 0 0 0 8.4-2.245c0-.399-.078-.78-.22-1.128Zm0 0a15.998 15.998 0 0 0 3.388-1.62m-5.043-.025a15.994 15.994 0 0 1 1.622-3.395m3.42 3.42a15.995 15.995 0 0 0 4.764-4.648l3.876-5.814a1.151 1.151 0 0 0-1.597-1.597L14.146 6.32a15.996 15.996 0 0 0-4.649 4.763m3.42 3.42a6.776 6.776 0 0 0-3.42-3.42" />
     </svg>
   ),
+  CheckSVG: (
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
+        <path d="M5 13L9 17L19 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  ),
+  StarSVG: (
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
+        <path d="M12 3L14.9 8.3L21 9.2L16.5 13.6L17.8 19.8L12 16.7L6.2 19.8L7.5 13.6L3 9.2L9.1 8.3Z"
+            stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
+    </svg>
+  ),
+ HeartSVG: (
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
+        <path d="M20.8 4.6C19.1 2.9 16.4 2.9 14.7 4.6L12 7.3L9.3 4.6C7.6 2.9 4.9 2.9 3.2 4.6C1.5 6.3 1.5 9 3.2 10.7L12 19.5L20.8 10.7C22.5 9 22.5 6.3 20.8 4.6Z"
+            stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
+    </svg>
+  ),
+  BoltSVG: (
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
+        <path d="M13 2L3 14H11L9 22L21 8H13L13 2Z"
+            stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
+    </svg>
+  ),
+  RocketSVG: (
+       <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
+        <path d="M4 20L10 14M14 10L20 4M12 12L15 9C17 7 18 4 18 4C18 4 15 5 13 7L10 10M8 16C8 16 6 17 4 20C7 18 8 16 8 16Z"
+            stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    </svg>
+  ),
 };
