@@ -68,3 +68,7 @@ add_action(
 		}
 	}
 );
+
+add_action('admin_enqueue_scripts', function () {
+    wp_enqueue_media();
+});

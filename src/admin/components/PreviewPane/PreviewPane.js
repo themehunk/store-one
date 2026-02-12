@@ -3,6 +3,7 @@ import { __ } from '@wordpress/i18n';
 import PreviewFBT from '../../modules/frequentlyBoughtTogether/livepreview/PreviewFBT';
 import PreviewBndl from '../../modules/BundleProductSetting/livepreview/PreviewBndl';
 import PreviewBuyToList from '../../modules/BuytoList/livepreview/PreviewBuyToList';
+import PreviewQuickSocial from '../../modules/QuickSocial/livepreview/PreviewQuickSocial';
 const PreviewPane = ({ currentModule, settings }) => {
 
 
@@ -46,6 +47,12 @@ const PreviewPane = ({ currentModule, settings }) => {
                             )}
                             {currentModule?.id === "buy-to-list" && activeRule && (
                                 <PreviewBuyToList
+                                    key={(activeRule.flexible_id || 'rule') + (activeRule.display_style || '')}
+                                    settings={activeRule}
+                                />
+                            )}
+                            {currentModule?.id === "quick-social" && activeRule && (
+                                <PreviewQuickSocial
                                     key={(activeRule.flexible_id || 'rule') + (activeRule.display_style || '')}
                                     settings={activeRule}
                                 />

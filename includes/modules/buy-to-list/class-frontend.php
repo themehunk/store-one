@@ -316,9 +316,7 @@ class StoreOne_Buy_To_List_Frontend {
      * SVG Icons
      */
     private function get_icon_svg( $icon ) {
-
         switch ( $icon ) {
-
             case 'star':
                 return '<svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M12 3L14.9 8.3L21 9.2L16.5 13.6L17.8 19.8L12 16.7L6.2 19.8L7.5 13.6L3 9.2L9.1 8.3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"></path></svg>';
 
