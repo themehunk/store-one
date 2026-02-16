@@ -54,7 +54,7 @@ const PreviewPane = ({ currentModule, settings }) => {
                             {currentModule?.id === "quick-social" && activeRule && (
                                 <PreviewQuickSocial
                                     key={(activeRule.flexible_id || 'rule') + (activeRule.display_style || '')}
-                                    settings={activeRule}
+                                    settings={settings}
                                 />
                             )}
                         </div>
