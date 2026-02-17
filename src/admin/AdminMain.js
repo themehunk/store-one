@@ -353,7 +353,7 @@ const AdminMain = () => {
                                 currentModule={currentModule}
                                 settings={
                                     livePreviewSettings ||
-                                    moduleSettings[currentModule.id]?.rules?.[0]
+                                    moduleSettings[currentModule.id]
                                 }
                             />
                         )}
