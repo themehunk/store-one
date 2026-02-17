@@ -43,13 +43,32 @@ const modulesList = [
         icon: (<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 2H6C3.79086 2 2 3.79086 2 6V18C2 20.2091 3.79086 22 6 22H18C20.2091 22 22 20.2091 22 18V6C22 3.79086 20.2091 2 18 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M8 12C8 14.2091 9.79086 16 12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M17.5 6.5H17.51" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>),
         premium: false,
     },
+    {
+        id: 'product-brand',
+        label: __('Product Brand', 'store-one'),
+        description: __('Encourage customers to buy more.', 'store-one'),
+       icon: (
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/>
+            <path 
+                d="M21 16L16 11L5 21" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+            />
+        </svg>
+    ),
+        premium: false,
+    },
 ];
 
 const tabs = [
     {
         name: 'all',
         title: __('All Modules', 'store-one'),
-        modules: ['frequently-bought','bundle-product','buy-to-list','quick-social'],
+        modules: ['frequently-bought','bundle-product','buy-to-list','quick-social','product-brand'],
     },
     {
         name: 'recommended',
@@ -81,6 +100,7 @@ const AdminMain = () => {
         'bundle-product': true,
         'buy-to-list': true,
         'quick-social': true,
+        'product-brand': true,
     });
 
     const currentModule = activeModule
@@ -354,6 +374,15 @@ const AdminMain = () => {
                                 settings={
                                     livePreviewSettings ||
                                     moduleSettings[currentModule.id]
+                                }
+                            />
+                        )}
+                        {currentModule?.id === 'product-brand' && (
+                            <PreviewPane
+                                currentModule={currentModule}
+                                settings={
+                                    livePreviewSettings ||
+                                    moduleSettings[currentModule.id]?.rules?.[0]
                                 }
                             />
                         )}
