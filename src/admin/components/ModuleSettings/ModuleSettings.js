@@ -13,6 +13,8 @@ import FrequentlyBoughtSettings from '../../modules/frequentlyBoughtTogether/Fre
 import BundleProductSettings from '../../modules/BundleProductSetting/BundleProductSettings';
 import BuytoListSettings from '../../modules/BuytoList/BuytoListSettings';
 import QuickSocialSettings from '../../modules/QuickSocial/QuickSocialSettings';
+import ProductBrandSettings from '../../modules/ProductBrand/ProductBrandSettings';
+
 
 const ModuleSettings = ({ currentModule, modulesState, onToggleModule, saving, onSettingsChange, onLivePreview,onRegisterSave }) => {
     const enabled = !!modulesState[currentModule.id];
@@ -39,6 +41,12 @@ const ModuleSettings = ({ currentModule, modulesState, onToggleModule, saving, o
                 />
             case 'quick-social':
                 return <QuickSocialSettings
+                    onSettingsChange={onSettingsChange}
+                    onLivePreview={onLivePreview}
+                    onRegisterSave={onRegisterSave}
+                />
+            case 'product-brand':
+                return <ProductBrandSettings
                     onSettingsChange={onSettingsChange}
                     onLivePreview={onLivePreview}
                     onRegisterSave={onRegisterSave}

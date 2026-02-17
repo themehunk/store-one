@@ -57,6 +57,7 @@ add_action(
 		require_once STORE_ONE_PLUGIN_DIR . 'includes/modules/bundle-product/class-frontend.php';
 		require_once STORE_ONE_PLUGIN_DIR . 'includes/modules/buy-to-list/class-frontend.php';
 	     require_once STORE_ONE_PLUGIN_DIR . 'includes/modules/quick-social/class-frontend.php';
+		require_once STORE_ONE_PLUGIN_DIR . 'includes/modules/product-brand/class-frontend.php';
 
 		if ( class_exists( 'Store_One_FBT_Frontend' ) ) {
 			new Store_One_FBT_Frontend();
@@ -69,6 +70,9 @@ add_action(
 		}
 		if ( class_exists( 'StoreOne_Quick_Social' ) ) {
 			new StoreOne_Quick_Social();
+		}
+		if ( class_exists( 'StoreOne_Product_Brand_Frontend' ) ) {
+			new StoreOne_Product_Brand_Frontend();
 		}
 		
 	}

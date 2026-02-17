@@ -4,6 +4,8 @@ import PreviewFBT from '../../modules/frequentlyBoughtTogether/livepreview/Previ
 import PreviewBndl from '../../modules/BundleProductSetting/livepreview/PreviewBndl';
 import PreviewBuyToList from '../../modules/BuytoList/livepreview/PreviewBuyToList';
 import PreviewQuickSocial from '../../modules/QuickSocial/livepreview/PreviewQuickSocial';
+import ProductBrand from '../../modules/ProductBrand/livepreview/PreviewProductBrand';
+
 const PreviewPane = ({ currentModule, settings }) => {
 
 
@@ -55,6 +57,12 @@ const PreviewPane = ({ currentModule, settings }) => {
                                 <PreviewQuickSocial
                                     key={(activeRule.flexible_id || 'rule') + (activeRule.display_style || '')}
                                     settings={settings}
+                                />
+                            )}
+                             {currentModule?.id === "product-brand" && activeRule && (
+                                <ProductBrand
+                                    key={(activeRule.flexible_id || 'rule') + (activeRule.display_style || '')}
+                                    settings={activeRule}
                                 />
                             )}
                         </div>

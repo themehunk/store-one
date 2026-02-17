@@ -1,0 +1,62 @@
+ul.storeone-product-brand-list{
+    list-style: none;
+    margin:0;
+}
+/* ===== Wrapper spacing ===== */
+.storeone-product-brand-wrapper {
+    margin: 20px 0;
+}
+
+/* ===== Main Card ===== */
+.storeone-product-brand-wrapper {
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    background: #fff;
+}
+
+/* ===== Title ===== */
+.storeone-product-brand-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+}
+
+/* ===== List ===== */
+.storeone-product-brand-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 15px;
+}
+
+/* ===== Item ===== */
+.storeone-product-brand-item {
+    display: flex;
+    align-items: center;
+}
+
+/* ===== Image ===== */
+.storeone-product-brand-item img {
+    max-width: 100px;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+/* ===== Hover Effect ===== */
+.storeone-product-brand-item img:hover {
+    transform: scale(1.05);
+}
+
+/* ===== Link Reset ===== */
+.storeone-product-brand-item a {
+    display: inline-block;
+}
