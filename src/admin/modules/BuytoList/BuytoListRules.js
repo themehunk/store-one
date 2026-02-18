@@ -70,6 +70,8 @@ const newBlistTRule = () => ({
     btl_icon_bg_clr:"#fff",
     btl_icon_clr:"#2563eb",
     btl_bg_clr:"#fff",
+    btl_border_clr:"#e5e7eb",
+    btl_border_radius:"",
 });
 
 const ICON_OPTIONS = [
@@ -88,6 +90,8 @@ const STYLE_DEFAULTS = {
         btl_icon_bg_clr: "#ecfdf5",
         btl_icon_clr: "#10b981",
         btl_bg_clr: "#ffffff",
+        btl_border_clr:"#e5e7eb",
+        btl_border_radius:"8px",
     },
     style_2: {
         btl_title_clr: "#fff",
@@ -95,6 +99,9 @@ const STYLE_DEFAULTS = {
         btl_icon_bg_clr: "#8b5cf633",
         btl_icon_clr: "#a78bfa",
         btl_bg_clr: "#0f172ae6",
+        btl_border_clr:"#0f172ae6",
+        btl_border_radius:"8px",
+        
     },
     style_3: {
         btl_title_clr: "#111827",
@@ -102,6 +109,8 @@ const STYLE_DEFAULTS = {
         btl_icon_bg_clr: "#ffff",
         btl_icon_clr: "#9ca3af",
         btl_bg_clr: "#fff",
+        btl_border_clr:"#e5e7eb",
+        btl_border_radius:"8px",
     },
     style_4: {
         btl_title_clr: "#111827",
@@ -109,6 +118,8 @@ const STYLE_DEFAULTS = {
         btl_icon_bg_clr: "#fff3",
         btl_icon_clr: "#10b981",
         btl_bg_clr: "#000000",
+        btl_border_clr:"#e5e7eb",
+        btl_border_radius:"8px",
     },
     style_5: {
         btl_title_clr: "#312e81",
@@ -116,6 +127,8 @@ const STYLE_DEFAULTS = {
         btl_icon_bg_clr: "transparent",
         btl_icon_clr: "#4f46e5",
         btl_bg_clr: "linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%)",
+        btl_border_clr:"#fff9",
+        btl_border_radius:"16px",
 
     },
 };
@@ -864,6 +877,38 @@ const menuItems = [
                                                                                             }}
                                                                                         />
                                                                                         </S1Field>
+
+                                                     <S1FieldGroup
+                                                        title={__('Border', 'store-one')}
+                                                    >
+                                                                                                            <S1Field>
+                                                                                        <THBackgroundControl
+                                                                                            allowGradient={true}
+                                                                                            label={__('Border Color', 'store-one')}
+                                                                                            value={rule.btl_border_clr}
+                                                                                            onChange={(v) => {
+                                                                                                const updatedRule = {
+                                                                                                    ...rule,
+                                                                                                    
+                                                                                                    btl_border_clr: v,
+                                                                                                    btl_border_clr_auto: false  
+                                                                                                };
+
+                                                                                                updateField(index, 'btl_border_clr', v);
+                                                                                                updateField(index, 'btl_border_clr_auto', false);
+                                                                                                onLivePreview?.(updatedRule, index);
+                                                                                            }}
+                                                                                        />
+                                                                                        </S1Field>
+                                                                                         <UniversalRangeControl
+                                                                                    label={__('Border Radius', 'store-one')}
+                                                                                    responsive={false}
+                                                                                    units={['px']}
+                                                                                    value={rule.btl_border_radius}
+                                                                                    onChange={(v) => updateField(index, 'btl_border_radius', v)} 
+                                                                                    defaultValue=""
+                                                                                />
+                                                    </S1FieldGroup>
                                                                                        
                                                                                        
                                                                                         </div>

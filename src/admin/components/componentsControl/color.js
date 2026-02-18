@@ -176,6 +176,7 @@ export default function THBackgroundControl({
                                 {mode === "color" && ( <ColorPalette
                                   colors={ colors }
                                   value={ value }
+                                  enableAlpha
                                   onChange={ ( color ) => onChange( color ) }
                               />)}
 
