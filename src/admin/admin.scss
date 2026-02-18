@@ -729,7 +729,7 @@ button.is-tertiary,
         transform: scale(1.2);
     }
 }
-/* ✅ Force loader visible inside input */
+/* Force loader visible inside input */
 .s1-input-loader {
     position: absolute !important;
     right: 12px !important;
@@ -746,7 +746,7 @@ button.is-tertiary,
     pointer-events: none;
 }
 
-/* ✅ Override your main loader padding */
+/* Override your main loader padding */
 .s1-input-loader.s1-loader {
     padding: 0 !important;
     gap: 0 !important;
@@ -754,7 +754,7 @@ button.is-tertiary,
     opacity: 1 !important;
 }
 
-/* ✅ Force WordPress spinner visible */
+/* Force WordPress spinner visible */
 .s1-input-loader .components-spinner {
     width: 18px !important;
     height: 18px !important;
@@ -766,7 +766,7 @@ button.is-tertiary,
     transform: scale(1) !important;
 }
 
-/* ✅ IMPORTANT: WordPress spinner animation restore */
+/* IMPORTANT: WordPress spinner animation restore */
 .s1-input-loader .components-spinner::after {
     content: "";
     display: block;
