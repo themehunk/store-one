@@ -28,6 +28,52 @@ const Style4 = ({ settings = {} }) => {
         "Trusted by 10,000+ Customers"
     ];
 
+    /* ================= ICON RENDER FUNCTION ================= */
+                const renderIcon = () => {
+            
+                    if (!settings.icon_enabled) return null;
+            
+                    // 1Preset SVG Icon
+                    if ((settings.icontype || 'icon') === 'icon') {
+                        const IconComponent =
+                            iconMap[settings.selected_icon] || ICONS.CheckSVG;
+            
+                        return IconComponent;
+                    }
+            
+                    // 2️Custom SVG Code
+                    if (settings.icontype === 'custom_svg' && settings.custom_svg) {
+                        return (
+                            <span
+                                className="s1-custom-svg"
+                                dangerouslySetInnerHTML={{
+                                    __html: settings.custom_svg
+                                }}
+                            />
+                        );
+                    }
+            
+                    // 3️Image Upload
+                    if (settings.icontype === 'image' && settings.image_url) {
+                        return (
+                            <img
+                                src={settings.image_url}
+                                alt=""
+                                className="s1-icon-image"
+                                style={{
+                                    width: "16px",
+                                    height: "16px",
+                                    objectFit: "contain"
+                                }}
+                            />
+                        );
+                    }
+            
+                    return null;
+                };
+            
+    
+
     return (
         <div className="s1-product-preview btl-style-4">
 
@@ -45,7 +91,11 @@ const Style4 = ({ settings = {} }) => {
                     {/* ================= BUY TO LIST ================= */}
                     <div
                         className="s1-btl-preview s1-btl-preview-4"
-                       
+                       style={{
+                          
+                            borderColor: settings.btl_border_clr || "#e5e7eb",
+                            borderRadius: settings.btl_border_radius || "8px",
+                        }}
                     >
 
                         <div
@@ -62,16 +112,18 @@ const Style4 = ({ settings = {} }) => {
                                 <li key={index} className="s1-btl-item" style={{
                             background: settings.btl_bg_clr 
                         }}>
-
                                     {settings.icon_enabled && (
                                         <span
                                             className="s1-btl-icon"
                                             style={{
-                                                background: settings.btl_icon_bg_clr,
-                                                color: settings.btl_icon_clr
+                                                background:
+                                                    settings.icontype === 'image'
+                                                        ? "transparent"
+                                                        : settings.btl_icon_bg_clr || "#fff",
+                                                color: settings.btl_icon_clr || "#2563eb"
                                             }}
                                         >
-                                            {SelectedIcon}
+                                            {renderIcon()}
                                         </span>
                                     )}
 

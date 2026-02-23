@@ -498,7 +498,7 @@ const menuItems = [
                                                         }}
                                                     />
                                                     </S1Field>
-                                                    <S1FieldGroup
+                                                    <S1FieldGroup 
                                                         title={__('Bundle', 'store-one')}
                                                     >
                                                     <S1Field>

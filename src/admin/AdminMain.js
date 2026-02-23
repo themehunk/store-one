@@ -1,4 +1,4 @@
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect ,useRef} from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { __ } from '@wordpress/i18n';
 
@@ -102,10 +102,28 @@ const AdminMain = () => {
         'quick-social': true,
         'product-brand': true,
     });
+    const originalSettings = useRef({});
+    const skipFirstChange = useRef(false);
 
     const currentModule = activeModule
         ? modulesList.find((m) => m.id === activeModule)
         : null;
+
+        useEffect(() => {
+    if (!currentModule) return;
+
+    skipFirstChange.current = true; // 👈 ignore next change
+
+    const currentData = moduleSettings[currentModule.id];
+
+    if (currentData) {
+        originalSettings.current[currentModule.id] =
+            JSON.stringify(currentData);
+    }
+
+    setIsDirty(false);
+}, [currentModule]);
+
 
     // Attach nonce middleware.
     apiFetch.use(apiFetch.createNonceMiddleware(StoreOneAdmin.nonce));
@@ -328,13 +346,35 @@ const AdminMain = () => {
                         modulesState={modulesState}
                         onToggleModule={handleToggleModule}
                         saving={saving}
-                        onSettingsChange={(settings) => {
-                            setModuleSettings(prev => ({
-                                ...prev,
-                                [currentModule.id]: settings
-                            }));
-                            setIsDirty(true);
-                        }}
+                       onSettingsChange={(settings) => {
+
+    // 🔥 Skip first automatic call
+    if (skipFirstChange.current) {
+        originalSettings.current[currentModule.id] =
+            JSON.stringify(settings);
+
+        setModuleSettings(prev => ({
+            ...prev,
+            [currentModule.id]: settings
+        }));
+
+        setIsDirty(false);
+
+        skipFirstChange.current = false;
+        return;
+    }
+
+    setModuleSettings(prev => ({
+        ...prev,
+        [currentModule.id]: settings
+    }));
+
+    const newString = JSON.stringify(settings);
+    const oldString = originalSettings.current[currentModule.id];
+
+    setIsDirty(newString !== oldString);
+}}
+
                         onRegisterSave={setSaveHandler} 
                     />
                     <div className="s1-preview-pane">

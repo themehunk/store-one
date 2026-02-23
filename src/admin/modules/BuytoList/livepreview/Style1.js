@@ -1,9 +1,10 @@
 import React from 'react';
 import { __ } from '@wordpress/i18n';
-import { getTextStyle, getRadius } from '@storeone/utils/styleHelpers';
 import { ICONS } from '@storeone-global/icons';
 
 const Style1 = ({ settings = {} }) => {
+
+    /* ================= ICON MAP ================= */
     const iconMap = {
         check: ICONS.CheckSVG,
         star: ICONS.StarSVG,
@@ -11,8 +12,8 @@ const Style1 = ({ settings = {} }) => {
         bolt: ICONS.BoltSVG,
         rocket: ICONS.RocketSVG,
     };
-    const SelectedIcon =
-        iconMap[settings.selected_icon] || ICONS.CheckSVG;
+
+    /* ================= DUMMY LIST ================= */
     const listItems = [
         "Premium Quality Material",
         "Fast & Secure Shipping",
@@ -20,11 +21,57 @@ const Style1 = ({ settings = {} }) => {
         "Trusted by 10,000+ Customers"
     ];
 
+    /* ================= ICON RENDER FUNCTION ================= */
+    const renderIcon = () => {
+
+        if (!settings.icon_enabled) return null;
+
+        // 1Preset SVG Icon
+        if ((settings.icontype || 'icon') === 'icon') {
+            const IconComponent =
+                iconMap[settings.selected_icon] || ICONS.CheckSVG;
+
+            return IconComponent;
+        }
+
+        // 2️Custom SVG Code
+        if (settings.icontype === 'custom_svg' && settings.custom_svg) {
+            return (
+                <span
+                    className="s1-custom-svg"
+                    dangerouslySetInnerHTML={{
+                        __html: settings.custom_svg
+                    }}
+                />
+            );
+        }
+
+        // 3️Image Upload
+        if (settings.icontype === 'image' && settings.image_url) {
+            return (
+                <img
+                    src={settings.image_url}
+                    alt=""
+                    className="s1-icon-image"
+                    style={{
+                        width: "16px",
+                        height: "16px",
+                        objectFit: "contain"
+                    }}
+                />
+            );
+        }
+
+        return null;
+    };
+
+    /* ================= MAIN RETURN ================= */
     return (
         <div className="s1-product-preview btl-style-1">
 
             <div className="s1-main-product">
 
+                {/* Dummy Product Image */}
                 <div className="s1-main-thumb">
                     <div className="static-skeleton static-main-img"></div>
                 </div>
@@ -38,20 +85,23 @@ const Style1 = ({ settings = {} }) => {
                     <div
                         className="s1-btl-preview s1-btl-preview-1"
                         style={{
-                            background: settings.btl_bg_clr
+                            background: settings.btl_bg_clr || "#fff",
+                            borderColor: settings.btl_border_clr || "#e5e7eb",
+                            borderRadius: settings.btl_border_radius || "8px",
                         }}
                     >
 
+                        {/* Title */}
                         <div
                             className="s1-btl-title"
-                             style={{
-                                color: settings.btl_title_clr
+                            style={{
+                                color: settings.btl_title_clr || "#111"
                             }}
-                            
                         >
                             {settings.list_title || "Featured List"}
                         </div>
 
+                        {/* List */}
                         <ul className="s1-btl-list">
                             {listItems.map((text, index) => (
                                 <li key={index} className="s1-btl-item">
@@ -60,19 +110,21 @@ const Style1 = ({ settings = {} }) => {
                                         <span
                                             className="s1-btl-icon"
                                             style={{
-                                                background: settings.btl_icon_bg_clr,
-                                                color: settings.btl_icon_clr 
+                                                background:
+                                                    settings.icontype === 'image'
+                                                        ? "transparent"
+                                                        : settings.btl_icon_bg_clr || "#fff",
+                                                color: settings.btl_icon_clr || "#2563eb"
                                             }}
-                                           
                                         >
-                                            {SelectedIcon}
+                                            {renderIcon()}
                                         </span>
                                     )}
 
                                     <span
                                         className="s1-btl-text"
-                                       style={{
-                                            color: settings.btl_list_clr 
+                                        style={{
+                                            color: settings.btl_list_clr || "#111"
                                         }}
                                     >
                                         {text}

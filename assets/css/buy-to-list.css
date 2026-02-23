@@ -23,21 +23,23 @@
 .storeone-btl-item {
     display: flex;
     align-items: flex-start;
-    gap: 0.75rem;
-    margin-bottom: 0.75rem;
+    gap: 10px;
+    margin-bottom: 1rem;
 }
-
+.storeone-btl-item .storeone-btl-text{
+    font-size:15px;
+    font-weight:600;
+    color:#334155;
+}
 .storeone-btl-item:last-child {
     margin-bottom: 0;
 }
 
 .storeone-btl-icon {
-    width: 1.75rem;   /* 28px */
+    width: 1.75rem; 
     height: 1.75rem;
     min-width: 1.75rem;
     min-height: 1.75rem;
-
-    border-radius: 50%;
 
     display: flex;
     align-items: center;
@@ -45,8 +47,25 @@
 
     flex: 0 0 1.75rem;
     line-height: 0;
+    padding: 0.3rem;
+    border-radius: 50%;
+}
+.style_4 .storeone-btl-item,.style_5 .storeone-btl-item{
+
+padding: 1rem;
+border-radius:1rem;
+}
+.style_4 .storeone-btl-item .storeone-btl-icon{
+border-radius: 0.5rem;
 }
 
+.style_5 .storeone-btl-item .storeone-btl-icon{
+background-color: transparent;
+}
+.style_5 .storeone-btl-item{
+border:1px solid #fff9;
+background-color: #ffffff66;
+}
 .storeone-btl-icon svg {
     width: 1rem;  /* 16px */
     height: 1rem;

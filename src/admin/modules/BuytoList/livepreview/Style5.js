@@ -28,6 +28,51 @@ const Style5 = ({ settings = {} }) => {
         "Trusted by 10,000+ Customers"
     ];
 
+    /* ================= ICON RENDER FUNCTION ================= */
+                    const renderIcon = () => {
+                
+                        if (!settings.icon_enabled) return null;
+                
+                        // 1Preset SVG Icon
+                        if ((settings.icontype || 'icon') === 'icon') {
+                            const IconComponent =
+                                iconMap[settings.selected_icon] || ICONS.CheckSVG;
+                
+                            return IconComponent;
+                        }
+                
+                        // 2️Custom SVG Code
+                        if (settings.icontype === 'custom_svg' && settings.custom_svg) {
+                            return (
+                                <span
+                                    className="s1-custom-svg"
+                                    dangerouslySetInnerHTML={{
+                                        __html: settings.custom_svg
+                                    }}
+                                />
+                            );
+                        }
+                
+                        // 3️Image Upload
+                        if (settings.icontype === 'image' && settings.image_url) {
+                            return (
+                                <img
+                                    src={settings.image_url}
+                                    alt=""
+                                    className="s1-icon-image"
+                                    style={{
+                                        width: "16px",
+                                        height: "16px",
+                                        objectFit: "contain"
+                                    }}
+                                />
+                            );
+                        }
+                
+                        return null;
+                    };
+                
+
     return (
         <div className="s1-product-preview btl-style-5">
 
@@ -61,17 +106,25 @@ const Style5 = ({ settings = {} }) => {
 
                         <ul className="s1-btl-list">
                             {listItems.map((text, index) => (
-                                <li key={index} className="s1-btl-item">
+                                <li key={index} className="s1-btl-item" style={{
+                          
+                            borderColor: settings.btl_border_clr || "#fff9",
+                            borderRadius: settings.btl_border_radius || "16px",
+                        }}
+                    >
 
-                                    {settings.icon_enabled && (
+                                   {settings.icon_enabled && (
                                         <span
                                             className="s1-btl-icon"
                                             style={{
-                                                background: settings.btl_icon_bg_clr || "#fff",
+                                                background:
+                                                    settings.icontype === 'image'
+                                                        ? "transparent"
+                                                        : settings.btl_icon_bg_clr || "#fff",
                                                 color: settings.btl_icon_clr || "#2563eb"
                                             }}
                                         >
-                                            {SelectedIcon}
+                                            {renderIcon()}
                                         </span>
                                     )}
 
