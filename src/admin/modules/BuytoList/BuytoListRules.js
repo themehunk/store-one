@@ -35,7 +35,7 @@ const newBlistTRule = () => ({
             open: true,
         }
     ],
-    display_style: "style_1",
+    buy_to_list_style: "style_1",
     placement: 'after_summary',
     priority: 10,
     icon_enabled: true,
@@ -136,7 +136,7 @@ const STYLE_DEFAULTS = {
 /* ================= HELPER (ADDED) ================= */
 const applyStyleDefaults = (rule, style) => {
     const defaults = STYLE_DEFAULTS[style] || {};
-    const updated = { ...rule, display_style: style };
+    const updated = { ...rule, buy_to_list_style: style };
 
     Object.keys(defaults).forEach((key) => {
 
@@ -307,8 +307,8 @@ const menuItems = [
             onLivePreview?.(updatedRule, index);
         };
 
-        window.addEventListener('storeone:changeDisplayStyle', handler);
-        return () => window.removeEventListener('storeone:changeDisplayStyle', handler);
+        window.addEventListener('storeone:changeListStyle', handler);
+        return () => window.removeEventListener('storeone:changeListStyle', handler);
     }, [rules]);
 
     const openMediaLibrary = (callback) => {
@@ -612,7 +612,7 @@ const menuItems = [
                                                                                   
                                                                      <S1Field label={__('Display Style', 'store-one')} visible={true}>
                                                                     <SelectControl
-                                                                        value={rule.display_style}
+                                                                        value={rule.buy_to_list_style}
                         
                                                                         options={[
                                                                             { label: __('Style1', 'store-one'), value: 'style_1' },

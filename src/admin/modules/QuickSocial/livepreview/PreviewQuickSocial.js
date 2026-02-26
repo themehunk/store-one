@@ -7,11 +7,11 @@ import { __ } from '@wordpress/i18n';
 
 const PreviewQuickSocial = ({ settings = {} }) => {
 
-    const style = settings?.display_style || 'style1';
+    const style = settings?.social_style || 'style1';
 
     const changeStyle = (value) => {
         window.dispatchEvent(
-            new CustomEvent('storeone:changeDisplayStyle', {
+            new CustomEvent('storeone:changeSocialStyle', {
                 detail: { style: value }
             })
         );

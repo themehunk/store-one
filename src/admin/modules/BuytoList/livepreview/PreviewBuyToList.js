@@ -7,12 +7,12 @@ import './live-style.css';
 import { __ } from '@wordpress/i18n';
 
 const PreviewBuyToList = ({ settings = {} }) => {
-    const style = settings?.display_style;
+    const style = settings?.buy_to_list_style;
 
     //Tab click → Design SelectControl change
     const changeStyle = (value) => {
         window.dispatchEvent(
-            new CustomEvent('storeone:changeDisplayStyle', {
+            new CustomEvent('storeone:changeListStyle', {
                 detail: { style: value }
             })
         );

@@ -62,6 +62,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    color:var(--s1-icon-color);
 }
 
 .s1-quick-social__icon svg {
@@ -83,13 +84,13 @@
 ====================================== */
 
 .s1-icon-placeholder {
-   width: calc(var(--s1-icon-size) + 18px);
-    height: calc(var(--s1-icon-size) + 18px);
+   width: 14px;
+    height: 14px;
     border-radius: 50%;
     background: var(--s1-icon-color);
 }
-.s1-quick-social__item:hover .s1-icon-placeholder {
- background: var(--s1-icon-hover-color);
+.s1-quick-social__item:hover .s1-quick-social__icon{
+color: var(--s1-icon-hover-color);
 }
 
 
@@ -130,7 +131,7 @@
 ====================================== */
 
 .s1-quick-social--style3 {
-    bottom:20;
+    bottom:20px;
     left: 50%;
     transform: translateX(-50%);
     width: 100%;

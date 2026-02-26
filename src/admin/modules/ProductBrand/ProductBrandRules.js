@@ -79,7 +79,7 @@ const STYLE_DEFAULTS = {
 /* ================= HELPER (ADDED) ================= */
 const applyStyleDefaults = (rule, style) => {
     const defaults = STYLE_DEFAULTS[style] || {};
-    const updated = { ...rule, display_style: style };
+    const updated = { ...rule, brand_style: style };
 
     Object.keys(defaults).forEach((key) => {
         const autoKey = `${key}_auto`;
@@ -245,8 +245,8 @@ const menuItems = [
             onLivePreview?.(updatedRule, index);
         };
 
-        window.addEventListener('storeone:changeDisplayStyle', handler);
-        return () => window.removeEventListener('storeone:changeDisplayStyle', handler);
+        window.addEventListener('storeone:changeBrandStyle', handler);
+        return () => window.removeEventListener('storeone:changeBrandStyle', handler);
     }, [rules]);
 
     const openMediaLibrary = (callback) => {
