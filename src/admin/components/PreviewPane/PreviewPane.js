@@ -43,25 +43,25 @@ const PreviewPane = ({ currentModule, settings }) => {
 
                             {currentModule?.id === "bundle-product" && activeRule && (
                                 <PreviewBndl
-                                    key={(activeRule.flexible_id || 'rule') + (activeRule.display_style || '')}
+                                    key={(activeRule.flexible_id || 'rule') + (activeRule.bundle_style || '')}
                                     settings={settings}
                                 />
                             )}
                             {currentModule?.id === "buy-to-list" && activeRule && (
                                 <PreviewBuyToList
-                                    key={(activeRule.flexible_id || 'rule') + (activeRule.display_style || '')}
+                                    key={(activeRule.flexible_id || 'rule') + (activeRule.buy_to_list_style || '')}
                                     settings={activeRule}
                                 />
                             )}
                             {currentModule?.id === "quick-social" && activeRule && (
-                                <PreviewQuickSocial
-                                    key={(activeRule.flexible_id || 'rule') + (activeRule.display_style || '')}
-                                    settings={settings}
+                                 <PreviewQuickSocial
+                                    key={(activeRule.flexible_id || 'rule') + (activeRule.social_style || '')}
+                                    settings={activeRule}
                                 />
                             )}
                              {currentModule?.id === "product-brand" && activeRule && (
                                 <ProductBrand
-                                    key={(activeRule.flexible_id || 'rule') + (activeRule.display_style || '')}
+                                    key={(activeRule.flexible_id || 'rule') + (activeRule.brand_style || '')}
                                     settings={activeRule}
                                 />
                             )}

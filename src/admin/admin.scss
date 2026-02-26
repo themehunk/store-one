@@ -1013,13 +1013,9 @@ button.is-tertiary,
     display: flex;
     gap: var(--s1-space-6);
     border-bottom: 1px solid var(--s1-gray-200);
+    flex-wrap: wrap;
 }
-
 /* EACH TAB */
-
-
-
-
 .store-one-tab-item {
     padding: 8px 14px;
     display: flex;
@@ -1979,4 +1975,63 @@ input.components-text-control__input {
     display: flex;
     flex-direction: column;
     gap: 20px;
+}
+
+/* ===== Platform Grid ===== */
+.s1-platform-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(30px, 1fr));
+  gap: 10px;
+  margin-top: 8px;
+}
+
+/* ===== Icon Box ===== */
+.s1-icon-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+/* Hover */
+.s1-icon-option:hover {
+  border-color: #2563eb;
+  background: #eff6ff;
+  transform: translateY(-2px);
+}
+
+/* Active */
+.s1-icon-option.active {
+  border-color: #2563eb;
+  background: #2563eb;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+/* SVG inside */
+.s1-icon-option svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.2s ease;
+}
+
+/* Slight zoom on hover */
+.s1-icon-option:hover svg {
+  transform: scale(1.1);
+}
+
+/* Active icon white */
+.s1-icon-option.active svg {
+  fill: #fff;
+}
+
+/* Optional: smooth press effect */
+.s1-icon-option:active {
+  transform: scale(0.95);
 }
