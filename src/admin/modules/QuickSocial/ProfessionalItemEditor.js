@@ -78,7 +78,9 @@ export default function ProfessionalItemEditor({
                 professional.selected_icon === id ? "active" : ""
               }`}
               onClick={() => handlePlatformSelect(id)}
-            >
+              title={PLATFORM_CONFIG?.[id?.toUpperCase()]?.label || id}
+              data-label={PLATFORM_CONFIG?.[id?.toUpperCase()]?.label || id}
+              >
               {icon}
             </div>
           ))}
@@ -107,12 +109,12 @@ export default function ProfessionalItemEditor({
       </S1Field>
 
       {/* ================= DEFAULT ICON ================= */}
-      {(professional.icontype || "icon") === "icon" &&
+      {/* {(professional.icontype || "icon") === "icon" &&
         professional.selected_icon && (
           <S1Field>
             {ICONS[professional.selected_icon]}
           </S1Field>
-        )}
+        )} */}
 
       {/* ================= IMAGE UPLOAD ================= */}
       {professional.icontype === "image" && (
@@ -209,6 +211,52 @@ export default function ProfessionalItemEditor({
           }
         />
       </S1Field>
+
+      {/* ================= PREVIEW BOX ================= */}
+{professional.selected_icon && (
+  <>
+    <label className="s1-field-label">Live Preview</label>
+
+    <div className="s1-social-preview">
+      <div className="s1-social-preview__icon">
+        {/* IMAGE */}
+        {professional.icontype === "image" &&
+          professional.image_url && (
+            <img src={professional.image_url} alt="" />
+          )}
+
+        {/* CUSTOM SVG */}
+        {professional.icontype === "custom_svg" &&
+          professional.custom_svg && (
+            <span
+              dangerouslySetInnerHTML={{
+                __html: professional.custom_svg,
+              }}
+            />
+          )}
+
+        {/* DEFAULT ICON */}
+        {(professional.icontype === "icon" ||
+          !professional.icontype) &&
+          ICONS[
+            professional.selected_icon?.toUpperCase()
+          ]}
+      </div>
+
+      {/* PLATFORM NAME */}
+      <div className="s1-social-preview__name">
+        {currentPlatform?.label ||
+          professional.selected_icon}
+      </div>
+
+      {/* URL PREVIEW */}
+      <div className="s1-social-preview__url">
+        {professional.url ||
+          "URL preview will appear here"}
+      </div>
+    </div>
+  </>
+)}
     </>
   );
 }

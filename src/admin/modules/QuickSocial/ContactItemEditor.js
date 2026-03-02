@@ -75,6 +75,8 @@ export default function ContactItemEditor({
                 contact.selected_icon === id ? "active" : ""
               }`}
               onClick={() => handlePlatformSelect(id)}
+              title={PLATFORM_CONFIG?.[id?.toUpperCase()]?.label || id}
+              data-label={PLATFORM_CONFIG?.[id?.toUpperCase()]?.label || id}
             >
               {icon}
             </div>
@@ -104,12 +106,12 @@ export default function ContactItemEditor({
       </S1Field>
 
       {/* DEFAULT ICON */}
-      {(contact.icontype || "icon") === "icon" &&
+      {/* {(contact.icontype || "icon") === "icon" &&
         contact.selected_icon && (
           <S1Field>
             {ICONS[contact.selected_icon]}
           </S1Field>
-        )}
+        )} */}
 
       {/* IMAGE UPLOAD */}
       {contact.icontype === "image" && (
@@ -219,6 +221,52 @@ export default function ContactItemEditor({
           />
         </S1Field>
       )}
+
+      {/* ================= PREVIEW BOX ================= */}
+{contact.selected_icon && (
+  <>
+    <label className="s1-field-label">Live Preview</label>
+
+    <div className="s1-social-preview">
+      <div className="s1-social-preview__icon">
+        {/* IMAGE */}
+        {contact.icontype === "image" &&
+          contact.image_url && (
+            <img src={contact.image_url} alt="" />
+          )}
+
+        {/* CUSTOM SVG */}
+        {contact.icontype === "custom_svg" &&
+          contact.custom_svg && (
+            <span
+              dangerouslySetInnerHTML={{
+                __html: contact.custom_svg,
+              }}
+            />
+          )}
+
+        {/* DEFAULT ICON */}
+        {(contact.icontype === "icon" ||
+          !contact.icontype) &&
+          ICONS[
+            contact.selected_icon?.toUpperCase()
+          ]}
+      </div>
+
+      {/* PLATFORM NAME */}
+      <div className="s1-social-preview__name">
+        {currentPlatform?.label ||
+          contact.selected_icon}
+      </div>
+
+      {/* URL PREVIEW */}
+      <div className="s1-social-preview__url">
+        {contact.url ||
+          "URL preview will appear here"}
+      </div>
+    </div>
+    </>
+    )}
     </>
   );
 }

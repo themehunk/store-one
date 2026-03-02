@@ -264,37 +264,37 @@ export default function SocialItemEditor({
         
       )}
      {/* ================= PREVIEW BOX ================= */}
-{social.selected_icon && (
-  <>
-    <label className="s1-field-label">Live Preview</label>
+    {social.selected_icon && (
+      <>
+        <label className="s1-field-label">Live Preview</label>
 
-    <div className="s1-social-preview">
-      <div className="s1-social-preview__icon">
-        {social.icontype === "image" && social.image_url && (
-          <img src={social.image_url} alt="" />
-        )}
+        <div className="s1-social-preview">
+          <div className="s1-social-preview__icon">
+            {social.icontype === "image" && social.image_url && (
+              <img src={social.image_url} alt="" />
+            )}
 
-        {social.icontype === "custom_svg" && social.custom_svg && (
-          <span
-            dangerouslySetInnerHTML={{ __html: social.custom_svg }}
-          />
-        )}
+            {social.icontype === "custom_svg" && social.custom_svg && (
+              <span
+                dangerouslySetInnerHTML={{ __html: social.custom_svg }}
+              />
+            )}
 
-        {social.icontype === "icon" &&
-          ICONS[social.selected_icon?.toUpperCase()]}
-      </div>
+            {social.icontype === "icon" &&
+              ICONS[social.selected_icon?.toUpperCase()]}
+          </div>
 
-      <div className="s1-social-preview__name">
-        {PLATFORM_CONFIG?.[social.selected_icon?.toUpperCase()]?.label ||
-          social.selected_icon}
-      </div>
+          <div className="s1-social-preview__name">
+            {PLATFORM_CONFIG?.[social.selected_icon?.toUpperCase()]?.label ||
+              social.selected_icon}
+          </div>
 
-      <div className="s1-social-preview__url">
-        {social.url || "URL preview will appear here"}
-      </div>
-    </div>
-  </>
-)}
+          <div className="s1-social-preview__url">
+            {social.url || "URL preview will appear here"}
+          </div>
+        </div>
+      </>
+    )}
     </>
   );
 }

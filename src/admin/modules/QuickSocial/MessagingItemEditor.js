@@ -145,13 +145,14 @@ export default function MessagingItemEditor({
                 messaging.selected_icon === id ? "active" : ""
               }`}
               onClick={() => handlePlatformSelect(id)}
+              title={PLATFORM_CONFIG?.[id?.toUpperCase()]?.label || id}
+              data-label={PLATFORM_CONFIG?.[id?.toUpperCase()]?.label || id}
             >
-              {icon}
+            {icon}
             </div>
           ))}
         </div>
       </S1Field>
-
       {/* ================= ICON TYPE ================= */}
       <S1Field label="Icon Type">
         <SelectControl
@@ -174,12 +175,12 @@ export default function MessagingItemEditor({
       </S1Field>
 
       {/* ================= DEFAULT ICON ================= */}
-      {(messaging.icontype || "icon") === "icon" &&
+      {/* {(messaging.icontype || "icon") === "icon" &&
         messaging.selected_icon && (
           <S1Field>
             {ICONS[messaging.selected_icon?.toUpperCase()]}
           </S1Field>
-        )}
+        )} */}
 
       {/* ================= IMAGE UPLOAD (SOCIAL STYLE) ================= */}
       {messaging.icontype === "image" && (
@@ -354,7 +355,48 @@ export default function MessagingItemEditor({
         </S1Field>
       )}
 
-     
+      {/* ================= PREVIEW BOX ================= */}
+    {messaging.selected_icon && (
+      <>
+        <label className="s1-field-label">Live Preview</label>
+
+        <div className="s1-social-preview">
+          <div className="s1-social-preview__icon">
+            {/* IMAGE */}
+            {messaging.icontype === "image" && messaging.image_url && (
+              <img src={messaging.image_url} alt="" />
+            )}
+
+            {/* CUSTOM SVG */}
+            {messaging.icontype === "custom_svg" &&
+              messaging.custom_svg && (
+                <span
+                  dangerouslySetInnerHTML={{
+                    __html: messaging.custom_svg,
+                  }}
+                />
+              )}
+
+            {/* DEFAULT ICON */}
+            {(messaging.icontype === "icon" ||
+              !messaging.icontype) &&
+              ICONS[messaging.selected_icon?.toUpperCase()]}
+          </div>
+
+          {/* PLATFORM NAME */}
+          <div className="s1-social-preview__name">
+            {currentPlatform?.label ||
+              messaging.selected_icon}
+          </div>
+
+          {/* URL PREVIEW */}
+          <div className="s1-social-preview__url">
+            {messaging.url ||
+              "URL preview will appear here"}
+          </div>
+        </div>
+      </>
+    )}   
     </>
   );
 }
