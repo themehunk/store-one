@@ -59,8 +59,10 @@ export default function OtherItemEditor({
                 other.selected_icon === id ? "active" : ""
               }`}
               onClick={() => handlePlatformSelect(id)}
-            >
-              {icon}
+              title={PLATFORM_CONFIG?.[id?.toUpperCase()]?.label || id}
+              data-label={PLATFORM_CONFIG?.[id?.toUpperCase()]?.label || id}
+             >
+            {icon}
             </div>
           ))}
         </div>
@@ -82,11 +84,11 @@ export default function OtherItemEditor({
       </S1Field>
 
       {/* ================= DEFAULT ICON ================= */}
-      {other.icontype === "icon" && other.selected_icon && (
+      {/* {other.icontype === "icon" && other.selected_icon && (
         <S1Field>
           {ICONS[other.selected_icon?.toUpperCase()]}
         </S1Field>
-      )}
+      )} */}
 
       {/* ================= IMAGE UPLOAD ================= */}
       {other.icontype === "image" && (
@@ -170,20 +172,68 @@ export default function OtherItemEditor({
 
       {/* ================= URL FIELD ================= */}
       <S1Field label="URL">
-  <TextControl
-    value={other.url || "{CUSTOM_URL}"}
-    placeholder="{CUSTOM_URL}"
-    onChange={(v) =>
-      updateBuyItemField(
-        ruleIndex,
-        itemIndex,
-        "other",
-        "url",
-        v || "{CUSTOM_URL}"
-      )
-    }
-  />
-</S1Field>
+        <TextControl
+          value={other.url || "{CUSTOM_URL}"}
+          placeholder="{CUSTOM_URL}"
+          onChange={(v) =>
+            updateBuyItemField(
+              ruleIndex,
+              itemIndex,
+              "other",
+              "url",
+              v || "{CUSTOM_URL}"
+            )
+          }
+        />
+      </S1Field>
+      {/* ================= PREVIEW BOX ================= */}
+{other.selected_icon && (
+  <>
+    <label className="s1-field-label">Live Preview</label>
+
+    <div className="s1-social-preview">
+      <div className="s1-social-preview__icon">
+        {/* IMAGE */}
+        {other.icontype === "image" &&
+          other.image_url && (
+            <img src={other.image_url} alt="" />
+          )}
+
+        {/* CUSTOM SVG */}
+        {other.icontype === "custom_svg" &&
+          other.custom_svg && (
+            <span
+              dangerouslySetInnerHTML={{
+                __html: other.custom_svg,
+              }}
+            />
+          )}
+
+        {/* DEFAULT ICON */}
+        {(other.icontype === "icon" ||
+          !other.icontype) &&
+          (ICONS[
+            other.selected_icon?.toUpperCase()
+          ] ||
+            ICONS[other.selected_icon])}
+      </div>
+
+      {/* PLATFORM NAME */}
+      <div className="s1-social-preview__name">
+        {currentPlatform?.label ||
+          other.selected_icon}
+      </div>
+
+      {/* URL PREVIEW */}
+      <div className="s1-social-preview__url">
+        {other.url &&
+        other.url !== "{CUSTOM_URL}"
+          ? other.url
+          : "URL preview will appear here"}
+      </div>
+    </div>
+  </>
+    )}
     </>
   );
 }

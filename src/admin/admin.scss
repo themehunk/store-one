@@ -2035,3 +2035,97 @@ input.components-text-control__input {
 .s1-icon-option:active {
   transform: scale(0.95);
 }
+
+// social icon setting style
+.s1-icon-option {
+  position: relative;
+  cursor: pointer;
+}
+
+/* Tooltip Text */
+.s1-icon-option::after {
+  content: attr(data-label);
+  position: absolute;
+  bottom: 145%;  /* icon ke upar show hoga */
+  left: 50%;
+  transform: translateX(-50%);
+  background: #3858e9;
+  color: #fff;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease;
+  z-index: 999;
+}
+
+/* Tooltip Arrow */
+.s1-icon-option::before {
+  content: "";
+  position: absolute;
+  bottom: 115%; /* text ke just niche */
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: #3858e9 transparent transparent transparent;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease;
+}
+
+/* Hover */
+.s1-icon-option:hover::after,
+.s1-icon-option:hover::before {
+  opacity: 1;
+  visibility: visible;
+}
+/* ================= PREVIEW BOX ================= */
+
+.s1-social-preview {
+  margin-top: 10px;
+  padding: 18px;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.s1-social-preview:hover {
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+  transform: translateY(-2px);
+}
+
+/* ICON */
+.s1-social-preview__icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 22px;
+}
+
+.s1-social-preview__icon svg,
+.s1-social-preview__icon img {
+  width: 28px;
+  height: 28px;
+}
+
+/* NAME */
+.s1-social-preview__name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 6px;
+}
+
+/* URL */
+.s1-social-preview__url {
+  font-size: 12px;
+  color: #6b7280;
+  word-break: break-all;
+  line-height: 1.4;
+}

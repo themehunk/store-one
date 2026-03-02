@@ -92,16 +92,18 @@ export default function SocialItemEditor({
       <S1Field label="Choose Platform">
         <div className="s1-platform-grid">
           {ICON_OPTIONS.map(({ id, icon }) => (
-            <div
-              key={id}
-              className={`s1-icon-option ${
-                social.selected_icon === id ? "active" : ""
-              }`}
-              onClick={() => handlePlatformSelect(id)}
-            >
-              {icon}
-            </div>
-          ))}
+        <div
+          key={id}
+          className={`s1-icon-option ${
+            social.selected_icon === id ? "active" : ""
+          }`}
+          onClick={() => handlePlatformSelect(id)}
+          title={PLATFORM_CONFIG?.[id?.toUpperCase()]?.label || id}
+          data-label={PLATFORM_CONFIG?.[id?.toUpperCase()]?.label || id} // ✅ ADD
+        >
+          {icon}
+        </div>
+      ))}
         </div>
       </S1Field>
 
@@ -121,11 +123,11 @@ export default function SocialItemEditor({
       </S1Field>
 
       {/* ================= DEFAULT ICON ================= */}
-      {social.icontype === "icon" && social.selected_icon && (
+      {/* {social.icontype === "icon" && social.selected_icon && (
         <S1Field>
           {ICONS[social.selected_icon?.toUpperCase()]}
         </S1Field>
-      )}
+      )} */}
 
       {/* ================= IMAGE UPLOAD ================= */}
       {social.icontype === "image" && (
@@ -259,7 +261,40 @@ export default function SocialItemEditor({
             }
           />
         </S1Field>
+        
       )}
+     {/* ================= PREVIEW BOX ================= */}
+    {social.selected_icon && (
+      <>
+        <label className="s1-field-label">Live Preview</label>
+
+        <div className="s1-social-preview">
+          <div className="s1-social-preview__icon">
+            {social.icontype === "image" && social.image_url && (
+              <img src={social.image_url} alt="" />
+            )}
+
+            {social.icontype === "custom_svg" && social.custom_svg && (
+              <span
+                dangerouslySetInnerHTML={{ __html: social.custom_svg }}
+              />
+            )}
+
+            {social.icontype === "icon" &&
+              ICONS[social.selected_icon?.toUpperCase()]}
+          </div>
+
+          <div className="s1-social-preview__name">
+            {PLATFORM_CONFIG?.[social.selected_icon?.toUpperCase()]?.label ||
+              social.selected_icon}
+          </div>
+
+          <div className="s1-social-preview__url">
+            {social.url || "URL preview will appear here"}
+          </div>
+        </div>
+      </>
+    )}
     </>
   );
 }
