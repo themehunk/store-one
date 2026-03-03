@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { ICONS } from "@storeone-global/icons";
+import { PLATFORM_CONFIG } from "../platformConfig";
 
 /* ================= BRAND COLORS ================= */
 
@@ -43,6 +44,9 @@ const BRAND_COLORS = {
 const Style3 = ({ settings = {} }) => {
   const rule = settings || {};
   const list = rule?.social_list || [];
+  const [showPopup, setShowPopup] = useState(false);
+
+  const maxShow = parseInt(rule?.max_show || 4);
 
   /* ================= STYLE VARIABLES ================= */
 
@@ -50,7 +54,6 @@ const Style3 = ({ settings = {} }) => {
     "--s1-icon-size": rule?.icon_size || "18px",
     "--s1-border-radius": rule?.border_radius || "50%",
     "--s1-bottom": rule?.position_bottom || "20px",
-    
   };
 
   if (!rule?.original_enabled) {
@@ -69,6 +72,18 @@ const Style3 = ({ settings = {} }) => {
     return item?.[tab] || {};
   };
 
+  const getTooltipLabel = (item) => {
+    const data = getActiveData(item);
+    const iconKey = data?.selected_icon?.toUpperCase();
+    if (!iconKey) return "";
+
+    return (
+      data?.custom_label ||
+      PLATFORM_CONFIG?.[iconKey]?.label ||
+      iconKey
+    );
+  };
+
   /* ================= ICON RENDER ================= */
 
   const renderIcon = (item, index) => {
@@ -79,8 +94,6 @@ const Style3 = ({ settings = {} }) => {
     if (!iconKey) return null;
 
     const brandColor = BRAND_COLORS[iconKey] || "#000";
-
-    /* -------- ORIGINAL MODE -------- */
 
     let iconStyle = {};
 
@@ -99,48 +112,25 @@ const Style3 = ({ settings = {} }) => {
       }
     }
 
-    /* -------- CUSTOM SVG -------- */
-
-    if (type === "custom_svg" && data?.custom_svg) {
-      return (
-        <div key={index} className="s1-quick-social__item">
-          <div
-            className="s1-quick-social__icon"
-            style={iconStyle}
-            dangerouslySetInnerHTML={{ __html: data.custom_svg }}
-          />
-        </div>
-      );
-    }
-
-    /* -------- IMAGE -------- */
-
-    if (type === "image" && data?.image_url) {
-      return (
-        <div key={index} className="s1-quick-social__item">
-          <div
-            className="s1-quick-social__icon"
-            style={iconStyle}
-          >
-            <img src={data.image_url} alt="" />
-          </div>
-        </div>
-      );
-    }
-
-    /* -------- DEFAULT ICON -------- */
-
-    const IconElement = ICONS[iconKey];
-
-    if (!IconElement) return null;
-
     return (
-      <div key={index} className="s1-quick-social__item">
+      <div
+        key={index}
+        className="s1-quick-social__item"
+        data-tooltip={getTooltipLabel(item)}
+      >
         <div
           className="s1-quick-social__icon"
           style={iconStyle}
         >
-          {IconElement}
+          {type === "custom_svg" && data?.custom_svg && (
+            <span dangerouslySetInnerHTML={{ __html: data.custom_svg }} />
+          )}
+
+          {type === "image" && data?.image_url && (
+            <img src={data.image_url} alt="" />
+          )}
+
+          {type === "icon" && ICONS[iconKey]}
         </div>
       </div>
     );
@@ -152,6 +142,9 @@ const Style3 = ({ settings = {} }) => {
     const data = getActiveData(item);
     return data?.selected_icon;
   });
+
+  const visibleIcons = validIcons.slice(0, maxShow);
+  const hasMore = validIcons.length > maxShow;
 
   /* ================= RENDER ================= */
 
@@ -165,8 +158,9 @@ const Style3 = ({ settings = {} }) => {
         {/* QUICK SOCIAL */}
         <div className="s1-quick-social s1-quick-social--style3">
           <div className="s1-quick-social__inner">
+
             {validIcons.length > 0
-              ? validIcons.map((item, index) =>
+              ? visibleIcons.map((item, index) =>
                   renderIcon(item, index)
                 )
               : [1, 2, 3].map((i) => (
@@ -179,8 +173,58 @@ const Style3 = ({ settings = {} }) => {
                     </div>
                   </div>
                 ))}
+
+            {hasMore && (
+              <div
+                className="s1-quick-social__item"
+                onClick={() => setShowPopup(true)}
+              >
+                <div className="s1-quick-social__icon s1-more-icon">
+                  <svg
+                    width="100%"
+                    height="100%"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                </div>
+              </div>
+            )}
+
           </div>
         </div>
+
+        {/* POPUP */}
+        {showPopup && (
+          <div
+            className="s1-popup-overlay"
+            onClick={() => setShowPopup(false)}
+          >
+            <div
+              className="s1-popup-content"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                className="s1-popup-close"
+                onClick={() => setShowPopup(false)}
+              >
+                ✕
+              </button>
+
+              <div className="s1-popup-icons">
+                {validIcons.map((item, index) =>
+                  renderIcon(item, index)
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* PRODUCT SKELETON */}
         <div className="s1-main-thumb">
