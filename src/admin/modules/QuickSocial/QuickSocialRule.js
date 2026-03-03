@@ -16,7 +16,7 @@ import THBackgroundControl from "@storeone-control/color";
 import UniversalRangeControl from "@storeone-global/UniversalRangeControl";
 
 import S1Accordion from "@storeone-global/S1Accordion";
-
+import { PLATFORM_CONFIG } from "./platformConfig";
 import {
   CopyIcon,
   TrashIcon,
@@ -76,8 +76,8 @@ const newsocialTRule = () => ({
         image_url: "",
         url: "",
         social_choose: "profile",
-         phone: "{PHONE}",
-         message: "{MESSAGE}",
+        phone: "{PHONE}",
+        message: "{MESSAGE}",
       },
       professional: {
         selected_icon: "",
@@ -94,13 +94,13 @@ const newsocialTRule = () => ({
         image_url: "",
         url: "",
         social_choose: "profile",
-        },
+      },
       other: {
         selected_icon: "",
         icontype: "icon",
         custom_svg: "",
         image_url: "",
-        url: "", 
+        url: "",
       },
     },
   ],
@@ -121,7 +121,7 @@ const newsocialTRule = () => ({
   position_bottom: "20px",
   position_left: "10px",
   position_right: "10px",
-  original_enabled:true,
+  original_enabled: true,
 });
 
 const ICON_OPTIONS = [
@@ -155,7 +155,7 @@ const PROFESSIONAL_ICON_OPTIONS = [
   { id: "GITHUB", icon: ICONS.GITHUB },
   { id: "BEHANCE", icon: ICONS.BEHANCE },
   { id: "GITLAB", icon: ICONS.GITLAB },
-  { id: "DRIBBLE", icon: ICONS.DRIBBLE},
+  { id: "DRIBBLE", icon: ICONS.DRIBBLE },
   { id: "STACKOVERFLOW", icon: ICONS.STACKOVERFLOW },
 ];
 const BUSINESS_ICON_OPTIONS = [
@@ -170,7 +170,6 @@ const OTHER_ICON_OPTIONS = [
   { id: "RSS", icon: ICONS.RSS },
   { id: "CUSTOM", icon: ICONS.CUSTOM },
 ];
-
 
 /** menu tabs */
 /* ================= STYLE DEFAULTS (ADDED) ================= */
@@ -337,41 +336,47 @@ export default function BuytoListRules({ rules, onChange, onLivePreview }) {
   };
 
   const updateBuyItemField = (ruleIndex, itemIndex, tab, field, value) => {
-  const list = [...rules[ruleIndex].social_list];
-  const item = { ...list[itemIndex] };
+    const list = [...rules[ruleIndex].social_list];
+    const item = { ...list[itemIndex] };
 
-  // Ensure tab object exists
-  if (!item[tab]) {
-    item[tab] = {};
-  }
+    // Ensure tab object exists
+    if (!item[tab]) {
+      item[tab] = {};
+    }
 
-  // Update current tab field
-  item[tab] = {
-    ...item[tab],
-    [field]: value,
-  };
+    // Update current tab field
+    item[tab] = {
+      ...item[tab],
+      [field]: value,
+    };
 
-  /**
-   * 🔥 IMPORTANT PART
-   * If user selects an icon → reset all other tabs' selected_icon
-   */
-  if (field === "selected_icon" && value) {
-    const allTabs = ["social", "messaging", "contact", "professional", "business"];
+    /**
+     * 🔥 IMPORTANT PART
+     * If user selects an icon → reset all other tabs' selected_icon
+     */
+    if (field === "selected_icon" && value) {
+      const allTabs = [
+        "social",
+        "messaging",
+        "contact",
+        "professional",
+        "business",
+      ];
 
-    allTabs.forEach((t) => {
-      if (t !== tab && item[t]) {
-        item[t] = {
-          ...item[t],
-          selected_icon: "",
-        };
-      }
-    });
+      allTabs.forEach((t) => {
+        if (t !== tab && item[t]) {
+          item[t] = {
+            ...item[t],
+            selected_icon: "",
+          };
+        }
+      });
 
-    // Also update active tab
-    item.itemTab = tab;
-  }
+      // Also update active tab
+      item.itemTab = tab;
+    }
 
-  list[itemIndex] = item;
+    list[itemIndex] = item;
     updateSocialList(ruleIndex, list);
   };
 
@@ -432,26 +437,33 @@ export default function BuytoListRules({ rules, onChange, onLivePreview }) {
   };
 
   const updateItemTab = (ruleIndex, itemIndex, tabId) => {
-  const list = [...rules[ruleIndex].social_list];
-  const item = { ...list[itemIndex] };
+    const list = [...rules[ruleIndex].social_list];
+    const item = { ...list[itemIndex] };
 
-  // Update tab
-  item.itemTab = tabId;
+    // Update tab
+    item.itemTab = tabId;
 
-  // Reset all other tabs so only one stays active
-  const tabs = ["social", "messaging", "contact", "professional", "business","other"];
+    // Reset all other tabs so only one stays active
+    const tabs = [
+      "social",
+      "messaging",
+      "contact",
+      "professional",
+      "business",
+      "other",
+    ];
 
-  tabs.forEach((tab) => {
-    if (tab !== tabId) {
-      item[tab] = {
-        selected_icon: "",
-      };
-    }
-  });
+    tabs.forEach((tab) => {
+      if (tab !== tabId) {
+        item[tab] = {
+          selected_icon: "",
+        };
+      }
+    });
 
-  list[itemIndex] = item;
+    list[itemIndex] = item;
 
-  updateSocialList(ruleIndex, list);
+    updateSocialList(ruleIndex, list);
   };
   return (
     <div className="store-one-rules-container">
@@ -603,7 +615,38 @@ export default function BuytoListRules({ rules, onChange, onLivePreview }) {
                                   <DragHandleDots2Icon className="drag-handle s1-icon" />
 
                                   <strong className="s1-rule-title">
-                                    {sprintf(__("Item %d", "store-one"), i + 1)}
+                                    {(() => {
+                                      const activeTab =
+                                        item?.itemTab || "social";
+                                      const iconKey =
+                                        item?.[activeTab]?.selected_icon;
+
+                                      if (!iconKey) {
+                                        return sprintf(
+                                          __("Item %d", "store-one"),
+                                          i + 1,
+                                        );
+                                      }
+
+                                      const config =
+                                        PLATFORM_CONFIG?.[iconKey] ||
+                                        PLATFORM_CONFIG?.[
+                                          iconKey?.toUpperCase()
+                                        ] ||
+                                        PLATFORM_CONFIG?.[
+                                          iconKey?.toLowerCase()
+                                        ];
+
+                                      return (
+                                        config?.label ||
+                                        iconKey
+                                          .toLowerCase()
+                                          .replace(/_/g, " ")
+                                          .replace(/\b\w/g, (l) =>
+                                            l.toUpperCase(),
+                                          )
+                                      );
+                                    })()}
                                   </strong>
                                   <CopyIcon
                                     className="s1-icon"
@@ -676,58 +719,68 @@ export default function BuytoListRules({ rules, onChange, onLivePreview }) {
                                         id: "contact",
                                         label: "Contact",
                                         content: (
-                                            <ContactItemEditor
+                                          <ContactItemEditor
                                             item={item}
                                             ruleIndex={index}
                                             itemIndex={i}
-                                            updateBuyItemField={updateBuyItemField}
+                                            updateBuyItemField={
+                                              updateBuyItemField
+                                            }
                                             openMediaLibrary={openMediaLibrary}
                                             ICON_OPTIONS={CONTACT_ICON_OPTIONS}
-                                            />
+                                          />
                                         ),
-                                        },
+                                      },
                                       {
-                                    id: "professional",
-                                    label: "Professional",
-                                    content: (
-                                        <ProfessionalItemEditor
-                                        item={item}
-                                        ruleIndex={index}
-                                        itemIndex={i}
-                                        updateBuyItemField={updateBuyItemField}
-                                        openMediaLibrary={openMediaLibrary}
-                                        ICON_OPTIONS={PROFESSIONAL_ICON_OPTIONS}
-                                        />
-                                    ),
-                                    },
-                                     {
-                                    id: "business",
-                                    label: "Business",
-                                    content: (
-                                        <BusinessItemEditor
-                                        item={item}
-                                        ruleIndex={index}
-                                        itemIndex={i}
-                                        updateBuyItemField={updateBuyItemField}
-                                        openMediaLibrary={openMediaLibrary}
-                                        ICON_OPTIONS={BUSINESS_ICON_OPTIONS}
-                                        />
-                                    ),
-                                    },
-                                     {
-                                    id: "other",
-                                    label: "Other",
-                                    content: (
-                                        <OtherItemEditor
-                                        item={item}
-                                        ruleIndex={index}
-                                        itemIndex={i}
-                                        updateBuyItemField={updateBuyItemField}
-                                        openMediaLibrary={openMediaLibrary}
-                                        ICON_OPTIONS={OTHER_ICON_OPTIONS}
-                                        />
-                                    ),
-                                    },
+                                        id: "professional",
+                                        label: "Professional",
+                                        content: (
+                                          <ProfessionalItemEditor
+                                            item={item}
+                                            ruleIndex={index}
+                                            itemIndex={i}
+                                            updateBuyItemField={
+                                              updateBuyItemField
+                                            }
+                                            openMediaLibrary={openMediaLibrary}
+                                            ICON_OPTIONS={
+                                              PROFESSIONAL_ICON_OPTIONS
+                                            }
+                                          />
+                                        ),
+                                      },
+                                      {
+                                        id: "business",
+                                        label: "Business",
+                                        content: (
+                                          <BusinessItemEditor
+                                            item={item}
+                                            ruleIndex={index}
+                                            itemIndex={i}
+                                            updateBuyItemField={
+                                              updateBuyItemField
+                                            }
+                                            openMediaLibrary={openMediaLibrary}
+                                            ICON_OPTIONS={BUSINESS_ICON_OPTIONS}
+                                          />
+                                        ),
+                                      },
+                                      {
+                                        id: "other",
+                                        label: "Other",
+                                        content: (
+                                          <OtherItemEditor
+                                            item={item}
+                                            ruleIndex={index}
+                                            itemIndex={i}
+                                            updateBuyItemField={
+                                              updateBuyItemField
+                                            }
+                                            openMediaLibrary={openMediaLibrary}
+                                            ICON_OPTIONS={OTHER_ICON_OPTIONS}
+                                          />
+                                        ),
+                                      },
                                     ]}
                                   />
                                 )}
@@ -809,144 +862,154 @@ export default function BuytoListRules({ rules, onChange, onLivePreview }) {
                             }}
                           />
                         </S1Field>
-                        <S1Field label={__('Enable Original', 'store-one')} classN="s1-toggle-wrpapper">
-                           <ToggleControl
+                        <S1Field
+                          label={__("Enable Original", "store-one")}
+                          classN="s1-toggle-wrpapper"
+                        >
+                          <ToggleControl
                             checked={rule.original_enabled}
-                             onChange={(v) =>
+                            onChange={(v) =>
                               updateField(index, "original_enabled", v)
                             }
-                           />
+                          />
                         </S1Field>
                         {!rule.original_enabled && (
-                         <>
-                        <S1FieldGroup title={__("Icon", "store-one")}>
-                          <S1Field>
-                            <THBackgroundControl
-                              allowGradient={true}
-                              label={__("Background", "store-one")}
-                              value={rule.icon_bg_clr}
-                              onChange={(v) => {
-                                const updatedRule = { ...rule, icon_bg_clr: v };
-                                updateField(index, "icon_bg_clr", v);
-                                onLivePreview?.(updatedRule, index);
-                              }}
-                            />
-                          </S1Field>
-                          <S1Field>
-                            <THBackgroundControl
-                              allowGradient={true}
-                              label={__("Color", "store-one")}
-                              value={rule.icon_clr}
-                              onChange={(v) => {
-                                const updatedRule = { ...rule, icon_clr: v };
-                                updateField(index, "icon_clr", v);
-                                onLivePreview?.(updatedRule, index);
-                              }}
-                            />
-                          </S1Field>
-                        </S1FieldGroup>
-                        <S1FieldGroup title={__("Icon Hover", "store-one")}>
-                          <S1Field>
-                            <THBackgroundControl
-                              allowGradient={true}
-                              label={__("Background", "store-one")}
-                              value={rule.icon_bg_hvr_clr}
-                              onChange={(v) => {
-                                const updatedRule = {
-                                  ...rule,
-                                  icon_bg_hvr_clr: v,
-                                };
-                                updateField(index, "icon_bg_hvr_clr", v);
-                                onLivePreview?.(updatedRule, index);
-                              }}
-                            />
-                          </S1Field>
-                          <S1Field>
-                            <THBackgroundControl
-                              allowGradient={true}
-                              label={__("Color", "store-one")}
-                              value={rule.icon_hvr_clr}
-                              onChange={(v) => {
-                                const updatedRule = {
-                                  ...rule,
-                                  icon_hvr_clr: v,
-                                };
-                                updateField(index, "icon_hvr_clr", v);
-                                onLivePreview?.(updatedRule, index);
-                              }}
-                            />
-                          </S1Field>
-                          </S1FieldGroup>
+                          <>
+                            <S1FieldGroup title={__("Icon", "store-one")}>
+                              <S1Field>
+                                <THBackgroundControl
+                                  allowGradient={true}
+                                  label={__("Background", "store-one")}
+                                  value={rule.icon_bg_clr}
+                                  onChange={(v) => {
+                                    const updatedRule = {
+                                      ...rule,
+                                      icon_bg_clr: v,
+                                    };
+                                    updateField(index, "icon_bg_clr", v);
+                                    onLivePreview?.(updatedRule, index);
+                                  }}
+                                />
+                              </S1Field>
+                              <S1Field>
+                                <THBackgroundControl
+                                  allowGradient={true}
+                                  label={__("Color", "store-one")}
+                                  value={rule.icon_clr}
+                                  onChange={(v) => {
+                                    const updatedRule = {
+                                      ...rule,
+                                      icon_clr: v,
+                                    };
+                                    updateField(index, "icon_clr", v);
+                                    onLivePreview?.(updatedRule, index);
+                                  }}
+                                />
+                              </S1Field>
+                            </S1FieldGroup>
+                            <S1FieldGroup title={__("Icon Hover", "store-one")}>
+                              <S1Field>
+                                <THBackgroundControl
+                                  allowGradient={true}
+                                  label={__("Background", "store-one")}
+                                  value={rule.icon_bg_hvr_clr}
+                                  onChange={(v) => {
+                                    const updatedRule = {
+                                      ...rule,
+                                      icon_bg_hvr_clr: v,
+                                    };
+                                    updateField(index, "icon_bg_hvr_clr", v);
+                                    onLivePreview?.(updatedRule, index);
+                                  }}
+                                />
+                              </S1Field>
+                              <S1Field>
+                                <THBackgroundControl
+                                  allowGradient={true}
+                                  label={__("Color", "store-one")}
+                                  value={rule.icon_hvr_clr}
+                                  onChange={(v) => {
+                                    const updatedRule = {
+                                      ...rule,
+                                      icon_hvr_clr: v,
+                                    };
+                                    updateField(index, "icon_hvr_clr", v);
+                                    onLivePreview?.(updatedRule, index);
+                                  }}
+                                />
+                              </S1Field>
+                            </S1FieldGroup>
                           </>
-                          )}
-                          <UniversalRangeControl
-                            label={__("Icon Size", "store-one")}
-                            responsive={false}
-                            units={["px"]}
-                            value={rule.icon_size}
-                            onChange={(v) => updateField(index, "icon_size", v)}
-                            defaultValue="18px"
-                          />
-                          <UniversalRangeControl
-                            label={__("Border Radius", "store-one")}
-                            responsive={false}
-                            units={["px", "%"]}
-                            value={rule.border_radius}
-                            onChange={(v) =>
-                              updateField(index, "border_radius", v)
-                            }
-                            defaultValue="50%"
-                          />
-                        
+                        )}
+                        <UniversalRangeControl
+                          label={__("Icon Size", "store-one")}
+                          responsive={false}
+                          units={["px"]}
+                          value={rule.icon_size}
+                          onChange={(v) => updateField(index, "icon_size", v)}
+                          defaultValue="18px"
+                        />
+                        <UniversalRangeControl
+                          label={__("Border Radius", "store-one")}
+                          responsive={false}
+                          units={["px", "%"]}
+                          value={rule.border_radius}
+                          onChange={(v) =>
+                            updateField(index, "border_radius", v)
+                          }
+                          defaultValue="50%"
+                        />
+
                         <S1FieldGroup title={__("Position", "store-one")}>
-                          {(rule.social_style === 'style1' || rule.social_style === 'style2') && (
-                           <UniversalRangeControl
-                            label={__("Top", "store-one")}
-                            responsive={false}
-                            units={["%","px"]}
-                            value={rule.position_top}
-                            onChange={(v) =>
-                              updateField(index, "position_top", v)
-                            }
-                            defaultValue="50%"
-                          />
+                          {(rule.social_style === "style1" ||
+                            rule.social_style === "style2") && (
+                            <UniversalRangeControl
+                              label={__("Top", "store-one")}
+                              responsive={false}
+                              units={["%", "px"]}
+                              value={rule.position_top}
+                              onChange={(v) =>
+                                updateField(index, "position_top", v)
+                              }
+                              defaultValue="50%"
+                            />
                           )}
-                          {rule.social_style === 'style3' && (
-                          <UniversalRangeControl
-                            label={__("Bottom", "store-one")}
-                            responsive={false}
-                            units={["%","px"]}
-                            value={rule.position_bottom}
-                            onChange={(v) =>
-                              updateField(index, "position_bottom", v)
-                            }
-                            defaultValue="20px"
-                          />
-                           )}
-                           {rule.social_style === 'style1' && (
-                          <UniversalRangeControl
-                            label={__("Left", "store-one")}
-                            responsive={false}
-                            units={["%","px"]}
-                            value={rule.position_left}
-                            onChange={(v) =>
-                              updateField(index, "position_left", v)
-                            }
-                            defaultValue="10px"
-                          />
-                           )}
-                           {rule.social_style === 'style2' && (
-                          <UniversalRangeControl
-                            label={__("Right", "store-one")}
-                            responsive={false}
-                            units={["%","px"]}
-                            value={rule.position_right}
-                            onChange={(v) =>
-                              updateField(index, "position_right", v)
-                            }
-                            defaultValue="10px"
-                          />
-                           )}
+                          {rule.social_style === "style3" && (
+                            <UniversalRangeControl
+                              label={__("Bottom", "store-one")}
+                              responsive={false}
+                              units={["%", "px"]}
+                              value={rule.position_bottom}
+                              onChange={(v) =>
+                                updateField(index, "position_bottom", v)
+                              }
+                              defaultValue="20px"
+                            />
+                          )}
+                          {rule.social_style === "style1" && (
+                            <UniversalRangeControl
+                              label={__("Left", "store-one")}
+                              responsive={false}
+                              units={["%", "px"]}
+                              value={rule.position_left}
+                              onChange={(v) =>
+                                updateField(index, "position_left", v)
+                              }
+                              defaultValue="10px"
+                            />
+                          )}
+                          {rule.social_style === "style2" && (
+                            <UniversalRangeControl
+                              label={__("Right", "store-one")}
+                              responsive={false}
+                              units={["%", "px"]}
+                              value={rule.position_right}
+                              onChange={(v) =>
+                                updateField(index, "position_right", v)
+                              }
+                              defaultValue="10px"
+                            />
+                          )}
                         </S1FieldGroup>
                       </div>
                     ),
