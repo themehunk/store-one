@@ -2129,3 +2129,17 @@ input.components-text-control__input {
   word-break: break-all;
   line-height: 1.4;
 }
+
+.store-one-rules-footer{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+.store-one-reset-link{
+    cursor: pointer;
+    color: rgb(214, 54, 56);
+    margin-top: var(--s1-space-10);
+    cursor: pointer;
+    font-weight: 600;
+    padding: 8px 0;
+}

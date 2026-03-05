@@ -5,6 +5,7 @@ import { Spinner } from '@wordpress/components';
 
 import QuickSocialRule from './QuickSocialRule';
 
+
 const MODULE_ID = 'quick-social';
 
 export default function QuickSocialSettings({
@@ -82,7 +83,8 @@ export default function QuickSocialSettings({
             .finally(() => setSaving(false));
     };
 
-    /* 🔥 THIS IS THE KEY — AdminMain yahin se save call karta hai */
+    /* 
+    THIS IS THE KEY — AdminMain yahin se save call karta hai */
     useEffect(() => {
         onRegisterSave?.(() => handleSave);
     }, [rules]);
@@ -118,6 +120,7 @@ export default function QuickSocialSettings({
                         onChange={setRules}
                         onLivePreview={onLivePreview}
                     />
+                    
                 </>
             )}
         </div>

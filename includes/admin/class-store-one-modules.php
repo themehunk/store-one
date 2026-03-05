@@ -114,6 +114,17 @@ class Store_One_Modules {
 				),
 			)
 		);
+
+		/* RESET MODULE ROUTE */
+			register_rest_route(
+				'store-one/v1',
+				'/module/(?P<module>[a-zA-Z0-9-_]+)/reset',
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'rest_reset_module' ),
+					'permission_callback' => array( $this, 'permissions_check' ),
+				)
+			);
 	}
 
 	/**
@@ -184,4 +195,33 @@ class Store_One_Modules {
 			)
 		);
 	}
+	public function rest_reset_module( $request ) {
+
+	$module = sanitize_text_field( $request['module'] );
+
+	$modules  = get_option( self::OPTION_NAME, $this->get_default() );
+	$defaults = $this->get_default();
+
+	if ( ! isset( $defaults[ $module ] ) ) {
+		return new WP_Error(
+			'store_one_invalid_module',
+			__( 'Invalid module.', 'store-one' ),
+			array( 'status' => 400 )
+		);
+	}
+
+	/* reset only this module */
+	$modules[ $module ] = $defaults[ $module ];
+
+	update_option( self::OPTION_NAME, $modules );
+
+	return rest_ensure_response(
+		array(
+			'success'  => true,
+			'settings' => array(
+				$module => $modules[ $module ],
+			),
+		)
+	);
+}
 }
