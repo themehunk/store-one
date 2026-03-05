@@ -17,6 +17,7 @@ import UniversalRangeControl from "@storeone-global/UniversalRangeControl";
 
 import S1Accordion from "@storeone-global/S1Accordion";
 import { PLATFORM_CONFIG } from "./platformConfig";
+import ResetModuleButton from "@storeone-global/ResetModuleButton";
 import {
   CopyIcon,
   TrashIcon,
@@ -1039,9 +1040,17 @@ export default function BuytoListRules({ rules, onChange, onLivePreview }) {
           </div>
         ))}
       </SortableWrapper>
+      <div className="store-one-rules-footer">
       {/* Add Rule */}
       <div className="store-one-add-rule" onClick={addRule}>
         {__("+ Add New Rule", "store-one")}
+      </div>
+      <ResetModuleButton
+        moduleId="quick-social"
+        onReset={() => {
+          updateAll([newsocialTRule()]);
+        }}
+      />
       </div>
     </div>
   );
