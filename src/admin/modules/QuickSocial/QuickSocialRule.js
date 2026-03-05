@@ -130,6 +130,8 @@ const newsocialTRule = () => ({
   position_right: "10px",
   original_enabled: true,
   max_show:"4",
+  onpage_enabled: false,
+  placement: 'after_summary',
 });
 
 const ICON_OPTIONS = [
@@ -568,6 +570,10 @@ export default function BuytoListRules({ rules, onChange, onLivePreview }) {
                                 label: __("Home Page Only", "store-one"),
                                 value: "home_page_only",
                               },
+                               {
+                                label: __("All Single", "store-one"),
+                                value: "all_single",
+                              },
                               {
                                 label: __("Custom Shortcode", "store-one"),
                                 value: "custom_shrtcd",
@@ -578,6 +584,41 @@ export default function BuytoListRules({ rules, onChange, onLivePreview }) {
                             }
                           />
                         </S1Field>
+
+                        {rule.trigger_type === "all_single" && (
+                          <S1Field
+                            label={__("On Page", "store-one")}
+                            classN="s1-toggle-wrpapper"
+                          >
+                          <ToggleControl
+                            checked={rule.onpage_enabled}
+                            onChange={(v) =>
+                              updateField(index, "onpage_enabled", v)
+                            }
+                          />
+                        </S1Field>
+                        )}
+                  {(rule.trigger_type === "all_single" && rule.onpage_enabled === true) && (
+                        <div className="s1-field-wrapper">
+                    <div className="s1-field-col">
+                        <label className="s1-field-label">
+                            {__('Placement on product page', 'store-one')}
+                        </label>
+                        <div className="s1-field-control">
+                            <SelectControl
+                                value={rule.placement}
+                                onChange={(v) => updateField(index, 'placement', v)}
+                                options={[
+                                    { label: __('After Product Summary', 'store-one'), value: 'after_summary' },
+                                    { label: __('After Title', 'store-one'), value: 'after_title' },
+                                    { label: __('After Add to Cart', 'store-one'), value: 'after_add_to_cart' },
+                                    { label: __('Before Add to Cart', 'store-one'), value: 'before_add_to_cart' },
+                                ]}
+                            />
+                        </div>
+                    </div>
+                    </div>
+                    )}
 
                         {rule.trigger_type === "specific_pages" &&
                           rule.trigger_type !== "custom_shrtcd" && (
