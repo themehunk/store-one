@@ -156,6 +156,7 @@ const Style3 = ({ settings = {} }) => {
       <div className="s1-main-product">
 
         {/* QUICK SOCIAL */}
+        {rule.trigger_type !== "all_single" && rule.onpage_enabled === false && (
         <div className="s1-quick-social s1-quick-social--style3">
           <div className="s1-quick-social__inner">
 
@@ -199,6 +200,7 @@ const Style3 = ({ settings = {} }) => {
 
           </div>
         </div>
+        )}
 
         {/* POPUP */}
         {showPopup && (
@@ -243,6 +245,49 @@ const Style3 = ({ settings = {} }) => {
             </ul>
           </div>
 
+          {rule.trigger_type === "all_single" && rule.onpage_enabled === true && (
+      
+          <div className="s1-quick-social__inner">
+
+            {validIcons.length > 0
+              ? visibleIcons.map((item, index) =>
+                  renderIcon(item, index)
+                )
+              : [1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className="s1-quick-social__item s1-quick-social__skeleton"
+                  >
+                    <div className="s1-quick-social__icon">
+                      <div className="s1-icon-placeholder" />
+                    </div>
+                  </div>
+                ))}
+
+            {hasMore && (
+              <div
+                className="s1-quick-social__item"
+                onClick={() => setShowPopup(true)}
+              >
+                <div className="s1-quick-social__icon s1-more-icon">
+                  <svg
+                    width="100%"
+                    height="100%"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                </div>
+              </div>
+            )}
+          </div>
+          )}
           <div className="s1-main-cart">
             <div className="static-skeleton static-qty"></div>
             <div className="static-skeleton static-btn"></div>
