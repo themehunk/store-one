@@ -9,6 +9,12 @@ class Store_One_FBT_Frontend {
 
     public function __construct() {
 
+        $modules = get_option('store_one_module_option', []);
+
+        if ( empty($modules['frequently-bought']) ) {
+                return;
+        }
+
         // CSS + JS
         add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_assets' ] );
 
@@ -118,33 +124,7 @@ class Store_One_FBT_Frontend {
         $placement = $rule['placement'] ?? 'after_summary';
         $priority  = isset( $rule['priority'] ) ? absint( $rule['priority'] ) : 10;
 
-        switch ( $placement ) {
-
-            case 'after_title':
-                // Title default priority 5, isliye 6 par
-                $hook     = 'woocommerce_single_product_summary';
-                $priority = 6;
-                break;
-
-            case 'before_summary':
-                $hook = 'woocommerce_before_single_product_summary';
-                break;
-
-            case 'after_summary':
-                $hook = 'woocommerce_after_single_product_summary';
-                break;
-
-            case 'after_tabs':
-                $hook = 'woocommerce_after_single_product';
-                break;
-
-            case 'after_add_to_cart':
-                $hook = 'woocommerce_after_add_to_cart_button';
-                break;
-
-            default:
-                $hook = 'woocommerce_after_single_product_summary';
-        }
+        $hook = store_one_get_fbt_hook_from_placement( $placement );
 
         add_action(
             $hook,
@@ -192,26 +172,92 @@ class Store_One_FBT_Frontend {
         if ( empty( $rule['single_enabled'] ) ) {
             return false;
         }
-
+         
         $product_id = $product->get_id();
 
-        // User condition
+        // -----------------------------
+        // USER CONDITION
+        // -----------------------------
+
         $user_condition = $rule['user_condition'] ?? 'all';
-        if ( $user_condition === 'logged_in' && ! is_user_logged_in() ) {
-            return false;
+
+        $current_user = wp_get_current_user();
+        $current_id   = get_current_user_id();
+        $user_roles   = (array) $current_user->roles;
+
+        /* =========================
+        * ALL USERS MODE
+        * ========================= */
+
+        if ( $user_condition === 'all' ) {
+
+            if ( ! empty( $rule['exclude_enabled'] ) ) {
+
+                // Exclude roles
+                if ( ! empty( $rule['exclude_roles'] ) ) {
+
+                    if ( array_intersect( $user_roles, $rule['exclude_roles'] ) ) {
+                        return false;
+                    }
+
+                }
+
+                // Exclude users
+                if ( ! empty( $rule['exclude_users'] ) ) {
+
+                    if ( in_array( $current_id, $rule['exclude_users'] ) ) {
+                        return false;
+                    }
+
+                }
+
+            }
+
         }
-        if ( $user_condition === 'guest' && is_user_logged_in() ) {
-            return false;
+
+        /* =========================
+        * ROLE MODE
+        * ========================= */
+
+        if ( $user_condition === 'roles' ) {
+
+            $allowed_roles = $rule['allowed_roles'] ?? [];
+
+            if ( empty( array_intersect( $user_roles, $allowed_roles ) ) ) {
+                return false;
+            }
+
+            // exclude specific users
+            if ( ! empty( $rule['exclude_users_enabled'] ) ) {
+
+                if ( in_array( $current_id, $rule['exclude_users'] ?? [] ) ) {
+                    return false;
+                }
+
+            }
+
+        }
+        /* =========================
+        * USERS MODE
+        * ========================= */
+
+        if ( $user_condition === 'users' ) {
+
+            if ( ! in_array( $current_id, $rule['allowed_users'] ?? [] ) ) {
+                return false;
+            }
+
         }
 
         // Trigger
         $trigger_type = $rule['trigger_type'] ?? 'all_products';
 
+       
+
         switch ( $trigger_type ) {
 
             case 'specific_products':
-                $ids = wp_list_pluck( $rule['products'] ?? [], 'id' );
-                $ids = array_map( 'absint', $ids );
+                $ids = $this->get_ids( $rule['products'] ?? [] );
                 if ( ! in_array( $product_id, $ids, true ) ) {
                     return false;
                 }
@@ -219,8 +265,7 @@ class Store_One_FBT_Frontend {
 
             case 'specific_categories':
                 $prod_cats = wp_get_post_terms( $product_id, 'product_cat', [ 'fields' => 'ids' ] );
-                $rule_cats = wp_list_pluck( $rule['categories'] ?? [], 'id' );
-                $rule_cats = array_map( 'absint', $rule_cats );
+                $rule_cats = $this->get_ids( $rule['categories'] ?? [] );
                 if ( empty( array_intersect( $prod_cats, $rule_cats ) ) ) {
                     return false;
                 }
@@ -228,8 +273,7 @@ class Store_One_FBT_Frontend {
 
             case 'specific_tags':
                 $prod_tags = wp_get_post_terms( $product_id, 'product_tag', [ 'fields' => 'ids' ] );
-                $rule_tags = wp_list_pluck( $rule['tags'] ?? [], 'id' );
-                $rule_tags = array_map( 'absint', $rule_tags );
+                $rule_tags = $this->get_ids( $rule['tags'] ?? [] );
                 if ( empty( array_intersect( $prod_tags, $rule_tags ) ) ) {
                     return false;
                 }
@@ -243,8 +287,7 @@ class Store_One_FBT_Frontend {
 
         // Exclude products
         if ( ! empty( $rule['exclude_products_enabled'] ) && ! empty( $rule['exclude_products'] ) ) {
-            $exclude_ids = wp_list_pluck( $rule['exclude_products'], 'id' );
-            $exclude_ids = array_map( 'absint', $exclude_ids );
+            $exclude_ids = $this->get_ids( $rule['exclude_products'] ?? [] );
             if ( in_array( $product_id, $exclude_ids, true ) ) {
                 return false;
             }
@@ -253,8 +296,7 @@ class Store_One_FBT_Frontend {
         // Exclude categories
         if ( ! empty( $rule['exclude_categories_enabled'] ) && ! empty( $rule['exclude_categories'] ) ) {
             $prod_cats    = wp_get_post_terms( $product_id, 'product_cat', [ 'fields' => 'ids' ] );
-            $exclude_cats = wp_list_pluck( $rule['exclude_categories'], 'id' );
-            $exclude_cats = array_map( 'absint', $exclude_cats );
+           $exclude_cats = $this->get_ids( $rule['exclude_categories'] ?? [] );
             if ( ! empty( array_intersect( $prod_cats, $exclude_cats ) ) ) {
                 return false;
             }
@@ -263,8 +305,7 @@ class Store_One_FBT_Frontend {
         // Exclude tags
         if ( ! empty( $rule['exclude_tags_enabled'] ) && ! empty( $rule['exclude_tags'] ) ) {
             $prod_tags    = wp_get_post_terms( $product_id, 'product_tag', [ 'fields' => 'ids' ] );
-            $exclude_tags = wp_list_pluck( $rule['exclude_tags'], 'id' );
-            $exclude_tags = array_map( 'absint', $exclude_tags );
+            $exclude_tags = $this->get_ids( $rule['exclude_tags'] ?? [] );
             if ( ! empty( array_intersect( $prod_tags, $exclude_tags ) ) ) {
                 return false;
             }
@@ -278,8 +319,19 @@ class Store_One_FBT_Frontend {
         return true;
     }
 
-   
+    private function get_ids( $items ) {
 
+    if ( empty( $items ) ) {
+        return [];
+    }
+
+    // Agar structure [{id:18}] hai
+    if ( is_array( $items ) && isset( $items[0]['id'] ) ) {
+        $items = wp_list_pluck( $items, 'id' );
+    }
+
+    return array_map( 'absint', $items );
+}
 /* --------------------------------------------------------------------
  * RENDER — choose style per-rule (store-one / s1- classnames)
  * ------------------------------------------------------------------ */
@@ -362,7 +414,7 @@ private function s1_render_style_1( $product_id, $rule, $bundle_products, $bundl
                 $pid    = $p->get_id();
                 $is_var = $p->is_type( 'variable' );
 
-                // ✅ FIX: price_val properly defined
+                //FIX: price_val properly defined
                 $price_val = '';
                 if ( ! $is_var && $p->is_in_stock() ) {
                     $price_val = wc_get_price_to_display( $p );

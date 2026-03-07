@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // ------------------ Constants ------------------.
-define( 'STORE_ONE_VERSION', '1.0.73' );
+define( 'STORE_ONE_VERSION', '1.0.75' );
 define( 'STORE_ONE_PLUGIN_FILE', __FILE__ );
 define( 'STORE_ONE_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'STORE_ONE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -60,6 +60,7 @@ add_action(
 		require_once STORE_ONE_PLUGIN_DIR . 'includes/modules/product-brand/class-frontend.php';
 
 		if ( class_exists( 'Store_One_FBT_Frontend' ) ) {
+			
 			new Store_One_FBT_Frontend();
 		}
 		if ( class_exists( 'StoreOne_Bundle_Frontend' ) ) {
