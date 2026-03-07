@@ -1,13 +1,19 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
-}
+} 
 
 class StoreOne_Buy_To_List_Frontend {
 
     private $rules = array();
 
     public function __construct() {
+
+       $modules = get_option('store_one_module_option', []);
+
+        if ( empty($modules['buy-to-list']) ) {
+                return;
+        }
 
         $settings = get_option( 'store_one_module_set', array() );
 

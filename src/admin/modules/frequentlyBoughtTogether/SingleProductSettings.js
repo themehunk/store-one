@@ -14,6 +14,7 @@ export default function SingleProductSettings({
     // FIX: status toggle convert active/inactive ↔ boolean
     const statusChecked = settings.status === "active";
 
+
     return (
         <div className="store-one-rule-body">
 

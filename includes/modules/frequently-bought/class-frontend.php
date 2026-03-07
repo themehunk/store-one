@@ -9,6 +9,12 @@ class Store_One_FBT_Frontend {
 
     public function __construct() {
 
+        $modules = get_option('store_one_module_option', []);
+
+        if ( empty($modules['frequently-bought']) ) {
+                return;
+        }
+
         // CSS + JS
         add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_assets' ] );
 

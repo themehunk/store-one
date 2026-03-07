@@ -9,6 +9,12 @@ class StoreOne_Product_Brand_Frontend {
 
     public function __construct() {
 
+    $modules = get_option('store_one_module_option', []);
+
+        if ( empty($modules['bundle-product']) ) {
+                return;
+        } 
+
         $settings = get_option( 'store_one_module_set', array() );
 
         if ( isset( $settings['product-brand']['rules'] ) ) {

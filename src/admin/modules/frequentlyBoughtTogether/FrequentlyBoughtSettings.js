@@ -64,7 +64,7 @@ export default function FrequentlyBoughtSettings({
         }
     }, [success, error]);
 
-    /* 🔥 SAME SAVE FUNCTION */
+    /* SAME SAVE FUNCTION */
     const handleSave = () => {
         if (saving) return;
 
@@ -82,7 +82,7 @@ export default function FrequentlyBoughtSettings({
             .finally(() => setSaving(false));
     };
 
-    /* 🔥 THIS IS THE KEY — AdminMain yahin se save call karta hai */
+    /*THIS IS THE KEY — AdminMain yahin se save call karta hai */
     useEffect(() => {
         onRegisterSave?.(() => handleSave);
     }, [rules]);

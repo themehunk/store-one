@@ -60,6 +60,7 @@ add_action(
 		require_once STORE_ONE_PLUGIN_DIR . 'includes/modules/product-brand/class-frontend.php';
 
 		if ( class_exists( 'Store_One_FBT_Frontend' ) ) {
+			
 			new Store_One_FBT_Frontend();
 		}
 		if ( class_exists( 'StoreOne_Bundle_Frontend' ) ) {

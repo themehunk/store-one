@@ -16,6 +16,12 @@ class StoreOne_Bundle_Frontend {
 
     public function __construct() {
 
+    $modules = get_option('store_one_module_option', []);
+
+        if ( empty($modules['product-brand']) ) {
+                return;
+        } 
+
         $settings = $this->storeone_get_bundle_settings();
 
         $hook = $settings['product_page']['position'] === 'after_cart'

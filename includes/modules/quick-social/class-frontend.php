@@ -9,6 +9,12 @@ class StoreOne_Quick_Social {
 
     public function __construct() {
 
+       $modules = get_option('store_one_module_option', []);
+
+        if ( empty($modules['quick-social']) ) {
+                return;
+        } 
+
         $all_modules = get_option( 'store_one_module_set', array() );
         $this->rules = $all_modules['quick-social']['rules'] ?? array();
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
