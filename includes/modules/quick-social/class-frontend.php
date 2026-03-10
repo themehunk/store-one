@@ -470,68 +470,36 @@ private function get_brand_style( $icon ) {
         return $this->get_predefined_svg( $data['selected_icon'] ?? '' );
     }
 
+        public function register_single_hooks() {
 
-  public function register_single_hooks() {
+            if ( empty( $this->rules ) ) {
+                return;
+            }
 
-    if ( empty( $this->rules ) ) {
-        return;
-    }
+            foreach ( $this->rules as $rule ) {
 
-    foreach ( $this->rules as $rule ) {
+                if ( ($rule['trigger_type'] ?? '') !== 'all_single' ) {
+                    continue;
+                }
 
-        if ( ($rule['trigger_type'] ?? '') !== 'all_single' ) {
-            continue;
-        }
+                if ( empty( $rule['onpage_enabled'] ) ) {
+                    continue;
+                }
 
-        if ( empty( $rule['onpage_enabled'] ) ) {
-            continue;
-        }
+                $placement = $rule['placement'] ?? '';
 
-        $placement = $rule['placement'] ?? 'after_summary';
+                $hook = store_one_get_hook_from_placement( $placement );
 
-        switch ( $placement ) {
-
-            case 'after_title':
                 add_action(
-                    'woocommerce_single_product_summary',
+                    $hook,
                     function() use ( $rule ) {
                         echo $this->generate_output( $rule['flexible_id'] );
                     },
-                    6
+                    10
                 );
-                break;
-
-            case 'before_add_to_cart':
-                add_action(
-                    'woocommerce_before_add_to_cart_form',
-                    function() use ( $rule ) {
-                        echo $this->generate_output( $rule['flexible_id'] );
-                    }
-                );
-                break;
-
-            case 'after_add_to_cart':
-                add_action(
-                    'woocommerce_after_add_to_cart_form',
-                    function() use ( $rule ) {
-                        echo $this->generate_output( $rule['flexible_id'] );
-                    }
-                );
-                break;
-
-            case 'after_summary':
-            default:
-                add_action(
-                    'woocommerce_after_single_product_summary',
-                    function() use ( $rule ) {
-                        echo $this->generate_output( $rule['flexible_id'] );
-                    },
-                    5
-                );
-                break;
-        }
+            }
     }
-  }
+
     private function get_predefined_svg( $icon ) {
 
     $rule = $this->current_rule;

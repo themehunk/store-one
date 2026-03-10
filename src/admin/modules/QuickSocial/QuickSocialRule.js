@@ -38,6 +38,7 @@ import ContactItemEditor from "./ContactItemEditor";
 import ProfessionalItemEditor from "./ProfessionalItemEditor";
 import BusinessItemEditor from "./BusinessItemEditor";
 import OtherItemEditor from "./OtherItemEditor";
+import PlacementPriorityControl from "@storeone-global/PlacementPriorityControl";
 /* Default Rule */
 const newsocialTRule = () => ({
   status: "active",
@@ -112,7 +113,7 @@ const newsocialTRule = () => ({
     },
   ],
   social_style: "style1",
-  placement: "after_summary",
+ 
   priority: 10,
   open: true,
   offer_products: [],
@@ -598,28 +599,18 @@ export default function BuytoListRules({ rules, onChange, onLivePreview }) {
                           />
                         </S1Field>
                         )}
-                  {(rule.trigger_type === "all_single" && rule.onpage_enabled === true) && (
-                        <div className="s1-field-wrapper">
-                    <div className="s1-field-col">
-                        <label className="s1-field-label">
-                            {__('Placement on product page', 'store-one')}
-                        </label>
-                        <div className="s1-field-control">
-                            <SelectControl
-                                value={rule.placement}
-                                onChange={(v) => updateField(index, 'placement', v)}
-                                options={[
-                                    { label: __('After Product Summary', 'store-one'), value: 'after_summary' },
-                                    { label: __('After Title', 'store-one'), value: 'after_title' },
-                                    { label: __('After Add to Cart', 'store-one'), value: 'after_add_to_cart' },
-                                    { label: __('Before Add to Cart', 'store-one'), value: 'before_add_to_cart' },
-                                ]}
-                            />
-                        </div>
-                    </div>
-                    </div>
-                    )}
-
+                        {(rule.trigger_type === "all_single" && rule.onpage_enabled === true) && (
+                              <PlacementPriorityControl
+                                placement={rule.placement}
+                                priority={rule.priority}
+                                onPlacementChange={(v) =>
+                                  updateField(index, "placement", v)
+                                }
+                                onPriorityChange={(v) =>
+                                  updateField(index, "priority", v)
+                                }
+                              />
+                        )}
                         {rule.trigger_type === "specific_pages" &&
                           rule.trigger_type !== "custom_shrtcd" && (
                             <MultiWooSearchSelector
@@ -659,7 +650,7 @@ export default function BuytoListRules({ rules, onChange, onLivePreview }) {
                             {rule.social_list?.map((item, i) => (
                               <div
                                 key={item.id}
-                                className="store-one-rule-item inner"
+                                className="store-one-rule-item inner quick-social-item"
                               >
                                 <div className="store-one-rule-header">
                                   <DragHandleDots2Icon className="drag-handle s1-icon" />

@@ -13,6 +13,7 @@ import TabSwitcher from "@storeone-global/TabSwitcher";
 
 import THBackgroundControl from "@storeone-control/color";
 import UniversalRangeControl from "@storeone-global/UniversalRangeControl";
+import PlacementPriorityControl from "@storeone-global/PlacementPriorityControl";
 
 import {
   CopyIcon,
@@ -130,6 +131,7 @@ export default function BuytoListRules({ rules, onChange, onLivePreview }) {
   const menuItems = [
     { id: "settings", label: "Settings", icon: "SETTINGS" },
     { id: "design", label: "Design", icon: "DESIGN" },
+    { id: "display", label: "Display Page", icon: "DISPLAY" },
   ];
 
   const updateAll = (arr) => onChange([...arr]);
@@ -703,60 +705,7 @@ export default function BuytoListRules({ rules, onChange, onLivePreview }) {
                     icon: ICONS[menuItems[1].icon],
                     content: (
                       <div className="store-one-rule-body">
-                        <div className="s1-field-wrapper col-2">
-                          <div className="s1-field-col">
-                            <label className="s1-field-label">
-                              {__("Placement on product page", "store-one")}
-                            </label>
-                            <div className="s1-field-control">
-                              <SelectControl
-                                value={rule.placement}
-                                onChange={(v) =>
-                                  updateField(index, "placement", v)
-                                }
-                                options={[
-                                  {
-                                    label: __(
-                                      "After Product Summary",
-                                      "store-one",
-                                    ),
-                                    value: "after_summary",
-                                  },
-                                  {
-                                    label: __("After Title", "store-one"),
-                                    value: "after_title",
-                                  },
-                                  {
-                                    label: __("After Add to Cart", "store-one"),
-                                    value: "after_add_to_cart",
-                                  },
-                                  {
-                                    label: __(
-                                      "Before Add to Cart",
-                                      "store-one",
-                                    ),
-                                    value: "before_add_to_cart",
-                                  },
-                                ]}
-                              />
-                            </div>
-                          </div>
-
-                          <div className="s1-field-col">
-                            <label className="s1-field-label">
-                              {__("Priority", "store-one")}
-                            </label>
-                            <div className="s1-field-control">
-                              <TextControl
-                                type="number"
-                                value={rule.priority}
-                                onChange={(v) =>
-                                  updateField(index, "priority", v)
-                                }
-                              />
-                            </div>
-                          </div>
-                        </div>
+                       
                         <UniversalRangeControl
                           label="Margin Top"
                           value={rule.margin_top}
@@ -814,6 +763,25 @@ export default function BuytoListRules({ rules, onChange, onLivePreview }) {
                             }}
                           />
                         </S1Field>
+                      </div>
+                    ),
+                  },
+                  {
+                    id: menuItems[2].id,
+                    label: menuItems[2].label,
+                    icon: ICONS[menuItems[2].icon],
+                    content: (
+                      <div className="store-one-rule-body">
+                        <PlacementPriorityControl
+                          placement={rule.placement}
+                          priority={rule.priority}
+                          onPlacementChange={(v) =>
+                            updateField(index, "placement", v)
+                          }
+                          onPriorityChange={(v) =>
+                            updateField(index, "priority", v)
+                          }
+                        />
                       </div>
                     ),
                   },

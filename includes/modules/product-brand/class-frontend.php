@@ -32,7 +32,7 @@ class StoreOne_Product_Brand_Frontend {
      * ------------------------------------------------------------------ */
     public function enqueue_assets() {
 
-        wp_enqueue_style(
+        wp_enqueue_style( 
             'product-brand',
             STORE_ONE_PLUGIN_URL . 'assets/css/product-brand.css',
             [],

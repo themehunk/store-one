@@ -24,11 +24,12 @@ import {
 import { S1Field, S1FieldGroup } from "@storeone-global/S1Field";
 import { ICONS } from "@storeone-global/icons";
 import ResetModuleButton from "@storeone-global/ResetModuleButton";
+import PlacementPriorityControl from "@storeone-global/PlacementPriorityControl";
 
 /* Default Rule */
 const newBlistTRule = () => ({
   status: "active",
-  list_title: "",
+  list_title: "Featured List",
   trigger_type: "all_products",
   products: [],
   categories: [],
@@ -36,26 +37,26 @@ const newBlistTRule = () => ({
   flexible_id: crypto.randomUUID(),
   buy_list: [
     {
-    id: crypto.randomUUID(),
-    text: "Premium Quality Material",
-    link_enabled: false,
-    link_url: "https://example.com",
-    open: true,
-  },
-  {
-    id: crypto.randomUUID(),
-    text: "Fast & Secure Shipping",
-    link_enabled: false,
-    link_url: "https://example.com",
-    open: false,
-  },
-  {
-    id: crypto.randomUUID(),
-    text: "30 Days Easy Returns",
-    link_enabled: false,
-    link_url: "https://example.com",
-    open: false,
-  },
+      id: crypto.randomUUID(),
+      text: "Premium Quality Material",
+      link_enabled: false,
+      link_url: "https://example.com",
+      open: true,
+    },
+    {
+      id: crypto.randomUUID(),
+      text: "Fast & Secure Shipping",
+      link_enabled: false,
+      link_url: "https://example.com",
+      open: false,
+    },
+    {
+      id: crypto.randomUUID(),
+      text: "30 Days Easy Returns",
+      link_enabled: false,
+      link_url: "https://example.com",
+      open: false,
+    },
   ],
   buy_to_list_style: "style_1",
   placement: "after_summary",
@@ -196,6 +197,7 @@ export default function BuytoListRules({ rules, onChange, onLivePreview }) {
   const menuItems = [
     { id: "settings", label: "Settings", icon: "SETTINGS" },
     { id: "design", label: "Design", icon: "DESIGN" },
+    { id: "single", label: "Display Page", icon: "DISPLAY" },
   ];
 
   const updateAll = (arr) => onChange([...arr]);
@@ -867,62 +869,6 @@ export default function BuytoListRules({ rules, onChange, onLivePreview }) {
                             )}
                           </>
                         )}
-
-                        <div className="s1-field-wrapper col-2">
-                          <div className="s1-field-col">
-                            <label className="s1-field-label">
-                              {__("Placement on product page", "store-one")}
-                            </label>
-                            <div className="s1-field-control">
-                              <SelectControl
-                                value={rule.placement}
-                                onChange={(v) =>
-                                  updateField(index, "placement", v)
-                                }
-                                options={[
-                                  {
-                                    label: __(
-                                      "After Product Summary",
-                                      "store-one",
-                                    ),
-                                    value: "after_summary",
-                                  },
-                                  {
-                                    label: __("After Title", "store-one"),
-                                    value: "after_title",
-                                  },
-                                  {
-                                    label: __("After Add to Cart", "store-one"),
-                                    value: "after_add_to_cart",
-                                  },
-                                  {
-                                    label: __(
-                                      "Before Add to Cart",
-                                      "store-one",
-                                    ),
-                                    value: "before_add_to_cart",
-                                  },
-                                ]}
-                              />
-                            </div>
-                          </div>
-
-                          <div className="s1-field-col">
-                            <label className="s1-field-label">
-                              {__("Priority", "store-one")}
-                            </label>
-                            <div className="s1-field-control">
-                              <TextControl
-                                type="number"
-                                value={rule.priority}
-                                onChange={(v) =>
-                                  updateField(index, "priority", v)
-                                }
-                              />
-                            </div>
-                          </div>
-                        </div>
-
                         <S1Field>
                           <THBackgroundControl
                             allowGradient={true}
@@ -1045,6 +991,26 @@ export default function BuytoListRules({ rules, onChange, onLivePreview }) {
                             defaultValue=""
                           />
                         </S1FieldGroup>
+                      </div>
+                    ),
+                  },
+
+                  {
+                    id: menuItems[2].id,
+                    label: menuItems[2].label,
+                    icon: ICONS[menuItems[2].icon],
+                    content: (
+                      <div className="store-one-rule-body">
+                        <PlacementPriorityControl
+                          placement={rule.placement}
+                          priority={rule.priority}
+                          onPlacementChange={(v) =>
+                            updateField(index, "placement", v)
+                          }
+                          onPriorityChange={(v) =>
+                            updateField(index, "priority", v)
+                          }
+                        />
                       </div>
                     ),
                   },

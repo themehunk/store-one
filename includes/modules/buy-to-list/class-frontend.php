@@ -31,15 +31,12 @@ class StoreOne_Buy_To_List_Frontend {
      * Assets
      * ------------------------------------------------------------------ */
     public function enqueue_assets() {
-
         wp_enqueue_style(
             'buy-to-list',
             STORE_ONE_PLUGIN_URL . 'assets/css/buy-to-list.css',
             [],
             STORE_ONE_VERSION
         );
-
-       
     }
 
     /**
@@ -55,14 +52,14 @@ class StoreOne_Buy_To_List_Frontend {
 
             if ( empty( $rule['status'] ) || 'active' !== $rule['status'] ) {
                 continue;
-            }
+            } 
 
             $hook     = $this->get_hook_from_placement( $rule );
             $priority = isset( $rule['priority'] ) ? absint( $rule['priority'] ) : 10;
 
             add_action( $hook, function() use ( $rule ) {
 
-               global $product;
+               global $product; 
 
                if ( ! $product instanceof WC_Product ) {
                     return;
