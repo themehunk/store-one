@@ -1,7 +1,7 @@
 
 import { __ } from '@wordpress/i18n';
 
-const Header = ({ currentPage, setCurrentPage, setActiveModule, proActive }) => {
+const Header = ({ currentPage, setCurrentPage, setActiveModule, proActive,licenseActive}) => {
     return (
     <header className="s1-header">
     
@@ -40,13 +40,13 @@ const Header = ({ currentPage, setCurrentPage, setActiveModule, proActive }) => 
         </button>
 
         {proActive && (
-<button
-    className={`s1-nav__btn ${currentPage === 'license' ? 'is-active' : ''}`}
-    onClick={() => {
-        setCurrentPage('license');
-        setActiveModule(null);
-    }}
->
+    <button
+        className={`s1-nav__btn ${currentPage === 'license' ? 'is-active' : ''}`}
+        onClick={() => {
+            setCurrentPage('license');
+            setActiveModule(null);
+        }}
+    >
     <svg class="w-4 h-4" height="16px" width="16px" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
         d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5 9 6.343 9 8s1.343 3 3 3z"/>
@@ -61,9 +61,23 @@ const Header = ({ currentPage, setCurrentPage, setActiveModule, proActive }) => 
     </nav>
 
     {/* Upgrade CTA */}
-    <a href="https://themehunk.com/storeone/" target= "_blank" className="s1-header__upgrade components-button is-secondary">
-    { __('Upgrade', 'store-one') }
+    {licenseActive ? (
+    <div className="s1-header__active">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/>
+        </svg>
+        <span>{__('Activated', 'store-one')}</span>
+    </div>
+    ) : (
+    <a
+        href="https://themehunk.com/storeone/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="s1-header__upgrade components-button is-secondary"
+    >
+        {__('Upgrade', 'store-one')}
     </a>
+    )}
     </div>
 </header>
     );

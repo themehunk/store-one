@@ -12,7 +12,7 @@ import LicensePage from "@storeone-global/LicensePage";
 import { Notice, Spinner, Button } from "@wordpress/components";
 import "./admin.scss";
 
-const modulesList = [
+const modulesList = [ 
   {
     id: "frequently-bought",
     label: __("Frequently Bought Together", "store-one"),
@@ -229,7 +229,7 @@ const AdminMain = () => {
   const [activeModule, setActiveModule] = useState(null);
   const [saveHandler, setSaveHandler] = useState(null);
   const [isDirty, setIsDirty] = useState(false);
-  
+  const [licenseLoading, setLicenseLoading] = useState(true);
 
   const [modulesState, setModulesState] = useState({
     "frequently-bought": false,
@@ -449,7 +449,10 @@ useEffect(() => {
         setLicenseActive(true);
       }
     })
-    .catch(() => {});
+    .catch(() => {})
+    .finally(() => {
+      setLicenseLoading(false);
+    });
 }, []);
 
 // licence page load
@@ -476,6 +479,7 @@ useEffect(() => {
 }, [currentPage]);
 
   return (
+      
     <div className="store-one-admin">
       {success && (
         <div
@@ -492,12 +496,21 @@ useEffect(() => {
           <span>{error}</span>
         </div>
       )}
-
+      {licenseLoading && (
+          <div className="store-one-admin">
+            <div className="s1-loader">
+              <Spinner />
+              {__("Loading…", "store-one")}
+            </div>
+          </div>
+        
+      )}
       <Header
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
         setActiveModule={setActiveModule}
         proActive={proActive}
+        licenseActive={licenseActive}
       />
       {/* SAVE BUTTON */}
       {isDirty && saveHandler && (
