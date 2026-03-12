@@ -2167,3 +2167,225 @@ button.s1-settings__redirect-btn{
    display:inline-block;
    margin:0.5rem 0;
 }
+
+// licence ui style
+/* ================================
+   STORE ONE LICENSE PANEL
+================================ */
+
+.th-license-wrap{
+    font-family:var(--s1-font-family);
+}
+
+/* Wrapper */
+
+#storeone_pro_license_wrap{
+    padding:var(--s1-space-20);
+}
+
+/* Centered layout */
+
+#storeone_pro_license_wrap .blocks{
+    display:flex;
+    flex-direction:column;
+    gap:var(--s1-space-20);
+    max-width:720px;
+}
+
+/* Card */
+
+#storeone_pro_license_wrap .th-license-status-box,
+#storeone_pro_license_wrap .th-license-activate-box{
+    background:#fff;
+    border:var(--s1-border);
+    border-radius:var(--s1-radius-xl);
+    box-shadow:var(--s1-shadow-sm);
+    padding:var(--s1-space-20);
+    transition:var(--s1-anim-fast);
+}
+
+#storeone_pro_license_wrap .th-license-status-box:hover,
+#storeone_pro_license_wrap .th-license-activate-box:hover{
+    box-shadow:var(--s1-shadow-md);
+    transform:translateY(-2px);
+}
+
+/* Heading */
+
+#storeone_pro_license_wrap .bold-heading{
+    font-size:var(--s1-font-size-lg);
+    font-weight:var(--s1-font-weight-semibold);
+    margin-bottom:var(--s1-space-8);
+    color:var(--s1-gray-900);
+}
+
+/* Subtitle */
+
+#storeone_pro_license_wrap .th-color-title{
+    font-size:var(--s1-font-size-sm);
+    color:var(--s1-gray-600);
+    margin-bottom:var(--s1-space-12);
+}
+
+/* License info */
+
+.th-license-info{
+    margin-top:var(--s1-space-12);
+}
+
+.th-license-row{
+    display:flex;
+    align-items:center;
+    gap:var(--s1-space-10);
+    margin-bottom:var(--s1-space-10);
+}
+
+.th-license-label{
+    min-width:150px;
+    font-weight:var(--s1-font-weight-semibold);
+    font-size:var(--s1-font-size-sm);
+    color:var(--s1-gray-700);
+}
+
+.th-license-value{
+    font-size:var(--s1-font-size-sm);
+    color:var(--s1-gray-900);
+}
+
+/* Masked key */
+
+#th-storeone-masked-key{
+    background:var(--s1-gray-100);
+    padding:4px 8px;
+    border-radius:var(--s1-radius-sm);
+    font-family:monospace;
+}
+
+/* Input row */
+
+.th-license-input-row{
+    display:flex;
+    gap:var(--s1-space-10);
+    margin:var(--s1-space-12) 0;
+}
+
+/* Input */
+
+.th-license-input-row input{
+    flex:1;
+    border-radius:var(--s1-radius-sm);
+    padding:8px 10px;
+    font-size:14px;
+    background:var(--s1-input-bg);
+    color:var(--s1-input-text);
+    border:1px solid var(--s1-gray-300);
+    outline:none;
+    transition:var(--s1-anim-fast);
+}
+
+.th-license-input-row input:hover{
+    border-color:var(--s1-gray-400);
+}
+
+.th-license-input-row input:focus{
+    border-color:var(--s1-color-primary);
+    box-shadow:0 0 0 1px var(--s1-color-primary);
+}
+
+/* Primary button (black like modules) */
+
+.th-license-input-row button{
+    background:#0f172a!important;
+    border:none!important;;
+    color:#fff;
+    padding:0 18px!important;
+    font-size:var(--s1-btn-font-md);
+    border-radius:5px!important;
+    cursor:pointer;
+    transition:var(--s1-anim-fast);
+    font-weight:600;
+}
+
+.th-license-input-row button:hover{
+    background:var(--s1-color-primary-dark);
+}
+
+/* Reset button */
+
+.th-license-reset-btn{
+    background:#f1f5f9;
+    border:1px solid var(--s1-gray-300);
+    color:var(--s1-gray-800);
+    border-radius:var(--s1-radius-sm);
+    padding:3px 8px;
+    font-size:11px;
+    cursor:pointer;
+    margin-left:var(--s1-space-8);
+}
+
+.th-license-reset-btn:hover{
+    background:var(--s1-gray-200);
+}
+
+/* Badges */
+
+.th-badge{
+    padding:3px 10px;
+    border-radius:var(--s1-radius-full);
+    font-size:11px;
+    font-weight:600;
+}
+
+.th-badge-active{
+    background:#e7f9ed;
+    color:#047857;
+}
+
+.th-badge-expired{
+    background:#fdecea;
+    color:#b91c1c;
+}
+
+/* Expired notice */
+
+.th-license-expired-msg{
+    margin-top:var(--s1-space-10);
+    font-size:var(--s1-font-size-sm);
+    color:#dc2626;
+}
+
+.th-license-expired-msg a{
+    font-weight:600;
+    color:var(--s1-color-primary);
+}
+
+/* Links */
+
+.th-license-wrap a{
+    color:var(--s1-color-primary);
+    font-weight:500;
+    text-decoration:none;
+}
+
+.th-license-wrap a:hover{
+    text-decoration:underline;
+}
+
+/* Notice */
+
+.th-license-notice-box{
+    padding:var(--s1-space-10);
+    border-radius:var(--s1-radius-md);
+    margin-bottom:var(--s1-space-14);
+    font-size:var(--s1-font-size-sm);
+}
+
+.th-notice-success{
+    background:#ecfdf5;
+    border-left:4px solid #22c55e;
+}
+
+.th-notice-error{
+    background:#fef2f2;
+    border-left:4px solid #ef4444;
+}
