@@ -1,4 +1,4 @@
-import { useRef } from "@wordpress/element";
+import { useRef, useEffect } from "@wordpress/element";
 
 export default function TrustBadgeSelector({
   rule,
@@ -10,6 +10,13 @@ export default function TrustBadgeSelector({
 
   const frameRef = useRef(null);
   const uploaded = rule.uploaded_badges || [];
+
+  /* DEFAULT BADGE FIX */
+  useEffect(() => {
+    if (!rule.badge_image && presetBadges.length > 0) {
+      updateField(index, "badge_image", presetBadges[0]);
+    }
+  }, []);
 
   const openUploader = () => {
 
@@ -105,7 +112,6 @@ export default function TrustBadgeSelector({
             </div>
           );
         })}
-
       </div>
     </div>
   );

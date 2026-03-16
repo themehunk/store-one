@@ -664,6 +664,15 @@ useEffect(() => {
                       }
                     />
                   )}
+                  {currentModule?.id === "trust-badges" && (
+                    <PreviewPane
+                      currentModule={currentModule}
+                      settings={
+                        livePreviewSettings ||
+                        moduleSettings[currentModule.id]?.rules?.[0]
+                      }
+                    />
+                  )}
                 </div>
               </div>
             </div>

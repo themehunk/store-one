@@ -8,16 +8,12 @@ import {
 import { __, sprintf } from "@wordpress/i18n";
 import Sortable from "sortablejs";
 import UserCondition from "@storeone-global/UserCondition";
-
 import MultiWooSearchSelector from "@storeone-global/MultiWooSearchSelector";
 import ExcludeWooCondition from "@storeone-global/ExcludeWooCondition";
 import TabSwitcher from "@storeone-global/TabSwitcher";
-
 import THBackgroundControl from "@storeone-control/color";
 import UniversalRangeControl from "@storeone-global/UniversalRangeControl";
 import TrustBadgeStyleControl from "./TrustBadgeStyleControl";
-
-
 import {
   CopyIcon,
   TrashIcon,
@@ -32,7 +28,7 @@ import PlacementPriorityControl from "@storeone-global/PlacementPriorityControl"
 import TrustBadgeSelector from "./TrustBadgeSelector";
 /* Default Rule */
 const newBadgesTRule = () => ({
-  open:true,
+  open: true,
   status: "active",
   badge_title: "Trust Badges",
   show_badges: "all_products",
@@ -47,8 +43,8 @@ const newBadgesTRule = () => ({
   placement: "after_summary",
   priority: 10,
   // NEW: exclude system
-  user_condition: "all",
-  exclude_enabled: false,
+  user_condition:"all",
+  exclude_enabled:false,
   allowed_roles: [],
   allowed_users: [],
   exclude_roles: [],
@@ -56,63 +52,59 @@ const newBadgesTRule = () => ({
   exclude_users_enabled: false,
   badgetext: "Text",
   badge_style: {
-  background: "#2470FF",
-  transform: {
-    opacity: "55",
-    rotateX: "0",
-    rotateY: "1",
-    rotateZ: "0",
+    image_width: "100px",
+    bgclr: "#0a70ed",
+    textclr: "#fff",
+    text_size:"18px",
+    transform: {
+      opacity: "100",
+      rotateX: "0",
+      rotateY: "1",
+      rotateZ: "0",
+    },
+    flip: {
+      enabled: false,
+      orientation: "horizontal",
+    },
+    position: {
+      mode: "custom",
+      unit: "px",
+      anchor: "top-left",
+      top: "0",
+      left: "0",
+      bottom: "0",
+      right: "0",
+      position: "top",
+      align: "left",
+    },
+    margin: {
+      top: "5px",
+      right: "5px",
+      bottom: "5px",
+      left: "5px",
+    },
+    padding: {
+      top:"0px",
+      right:"0px",
+      bottom:"0px",
+      left:"0px",
+    },
   },
-  flip: {
-   enabled: false,
-   orientation: "horizontal"
-  }, 
-  position:{
-    mode:"custom",
-    unit:"px",
-    anchor:"top-left",
-    top:"0",
-    left:"0",
-    bottom:"",
-    right:"",
-    position:"top",
-    align:"left"
-  },
-  margin: {
-  top: "0px",
-  right: "0px",
-  bottom: "0px",
-  left: "0px"
-},
-padding: {
-  top: "0px",
-  right: "0px",
-  bottom: "0px",
-  left: "0px"
-}
-  
-}
 });
-
 /* Sortable */
 function SortableWrapper({ items, onSortEnd, children }) {
   const ref = useRef(null);
-
   useEffect(() => {
     if (!ref.current) return;
-
     const sortable = Sortable.create(ref.current, {
       animation: 150,
       handle: ".drag-handle",
       onEnd: (evt) => onSortEnd(evt.oldIndex, evt.newIndex),
     });
-
     return () => sortable.destroy();
   }, [items]);
-
   return <div ref={ref}>{children}</div>;
 }
-
 /* ------------------------ Main Component ------------------------ */
 export default function TrustBadgesRules({ rules, onChange, onLivePreview }) {
   const menuItems = [
@@ -123,7 +115,6 @@ export default function TrustBadgesRules({ rules, onChange, onLivePreview }) {
   ];
 
   const updateAll = (arr) => onChange([...arr]);
-
   const reorder = (oldIndex, newIndex) => {
     const arr = [...rules];
     const moved = arr.splice(oldIndex, 1)[0];
@@ -180,15 +171,14 @@ export default function TrustBadgesRules({ rules, onChange, onLivePreview }) {
   }, []);
 
   const TRUST_BADGES_IMAGES = [
-  "https://plugins.yithemes.com/yith-woocommerce-badge-management/wp-content/uploads/sites/489237/yith-badge-library-live-demo/image/black-friday-01.svg",
-  "https://plugins.yithemes.com/yith-woocommerce-badge-management/wp-content/uploads/sites/489237/yith-badge-library-live-demo/image/new-year-01.svg",
-  "https://plugins.yithemes.com/yith-woocommerce-badge-management/wp-content/uploads/sites/489237/yith-badge-library-live-demo/image/BOGO-02.svg",
-];
-const TRUST_BADGES_CSS = [
-  "https://plugins.yithemes.com/dd58b7d04f54d5afda6424614772c9d6/wp-content/plugins/yith-woocommerce-badge-management-premium/assets/images/css-badge-previews/1.svg",
-  "https://plugins.yithemes.com/dd58b7d04f54d5afda6424614772c9d6/wp-content/plugins/yith-woocommerce-badge-management-premium/assets/images/css-badge-previews/4.svg",
-];
-
+    "https://plugins.yithemes.com/yith-woocommerce-badge-management/wp-content/uploads/sites/489237/yith-badge-library-live-demo/image/black-friday-01.svg",
+    "https://plugins.yithemes.com/yith-woocommerce-badge-management/wp-content/uploads/sites/489237/yith-badge-library-live-demo/image/new-year-01.svg",
+    "https://plugins.yithemes.com/yith-woocommerce-badge-management/wp-content/uploads/sites/489237/yith-badge-library-live-demo/image/BOGO-02.svg",
+  ];
+  const TRUST_BADGES_CSS = [
+    "https://plugins.yithemes.com/dd58b7d04f54d5afda6424614772c9d6/wp-content/plugins/yith-woocommerce-badge-management-premium/assets/images/css-badge-previews/1.svg",
+    "https://plugins.yithemes.com/dd58b7d04f54d5afda6424614772c9d6/wp-content/plugins/yith-woocommerce-badge-management-premium/assets/images/css-badge-previews/4.svg",
+  ];
 
   return (
     <div className="store-one-rules-container">
@@ -314,25 +304,20 @@ const TRUST_BADGES_CSS = [
                           />
                         </S1Field>
 
-                         
-                            <ExcludeWooCondition
-                              label={__("Exclude products", "store-one")}
-                              searchType="product"
-                              enabled={rule.exclude_products_enabled}
-                              items={rule.exclude_products}
-                              onToggle={(v) =>
-                                updateField(
-                                  index,
-                                  "exclude_products_enabled",
-                                  v,
-                                )
-                              }
-                              onChangeItems={(items) =>
-                                updateField(index, "exclude_products", items)
-                              }
-                              detailedView={true}
-                            />
-                       
+                        <ExcludeWooCondition
+                          label={__("Exclude products", "store-one")}
+                          searchType="product"
+                          enabled={rule.exclude_products_enabled}
+                          items={rule.exclude_products}
+                          onToggle={(v) =>
+                            updateField(index, "exclude_products_enabled", v)
+                          }
+                          onChangeItems={(items) =>
+                            updateField(index, "exclude_products", items)
+                          }
+                          detailedView={true}
+                        />
+
                         <S1Field label={__("Shortcode", "store-one")}>
                           <p className="s1-shortcode-description">
                             {__(
@@ -363,8 +348,7 @@ const TRUST_BADGES_CSS = [
                       </div>
                     ),
                   },
-
-                {
+                  {
                     id: menuItems[1].id,
                     label: menuItems[1].label,
                     icon: ICONS[menuItems[1].icon],
@@ -398,7 +382,7 @@ const TRUST_BADGES_CSS = [
                       </div>
                     ),
                   },
-                    {
+                  {
                     id: menuItems[3].id,
                     label: menuItems[3].label,
                     icon: ICONS[menuItems[3].icon],
@@ -426,7 +410,7 @@ const TRUST_BADGES_CSS = [
                               {
                                 label: __("Advance", "store-one"),
                                 value: "badges_advance",
-                              }
+                              },
                             ]}
                             onChange={(v) =>
                               updateField(index, "badges_type", v)
@@ -434,50 +418,240 @@ const TRUST_BADGES_CSS = [
                           />
                         </S1Field>
                         {rule.badges_type === "badges_text" && (
-                         <S1Field label={__("Badge Text", "store-one")}>
-                          <TextControl
-                            value={rule.badgetext || ""}
-                            onChange={(v) => updateField(index, "badgetext", v)}
-                          />
-                         </S1Field>
-                         )}
+                          <>
+                            <S1Field label={__("Badge Text", "store-one")}>
+                              <TextControl
+                                value={rule.badgetext || ""}
+                                onChange={(v) =>
+                                  updateField(index, "badgetext", v)
+                                }
+                              />
+                            </S1Field>
+                            <UniversalRangeControl
+                              label={__("Font Size", "store-one")}
+                              responsive={false}
+                              value={rule.badge_style?.text_size}
+                              units={["px"]}
+                              min={1}
+                              max={100}
+                              onChange={(v) => {
+                                const updatedBadgeStyle = {
+                                  ...rule.badge_style,
+                                  text_size: v,
+                                };
+
+                                updateField(index, "badge_style", updatedBadgeStyle);
+                              }}
+                              defaultValue="18px"
+                            />
+                            <THBackgroundControl
+                              allowGradient={true}
+                              label={__("Background", "store-one")}
+                              value={rule.badge_style?.bgclr || "#ffffff"}
+                              onChange={(v) => {
+                                const updatedBadgeStyle = {
+                                  ...rule.badge_style,
+                                  bgclr: v,
+                                };
+
+                                const updatedRule = {
+                                  ...rule,
+                                  badge_style: updatedBadgeStyle,
+                                };
+
+                                updateField(
+                                  index,
+                                  "badge_style",
+                                  updatedBadgeStyle,
+                                );
+                                onLivePreview?.(updatedRule, index);
+                              }}
+                            />
+                            <S1Field>
+                              <THBackgroundControl
+                                allowGradient={true}
+                                label={__("Text", "store-one")}
+                                value={rule.badge_style?.textclr || "#111"}
+                                onChange={(v) => {
+                                  const updatedBadgeStyle = {
+                                    ...rule.badge_style,
+                                    textclr: v,
+                                  };
+
+                                  const updatedRule = {
+                                    ...rule,
+                                    badge_style: updatedBadgeStyle,
+                                  };
+
+                                  updateField(
+                                    index,
+                                    "badge_style",
+                                    updatedBadgeStyle,
+                                  );
+                                  onLivePreview?.(updatedRule, index);
+                                }}
+                              />
+                            </S1Field>
+                          </>
+                        )}
                         {rule.badges_type === "badges_images" && (
-                         <S1Field label={__("Badge Images", "store-one")}>
-                         <TrustBadgeSelector
-                              rule={rule}
-                              index={index}
-                              updateField={updateField}
-                              presetBadges={TRUST_BADGES_IMAGES}
-                              allowUpload={true}
-                              />
-                         </S1Field>
-                         )}
-                         {rule.badges_type === "badges_css" && (
-                         <S1Field label={__("Badge CSS", "store-one")}>
-                         <TrustBadgeSelector
-                              rule={rule}
-                              index={index}
-                              updateField={updateField}
-                              presetBadges={TRUST_BADGES_CSS}
-                              allowUpload={false}
-                              />
-                         </S1Field>
-                         )}
-                         {rule.badges_type === "badges_advance" && (
-                              <S1Field label={__("Badge Advance", "store-one")}>
+                          <>
+                            <UniversalRangeControl
+                              label={__("Width", "store-one")}
+                              responsive={false}
+                              value={rule.badge_style?.image_width}
+                              units={["px"]}
+                              min={1}
+                              max={500}
+                              onChange={(v) => {
+                                const updatedBadgeStyle = {
+                                  ...rule.badge_style,
+                                  image_width: v,
+                                };
+
+                                updateField(index, "badge_style", updatedBadgeStyle);
+                              }}
+                              defaultValue="100px"
+                            />
+                            <S1Field label={__("Badge Images", "store-one")}>
                               <TrustBadgeSelector
-                              rule={rule}
-                              index={index}
-                              updateField={updateField}
-                              presetBadges={TRUST_BADGES_IMAGES}
-                              allowUpload={false}
+                                rule={rule}
+                                index={index}
+                                updateField={updateField}
+                                presetBadges={TRUST_BADGES_IMAGES}
+                                allowUpload={true}
                               />
-                              </S1Field>
-                         )}
-                         <TrustBadgeStyleControl
-                         value={rule.badge_style}
-                         onChange={(v) => updateField(index, "badge_style", v)}
-                         />
+                            </S1Field>
+                          </>
+                        )}
+                        {rule.badges_type === "badges_css" && (
+                          <>
+                            <THBackgroundControl
+                              allowGradient={true}
+                              label={__("Background", "store-one")}
+                              value={rule.badge_style?.bgclr || "#ffffff"}
+                              onChange={(v) => {
+                                const updatedBadgeStyle = {
+                                  ...rule.badge_style,
+                                  bgclr: v,
+                                };
+
+                                const updatedRule = {
+                                  ...rule,
+                                  badge_style: updatedBadgeStyle,
+                                };
+
+                                updateField(
+                                  index,
+                                  "badge_style",
+                                  updatedBadgeStyle,
+                                );
+                                onLivePreview?.(updatedRule, index);
+                              }}
+                            />
+                            <S1Field>
+                              <THBackgroundControl
+                                allowGradient={true}
+                                label={__("Text", "store-one")}
+                                value={rule.badge_style?.textclr || "#111"}
+                                onChange={(v) => {
+                                  const updatedBadgeStyle = {
+                                    ...rule.badge_style,
+                                    textclr: v,
+                                  };
+
+                                  const updatedRule = {
+                                    ...rule,
+                                    badge_style: updatedBadgeStyle,
+                                  };
+
+                                  updateField(
+                                    index,
+                                    "badge_style",
+                                    updatedBadgeStyle,
+                                  );
+                                  onLivePreview?.(updatedRule, index);
+                                }}
+                              />
+                            </S1Field>
+                            <S1Field label={__("Badge CSS", "store-one")}>
+                              <TrustBadgeSelector
+                                rule={rule}
+                                index={index}
+                                updateField={updateField}
+                                presetBadges={TRUST_BADGES_CSS}
+                                allowUpload={false}
+                              />
+                            </S1Field>
+                          </>
+                        )}
+                        {rule.badges_type === "badges_advance" && (
+                          <>
+                            <THBackgroundControl
+                              allowGradient={true}
+                              label={__("Background", "store-one")}
+                              value={rule.badge_style?.bgclr || "#ffffff"}
+                              onChange={(v) => {
+                                const updatedBadgeStyle = {
+                                  ...rule.badge_style,
+                                  bgclr: v,
+                                };
+
+                                const updatedRule = {
+                                  ...rule,
+                                  badge_style: updatedBadgeStyle,
+                                };
+
+                                updateField(
+                                  index,
+                                  "badge_style",
+                                  updatedBadgeStyle,
+                                );
+                                onLivePreview?.(updatedRule, index);
+                              }}
+                            />
+                            <S1Field>
+                              <THBackgroundControl
+                                allowGradient={true}
+                                label={__("Text", "store-one")}
+                                value={rule.badge_style?.textclr || "#111"}
+                                onChange={(v) => {
+                                  const updatedBadgeStyle = {
+                                    ...rule.badge_style,
+                                    textclr: v,
+                                  };
+
+                                  const updatedRule = {
+                                    ...rule,
+                                    badge_style: updatedBadgeStyle,
+                                  };
+
+                                  updateField(
+                                    index,
+                                    "badge_style",
+                                    updatedBadgeStyle,
+                                  );
+                                  onLivePreview?.(updatedRule, index);
+                                }}
+                              />
+                            </S1Field>
+
+                            <S1Field label={__("Badge Advance", "store-one")}>
+                              <TrustBadgeSelector
+                                rule={rule}
+                                index={index}
+                                updateField={updateField}
+                                presetBadges={TRUST_BADGES_IMAGES}
+                                allowUpload={false}
+                              />
+                            </S1Field>
+                          </>
+                        )}
+                        <TrustBadgeStyleControl
+                          value={rule.badge_style}
+                          badgeType={rule.badges_type}
+                          onChange={(v) => updateField(index, "badge_style", v)}
+                        />
                       </div>
                     ),
                   },

@@ -10,77 +10,69 @@ import FlipControl from "@storeone-control/FlipControl";
 import UniversalDimensionControl from "@storeone-control/UniversalDimensionControl";
 import PositionControl from "@storeone-control/PositionControl";
 
-export default function TrustBadgeStyleControl({ value = {}, onChange }) {
-
-const update = (key, val) => {
-onChange({
-...value,
-[key]: val,
-});
-};
-
-return ( 
-
-<>
-  {/* Opacity */}
-  <OpacityControl
-value={value?.transform?.opacity ?? "100"}
-label={__("Badge Opacity")}
-description={__("Control the badge transparency")}
-onChange={(v) =>
-    update("transform", {
-        ...value?.transform,
-        opacity: v
-    })
-}
-/>
-  {/* Rotation */}
-  <RotationControl
-    value={{
-        rotateX: value?.transform?.rotateX,
-        rotateY: value?.transform?.rotateY,
-        rotateZ: value?.transform?.rotateZ
-    }}
-    label={__("Badge Rotation")}
-    description={__("Rotate the badge in 3D space")}
-    onChange={(v) => {
-        update("transform", {
+export default function TrustBadgeStyleControl({ value = {}, badgeType, onChange }) {
+  const update = (key, val) => {
+    onChange({
+      ...value,
+      [key]: val,
+    });
+  };
+  
+  return (
+    <>
+      {/* Opacity */}
+      <OpacityControl
+        value={value?.transform?.opacity ?? "100"}
+        label={__("Badge Opacity")}
+        description={__("Control the badge transparency")}
+        onChange={(v) =>
+          update("transform", {
+            ...value?.transform,
+            opacity: v,
+          })
+        }
+      />
+      {/* Rotation */}
+      <RotationControl
+        value={{
+          rotateX: value?.transform?.rotateX,
+          rotateY: value?.transform?.rotateY,
+          rotateZ: value?.transform?.rotateZ,
+        }}
+        label={__("Badge Rotation")}
+        description={__("Rotate the badge in 3D space")}
+        onChange={(v) => {
+          update("transform", {
             ...value?.transform,
             rotateX: v.rotateX,
             rotateY: v.rotateY,
-            rotateZ: v.rotateZ
-        });
-    }}
-/>
-{/* Flip Text */}
-<FlipControl
-    value={value.flip}
-    onChange={(v) => update("flip", v)}
-/>
+            rotateZ: v.rotateZ,
+          });
+        }}
+      />
+    
+      {badgeType !== "badges_images" && (
+      <FlipControl value={value.flip} onChange={(v) => update("flip", v)} />
+      )}
 
-<PositionControl
-value={value?.position || {}}
-onChange={(v)=>
-    update("position",v)
-}
-/>
+      <PositionControl
+        value={value?.position || {}}
+        onChange={(v) => update("position", v)}
+      />
 
+      <UniversalDimensionControl
+        label="Margin"
+        value={value?.margin}
+        responsive={false}
+        onChange={(v) => update("margin", v)}
+      />
 
- <UniversalDimensionControl
-      label="Margin"
-      value={value?.margin}
-      responsive={false}
-      onChange={(v)=>update("margin",v)}
- />
-
-
-<UniversalDimensionControl
-    label="Padding"
-     value={value?.padding}
-      responsive={false}
-      onChange={(v)=>update("padding",v)}
-  />
-</>
-
-);
+      <UniversalDimensionControl
+        label="Padding"
+        value={value?.padding}
+        responsive={false}
+        onChange={(v) => update("padding", v)}
+      />
+    </>
+  );
 }

@@ -1,0 +1,111 @@
+.s1-product-badges-wrap{
+    display: flex;
+    justify-content: center;
+    margin: 1rem;
+}
+
+.s1-preview-product.s1-trust-badges{
+  width:300px;
+  height:400px;
+  background:#fff;
+  border:1px solid #e5e5e5;
+  border-radius:6px;
+  padding:14px;
+  position:relative;
+  box-shadow:0 2px 6px rgba(0,0,0,0.05);
+}
+
+/* badge */
+.s1-product-badges-wrap{
+  display:flex;
+  justify-content:center;
+  padding:20px;
+}
+
+.s1-preview-product{
+  width:260px;
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:6px;
+  padding:14px;
+  position:relative;
+  box-shadow:0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* badge */
+
+.s1-preview-badge{
+  position:absolute;
+  z-index:5;
+  font-size:12px;
+  border-radius:4px;
+  padding:6px 10px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:600;
+  line-height:1;
+}
+
+/* image badge */
+
+.s1-preview-badge img{
+  display:block;
+  height:auto;
+}
+
+/* css badge */
+
+.s1-css-badge{
+  background:#111;
+  color:#fff;
+}
+
+/* advance badge */
+
+.s1-advance-badge{
+  background:#2563eb;
+  color:#fff;
+  gap:4px;
+}
+
+/* skeleton image */
+
+.s1-preview-image-skeleton{
+  width:100%;
+  height:170px;
+  background:#eee;
+  border-radius:4px;
+}
+
+/* skeleton title */
+
+.s1-preview-title-skeleton{
+  margin-top:12px;
+}
+
+.s1-preview-title-skeleton span{
+  display:block;
+  height:10px;
+  background:#eee;
+  border-radius:4px;
+  margin-bottom:6px;
+}
+
+.s1-preview-title-skeleton span:first-child{
+  width:80%;
+}
+
+.s1-preview-title-skeleton span:last-child{
+  width:60%;
+}
+
+/* skeleton price */
+
+.s1-preview-price-skeleton{
+  width:40%;
+  height:12px;
+  background:#eee;
+  border-radius:4px;
+  margin-top:10px;
+}
