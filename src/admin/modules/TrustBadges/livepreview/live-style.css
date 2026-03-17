@@ -109,3 +109,69 @@
   border-radius:4px;
   margin-top:10px;
 }
+
+
+/* ================================
+   COMMON WRAPPER
+================================ */
+.s1-preview-badge {
+  position: absolute;
+  z-index: 2;
+}
+
+/* ================================
+   TEXT BADGE
+================================ */
+.s1-text-badge {
+  display: inline-block;
+  font-weight: 600;
+}
+
+/* ================================
+   NEW BADGE (IMPROVED)
+================================ */
+.s1-css-badge-new {
+  display: inline-block;
+  font-weight: 700;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+
+  /*important for nice look */
+  padding: 6px 12px;
+  font-size: 12px;
+
+  /*shadow like screenshot */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+/* ================================
+   SALE BADGE (DIAMOND IMPROVED)
+================================ */
+.s1-css-badge-sale {
+  width: 70px;
+  height: 70px;
+  transform: rotate(45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* shadow */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* INNER TEXT */
+.s1-css-badge-sale .s1-css-badge-inner {
+  transform: rotate(-45deg);
+  text-align: center;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+}
+.s1-css-badge-new {
+  border-radius: 3px;
+}
+
+.s1-css-badge-sale {
+  border-radius: 2px;
+}

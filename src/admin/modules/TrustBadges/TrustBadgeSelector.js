@@ -1,6 +1,8 @@
 import { useRef, useEffect } from "@wordpress/element";
-
+import { __, sprintf } from "@wordpress/i18n";
+import { S1Field, S1FieldGroup } from "@storeone-global/S1Field";
 export default function TrustBadgeSelector({
+  title,
   rule,
   index,
   updateField,
@@ -136,6 +138,8 @@ export default function TrustBadgeSelector({
 
   return (
 
+    <S1FieldGroup title={title}>
+
     <div className="s1-badge-wrapper-group">
 
       <div className="s1-badge-grid">
@@ -189,6 +193,7 @@ export default function TrustBadgeSelector({
       </div>
 
     </div>
+    </S1FieldGroup>
 
   );
 

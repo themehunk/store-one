@@ -2579,25 +2579,74 @@ transition:all .2s ease;
     gap:6px;
 }
 
-/* buttons */
-.s1-flip-orientation .s1-flip-btn,.s1-posiiton-btn button{
-    flex:1;
-    justify-content:center;
-     border:1px solid #eee;
-    background:#fff;
-    font-size:12px;
-    height:32px;
+/* ================================
+   BUTTON GROUP BASE
+================================ */
+.s1-flip-orientation .s1-flip-btn,
+.s1-posiiton-btn button {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 34px;
+    padding: 0 10px;
+
+    font-size: 12px;
+    font-weight: 500;
+
+    border: 1px solid #dcdcdc;
+    background: #fff;
+    color: #1e1e1e;
+
     border-radius: 0;
     box-shadow: none;
-    color: #1e1e1e;
+
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.s1-flip-control .components-button-group.s1-flip-orientation-buttons{
+    display:flex;
+    gap:6px;
 }
 
-/* active state */
+/* ================================
+   HOVER
+================================ */
+.s1-flip-orientation .s1-flip-btn:hover,
+.s1-posiiton-btn button:hover {
+    border-color: #524cff;
+    color: #524cff;
+    background: #f6f7ff;
+}
+
+/* ================================
+   ACTIVE STATE
+================================ */
 .s1-flip-orientation .s1-flip-btn.is-pressed,
-.s1-posiiton-btn button.is-pressed{
-    background:#524cff!important;
-    border-color:#524cff!important;
-    color:#fff!important;
+.s1-posiiton-btn button.is-pressed {
+    background: #524cff !important;
+    border-color: #524cff !important;
+    color: #fff !important;
+
+    box-shadow: 0 2px 6px rgba(82, 76, 255, 0.25);
+}
+
+/* ================================
+   GROUP SPACING (important)
+================================ */
+.s1-posiiton-btn {
+    display: flex;
+    gap: 6px;
+}
+
+/* ================================
+   OPTIONAL: ICON ALIGN FIX
+================================ */
+.s1-flip-btn svg,
+.s1-posiiton-btn button svg {
+    width: 14px;
+    height: 14px;
 }
 
 /* hover */

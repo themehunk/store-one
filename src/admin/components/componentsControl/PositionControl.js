@@ -1,7 +1,7 @@
 import { Button, ButtonGroup } from "@wordpress/components";
 import { __ } from "@wordpress/i18n";
 import UniversalRangeControl from "@storeone-global/UniversalRangeControl";
-import { S1Field } from "@storeone-global/S1Field";
+import { S1Field,S1FieldGroup } from "@storeone-global/S1Field";
 
 export default function PositionControl({ value = {}, onChange }) {
 
@@ -17,12 +17,12 @@ const anchor = value?.anchor || "top-left";
 const position = value?.position || "top";
 
 return(
-
+<S1FieldGroup title={__("Position Mode")}>
 <div className="s1-position-control">
 
 {/* MODE */}
 
-<S1Field label={__("Position Mode")}>
+<S1Field>
 
 <ButtonGroup className="s1-posiiton-btn">
 
@@ -243,6 +243,7 @@ onClick={()=>update("align","right")}
 )}
 
 </div>
+</S1FieldGroup>
 
 );
 

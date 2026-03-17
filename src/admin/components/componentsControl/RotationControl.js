@@ -1,6 +1,6 @@
 import { __ } from "@wordpress/i18n";
 import UniversalRangeControl from "@storeone-global/UniversalRangeControl";
-import { S1Field } from "@storeone-global/S1Field";
+import { S1Field,S1FieldGroup } from "@storeone-global/S1Field";
 
 export default function RotationControl({
     value = {},
@@ -18,8 +18,8 @@ export default function RotationControl({
 
     return (
        
-
-            <S1Field label={label} description={description}>
+             <S1FieldGroup title={label}>
+            <S1Field>
 
                 <div className="s1-rotation-grid">
 
@@ -65,6 +65,7 @@ export default function RotationControl({
                 </div>
 
             </S1Field>
+            </S1FieldGroup>
 
  
     );

@@ -67,21 +67,20 @@ export default function TrustBadgeStyleControl({ value = {}, badgeType, onChange
         responsive={false}
         onChange={(v) => update("margin", v)}
       />
-
+     {["badges_text", "badges_images"].includes(badgeType) && (
       <UniversalDimensionControl
         label="Padding"
         value={value?.padding}
         responsive={false}
         onChange={(v) => update("padding", v)}
       />
-    {badgeType == "badges_text" && (
-        <UniversalBorderControl
-            value={value?.border}
-            onChange={(v) =>
-            update("border", v)
-            }
-        />
-        )}
+      )}
+      {["badges_text", "badges_css"].includes(badgeType) && (
+      <UniversalBorderControl
+        value={value?.border}
+        onChange={(v) => update("border", v)}
+      />
+    )}
     </>
   );
 }
