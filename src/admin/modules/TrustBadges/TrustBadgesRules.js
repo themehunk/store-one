@@ -32,6 +32,7 @@ const newBadgesTRule = () => ({
   open: true,
   status: "active",
   badge_title: "Trust Badges",
+  displayBadge:"s1-amount",
   show_badges: "all_products",
   products: [],
   categories: [],
@@ -45,7 +46,7 @@ const newBadgesTRule = () => ({
 
   exclude_tags_enabled: false,
   exclude_tags: [],
-  
+
   flexible_id: crypto.randomUUID(),
 
   badges_type: "badges_images",
@@ -174,6 +175,19 @@ export default function TrustBadgesRules({ rules, onChange, onLivePreview }) {
       updatedRule = applyCssBadgeDefaults(updatedRule, val);
     }
 
+    /* ADVANCE DEFAULT - on type select */
+    if (field === "badges_type" && val === "badges_advance") {
+      updatedRule = applyAdvanceBadgeDefaults(updatedRule, "one");
+    }
+
+    /* ADVANCE DEFAULT - on design change */
+    if (
+      field === "badge_advance_type" &&
+      updatedRule.badges_type === "badges_advance"
+    ) {
+      updatedRule = applyAdvanceBadgeDefaults(updatedRule, val);
+    }
+
     arr[i] = updatedRule;
 
     updateAll(arr);
@@ -245,6 +259,21 @@ export default function TrustBadgesRules({ rules, onChange, onLivePreview }) {
     },
   ];
 
+  const TRUST_BADGES_ADV = [
+    {
+      id: "one",
+      label: "One",
+      preview:
+        "https://plugins.yithemes.com/3829c3a0d57b0af0843e4135c4e81633/wp-content/plugins/yith-woocommerce-badge-management-premium/assets/images/advanced-badge-previews/2.svg",
+    },
+    {
+      id: "two",
+      label: "Two",
+      preview:
+        "https://plugins.yithemes.com/3829c3a0d57b0af0843e4135c4e81633/wp-content/plugins/yith-woocommerce-badge-management-premium/assets/images/advanced-badge-previews/5.svg",
+    },
+  ];
+
   // for type css helper deafult
   const applyCssBadgeDefaults = (rule, type) => {
     const currentStyle = rule.badge_style || {};
@@ -283,7 +312,37 @@ export default function TrustBadgesRules({ rules, onChange, onLivePreview }) {
 
     return rule;
   };
+// advance color default
+// for advance badge default
+const applyAdvanceBadgeDefaults = (rule, type) => {
+  const currentStyle = rule.badge_style || {};
 
+  if (type === "one") {
+    return {
+      ...rule,
+      badge_advance_type: type,
+      badge_style: {
+        ...currentStyle,
+        bgclr: "#f97316", // orange
+        textclr: "#ffffff",
+      },
+    };
+  }
+
+  if (type === "two") {
+    return {
+      ...rule,
+      badge_advance_type: type,
+      badge_style: {
+        ...currentStyle,
+        bgclr: "#d946ef",
+        textclr: "#ffffff",
+      },
+    };
+  }
+
+  return rule;
+};
   return (
     <div className="store-one-rules-container">
       <h3 className="store-one-section-title">
@@ -768,7 +827,34 @@ export default function TrustBadgesRules({ rules, onChange, onLivePreview }) {
                         )}
                         {rule.badges_type === "badges_advance" && (
                           <>
-                            <THBackgroundControl
+                           
+                              <TrustBadgeSelector
+                                 title={__("Advance Badges", "store-one")}
+                                rule={rule}
+                                index={index}
+                                updateField={updateField}
+                                presetBadges={TRUST_BADGES_ADV}
+                                allowUpload={false}
+                                badgeType="advance"
+                              />
+
+                              <S1Field label={__("Display", "store-one")}>
+                              <SelectControl
+                                value={rule.displayBadge}
+                                options={[
+                                  {
+                                    label: __("Amount", "store-one"),
+                                    value: "s1-amount",
+                                  },
+                                  {
+                                    label: __("Percentage", "store-one"),
+                                    value: "s1-percent",
+                                  },
+                                ]}
+                                onChange={(v) => updateField(index, "displayBadge", v)}
+                              />
+                            </S1Field>
+                               <THBackgroundControl
                               allowGradient={true}
                               label={__("Background", "store-one")}
                               value={rule.badge_style?.bgclr || "#ffffff"}
@@ -791,8 +877,7 @@ export default function TrustBadgesRules({ rules, onChange, onLivePreview }) {
                                 onLivePreview?.(updatedRule, index);
                               }}
                             />
-                            <S1Field>
-                              <THBackgroundControl
+                            <THBackgroundControl
                                 allowGradient={true}
                                 label={__("Text", "store-one")}
                                 value={rule.badge_style?.textclr || "#111"}
@@ -815,17 +900,7 @@ export default function TrustBadgesRules({ rules, onChange, onLivePreview }) {
                                   onLivePreview?.(updatedRule, index);
                                 }}
                               />
-                            </S1Field>
 
-                           
-                              <TrustBadgeSelector
-                                title={__("Advance Badges", "store-one")}
-                                rule={rule}
-                                index={index}
-                                updateField={updateField}
-                                presetBadges={TRUST_BADGES_IMAGES}
-                                allowUpload={false}
-                              />
                             
                           </>
                         )}

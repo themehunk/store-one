@@ -197,6 +197,8 @@ borderBottomRightRadius: border?.radius?.bottom || "0px",
 borderBottomLeftRadius: border?.radius?.left || "0px",
 };
 
+
+
 if (type === "new") {
   return (
     <div className="s1-preview-badge" style={wrapperStyle}>
@@ -226,9 +228,46 @@ return null;
 
 };
 
-const renderAdvanceBadge = () => ( <div className="s1-preview-badge" style={wrapperStyle}> <div className="s1-advance-badge" style={innerStyle}>
-★ {settings.badgetext || "Advance"} </div> </div>
-);
+const renderAdvanceBadge = () => {
+  const type = settings?.badge_advance_type;
+  const display = settings?.displayBadge;
+
+  const value =
+    display === "s1-percent" ? "50%" : "50$";
+
+    const advinnerStyle = {
+      fontSize: style?.text_size || "18px",
+      background: style?.bgclr || "#0a70ed",
+      color: style?.textclr || "#fff",
+
+      "--adv-bg": style?.bgclr || "#0a70ed",
+    };
+
+
+  if (type === "one") {
+    return (
+      <div className="s1-preview-badge" style={wrapperStyle}>
+        <div className="s1-adv-circle" style={advinnerStyle}>
+          <div>{value}</div>
+          <small>OFF</small>
+        </div>
+      </div>
+    );
+  }
+
+  if (type === "two") {
+    return (
+      <div className="s1-preview-badge" style={wrapperStyle}>
+        <div className="s1-adv-burst" style={advinnerStyle}>
+          <div>{value}</div>
+          <small>OFF</small>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+};
 
 const renderBadge = () => {
 switch (settings.badges_type) {
