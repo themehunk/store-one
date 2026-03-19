@@ -257,6 +257,13 @@ export default function TrustBadgesRules({ rules, onChange, onLivePreview }) {
       preview:
         "https://plugins.yithemes.com/dd58b7d04f54d5afda6424614772c9d6/wp-content/plugins/yith-woocommerce-badge-management-premium/assets/images/css-badge-previews/4.svg",
     },
+    {
+      id: "newsale",
+      label: "NewSale",
+      preview:
+        "https://plugins.yithemes.com/f08ccb2bd05b3bfbef4dbd0af305e5ef/wp-content/plugins/yith-woocommerce-badge-management-premium/assets/images/css-badge-previews/5.svg",
+    },
+    
   ];
 
   const TRUST_BADGES_ADV = [
@@ -271,6 +278,24 @@ export default function TrustBadgesRules({ rules, onChange, onLivePreview }) {
       label: "Two",
       preview:
         "https://plugins.yithemes.com/3829c3a0d57b0af0843e4135c4e81633/wp-content/plugins/yith-woocommerce-badge-management-premium/assets/images/advanced-badge-previews/5.svg",
+    },
+    {
+      id: "three",
+      label: "Three",
+      preview:
+        "https://plugins.yithemes.com/f08ccb2bd05b3bfbef4dbd0af305e5ef/wp-content/plugins/yith-woocommerce-badge-management-premium/assets/images/advanced-badge-previews/8.svg",
+    },
+    {
+      id: "four",
+      label: "Four",
+      preview:
+        "https://plugins.yithemes.com/f08ccb2bd05b3bfbef4dbd0af305e5ef/wp-content/plugins/yith-woocommerce-badge-management-premium/assets/images/advanced-badge-previews/4.svg",
+    },
+    {
+      id: "five",
+      label: "Five",
+      preview:
+        "https://plugins.yithemes.com/resources/yith-woocommerce-badge-management/badges/previews/css/9.svg",
     },
   ];
 
@@ -294,6 +319,17 @@ export default function TrustBadgesRules({ rules, onChange, onLivePreview }) {
       };
     }
 
+    if (type === "newsale") {
+      return {
+        ...rule,
+        badge_css_type: type,
+        badge_style: {
+          ...currentStyle,
+          bgclr: "#45d0eb",
+          textclr: "#ffffff",
+        },
+      };
+    }
     if (type === "sale") {
       return {
         ...rule,
@@ -340,6 +376,40 @@ const applyAdvanceBadgeDefaults = (rule, type) => {
       },
     };
   }
+  if (type === "three") {
+    return {
+      ...rule,
+      badge_advance_type: type,
+      badge_style: {
+        ...currentStyle,
+        bgclr: "#113d7a",
+        textclr: "#ffffff",
+      },
+    };
+  }
+  if (type === "four") {
+    return {
+      ...rule,
+      badge_advance_type: type,
+      badge_style: {
+        ...currentStyle,
+        bgclr: "#47DCBF",
+        textclr: "#ffffff",
+      },
+    };
+  }
+  if (type === "five") {
+    return {
+      ...rule,
+      badge_advance_type: type,
+      badge_style: {
+        ...currentStyle,
+        bgclr: "#da9005",
+        textclr: "#ffffff",
+      },
+    };
+  }
+
 
   return rule;
 };

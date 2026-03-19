@@ -223,6 +223,22 @@ if (type === "sale") {
   );
 }
 
+if (type === "newsale") {
+  return (
+  <div className="s1-ribbon-wrap-s2" style={wrapperStyle}>
+      <div className="s1-ribbon-wrap" style={{
+        "--badge-color": style?.bgclr,
+        "--badge-txt": style?.textclr 
+      }}>
+      <div className="s1-ribbon-s2"></div>
+      <div className="s1-ribbon-text">
+        {settings.badgetext || "ACCESSORIES!"}
+      </div>
+    </div>
+  </div>
+  );
+}
+
 return null;
 
 
@@ -266,8 +282,91 @@ const renderAdvanceBadge = () => {
     );
   }
 
+  if (type === "three") {
+  return (
+    <div className="s1-preview-badge s1-3" style={wrapperStyle}>
+      
+      <div className="s1-badge-svg" style={{
+        "--badge-3-color": style?.bgclr,
+        "--badge-3-txt": style?.textclr 
+      }}>
+        <svg viewBox="0 0 65.75 71.375">
+          <polygon
+            className="s1-secondary"
+            points="58.084,0 58.084,71.375 34.875,64.365 8.916,70.625 8.916,0"
+          />
+          <polygon
+            className="s1-primary"
+            points="65.75,30.25 32.875,30.25 0,30.25 5.345,38.5 0,45.75 32.875,45.75 65.75,45.75 60.404,38.5"
+          />
+        </svg>
+      </div>
+
+      <div className="s1-badge-text" style={{
+        "--badge-3-txt": style?.textclr 
+      }}>
+        <div className="percent">{value}</div>
+        <div className="label">{"DISCOUNT"}</div>
+        <div className="save">{"Save $15"}</div>
+      </div>
+
+    </div>
+  );
+}
+
+if (type === "four") {
+  return (
+    <div className="s1-preview-badge s1-corner-badge" style={wrapperStyle}>
+      
+      {/* SVG SHAPE */}
+      <div className="s1-badge-shape" style={{
+        "--badge-4-color": style?.bgclr,
+        "--badge-4-txt": style?.textclr 
+      }}>
+        <svg viewBox="0 0 91.333 91">
+          <polygon
+            points="53.666,0 91.333,38.385 91.333,91 0,0"
+            
+          />
+        </svg>
+      </div>
+
+      {/* ROTATED TEXT */}
+      <div className="s1-badge-text" style={{
+        "--badge-4-color": style?.bgclr,
+        "--badge-4-txt": style?.textclr 
+      }}>
+        <div className="value">-{value || "32"}</div>
+      </div>
+
+    </div>
+  );
+}
+
+if (type === "five") {
+  return (
+    <div className="s1-adv-css-badge s1-5" style={wrapperStyle}>
+      
+      <div className="s1-css-s1" style={{
+        "--badge-5-color": style?.bgclr,
+        "--badge-5-txt": style?.textclr 
+      }}></div>
+
+      <div className="s1-css-text" style={{
+        "--badge-5-color": style?.bgclr,
+        "--badge-5-txt": style?.textclr 
+      }}>
+        {"Only 5 availables"}
+      </div>
+
+    </div>
+  );
+}
+
   return null;
 };
+
+
 
 const renderBadge = () => {
 switch (settings.badges_type) {

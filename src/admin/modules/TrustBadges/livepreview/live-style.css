@@ -250,3 +250,221 @@
 .s1-adv-burst small {
   font-size: 10px;
 }
+/* three */
+.s1-3.s1-preview-badge {
+  position: relative;
+  width: 65px;
+  height: 71px;
+}
+
+/* SVG */
+.s1-3 .s1-badge-svg {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.s1-3 .s1-badge-svg svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.s1-3 .s1-primary {
+   fill: color-mix(
+    in srgb,
+    var(--badge-3-color) 90%,
+    black
+  );
+
+}
+
+.s1-3 .s1-secondary {
+  fill: var(--badge-3-color);
+}
+
+/* TEXT */
+.s1-3 .s1-badge-text {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  color: var(--badge-3-txt);
+
+}
+
+/* VALUE */
+.s1-3 .s1-badge-text .percent {
+  position: absolute;
+  top: 16px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+      font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* DISCOUNT */
+.s1-3 .s1-badge-text .label {
+  position: absolute;
+  top: 41px;
+    font-size: 7px;
+  left: 50%;
+  transform: translateX(-50%);
+ 
+  white-space: nowrap;
+  letter-spacing: 1px;
+}
+
+/* SAVE TEXT */
+.s1-3 .s1-badge-text .save {
+  position: absolute;
+  bottom: 16px;
+    left: 0;
+    right: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 9px;
+}
+/* four */
+/* WRAPPER */
+.s1-corner-badge {
+  position: relative;
+  width: 92px;
+  height: 92px;
+  overflow: hidden;
+}
+
+/* SVG SHAPE */
+.s1-corner-badge .s1-badge-shape {
+  width: 100%;
+  height: 100%;
+}
+
+.s1-corner-badge .s1-badge-shape svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* TEXT CONTAINER (CORE MAGIC) */
+.s1-corner-badge .s1-badge-text {
+  position: absolute;
+
+  /* EXACT YITH VALUES */
+  width: 145px;
+  top: 27px;
+  right: -28px;
+
+  transform: rotate(45deg);
+
+  text-align: center;
+  color: var(--badge-4-txt);
+  font-weight: 600;
+  line-height: 1;
+}
+.s1-badge-shape svg{
+  fill:var(--badge-4-color);
+}
+/* VALUE TEXT */
+.s1-corner-badge .s1-badge-text .value {
+  font-size: 15px;
+  letter-spacing: 0.5px;
+}
+
+/* fith style */
+/* WRAPPER */
+.s1-5 {
+  position: relative;
+  display: inline-block;
+}
+
+/* MAIN SHAPE */
+.s1-5 .s1-css-s1 {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+
+  background: var(--badge-5-color, #da9005);
+
+  transform: skewX(-10deg);
+}
+
+/* SHADOW LAYER 1 */
+.s1-5 .s1-css-s1::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background: inherit;
+  opacity: 0.5;
+
+  transform: translate(-3%, 7%);
+}
+
+/* SHADOW LAYER 2 */
+.s1-5 .s1-css-s1::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background: inherit;
+  opacity: 0.5;
+
+  transform: translate(-6%, 14%);
+}
+
+/* TEXT */
+.s1-5 .s1-css-text {
+  position: relative;
+  padding: 6px 14px;
+
+  color: var(--badge-5-txt);
+  font-weight: 600;
+  font-size: 14px;
+
+  white-space: nowrap;
+}
+/****************/
+/* ribbon css */
+/****************/
+/* WRAPPER */
+.s1-ribbon-wrap {
+  display: flex;
+  align-items: stretch;
+}
+/* LEFT TRIANGLE (MAIN MAGIC) */
+.s1-ribbon-s2 {
+  width: 25px;
+  background: linear-gradient(
+    to top right,
+    transparent 50%,
+    var(--badge-color, #45d0eb) 50%
+  );
+}
+/* MAIN TEXT BOX */
+.s1-ribbon-text {
+  background: var(--badge-color, #45d0eb);
+  color: var(--badge-txt);
+  padding: 6px 12px 6px 6px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  position: relative;
+}
+/* SMALL RIGHT BOTTOM TRIANGLE */
+.s1-ribbon-text::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -6px;
+  border-right: 5px solid transparent;
+  border-left: 2px solid transparent;
+  border-top: 6px solid color-mix(
+    in srgb,
+    var(--badge-color) 70%,
+    black
+  );
+}
