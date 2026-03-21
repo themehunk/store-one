@@ -81,7 +81,7 @@ class StoreOne_Trust_Badges_Frontend {
                 continue;
             }
 
-            echo wp_kses_post( $this->render_single_badge( $rule ) );
+            echo $this->render_single_badge( $rule );
         }
     }
 
@@ -245,6 +245,49 @@ class StoreOne_Trust_Badges_Frontend {
         return '<div class="s1-css-badge-sale" style="'.esc_attr($style).'">
                     <div class="s1-css-badge-inner">'.esc_html($text).'</div>
                 </div>';
+    }elseif($type === 'newsale'){
+        $stylec = sprintf(
+                '--badge-color:%s;--badge-txt:%s;',
+                $style['bgclr'] ?? '#45d0eb',
+                $style['textclr'] ?? '#ffffff'
+            );
+        return '<div class="s1-ribbon-wrap-s2" style="'.esc_attr($stylec).'">
+          <div
+            class="s1-ribbon-wrap">
+            <div class="s1-ribbon-s2"></div>
+            <div class="s1-ribbon-text">
+             '.esc_html($text).'
+            </div>
+          </div>
+        </div>';
+    }
+    elseif($type === "sale_badge_pink") {
+        $stylec = sprintf(
+                '--badge-salebgcolor:%s;--badge-salebgtxt:%s;',
+                $style['bgclr'] ?? '#d4547e',
+                $style['textclr'] ?? '#ffffff'
+            );
+    return '<div class="s1-sale_badge_pink">
+          <div class="s1-sale-badge" style="'.esc_attr($stylec).'">
+          <span> '.esc_html($text).'</span>
+        </div>
+        </div>';
+    }
+    elseif ($type === "saletxt") {
+        $stylec = sprintf(
+                '--badge-saletxtbgcolor:%s;--badge-saletxt:%s;',
+                $style['bgclr'] ?? 'linear-gradient(90deg, #6366f1, #8b5cf6)',
+                $style['textclr'] ?? '#1e293b'
+            );
+      return 
+        '<div class="s1-sale_txt">
+          
+              <div class="s1-sale-underline" style="'.esc_attr($stylec).'">
+           '.esc_html($text).'
+            
+        </div>
+        </div>';
+      
     }
 
     // default NEW
@@ -270,6 +313,79 @@ class StoreOne_Trust_Badges_Frontend {
     return '<div class="s1-adv-burst" style="'.esc_attr($style).'">
                 <div>'.$value.'</div><small>OFF</small>
             </div>';
+    }
+    elseif($type === "four") {
+
+    $stylec = sprintf(
+        '--badge-4-color:%s; --badge-4-txt:%s;',
+        $style['bgclr'] ?? '#47DCBF',
+        $style['textclr'] ?? '#ffffff',
+    );
+
+    return 
+    '<div class="s1-preview-badge s1-corner-badge">
+        <div class="s1-badge-shape" style="'.esc_attr($stylec).'">
+            <svg viewBox="0 0 91.333 91">
+                <polygon points="53.666,0 91.333,38.385 91.333,91 0,0" />
+            </svg>
+        </div>
+
+        <div class="s1-badge-text" style="'.esc_attr($stylec).'">
+            <div class="value">-'.$value.'</div>
+        </div>
+    </div>';
+}
+elseif ($type === "five") {
+    $stylec = sprintf(
+        '--badge-5-color:%s; --badge-5-txt:%s;',
+        $style['bgclr'] ?? '#da9005',
+        $style['textclr'] ?? '#ffffff',
+    );
+    
+      return 
+        '<div class="s1-adv-css-badge s1-5">
+          <div
+            class="s1-css-s1"
+            style="'.esc_attr($stylec).'"
+          ></div>
+
+          <div
+            class="s1-css-text"
+            style="'.esc_attr($stylec).'"
+          >
+            '.esc_html( $product->get_stock_quantity() ).' Only available
+          </div>
+        </div>';
+      
+    }
+     elseif ($type === "daimond") {
+         $stylec = sprintf(
+        '--badge-daimondbgcolor:%s; --badge-daimondtxt:%s;',
+        $style['bgclr'] ?? 'linear-gradient(135deg, #ff7a18, #ff3d00)',
+        $style['textclr'] ?? '#ffffff',
+    );
+      return 
+        '<div class="s1-adv-css-badge s1-daimond">
+          <div class="s1-diamond-badge"  style="'.esc_attr($stylec).'">
+           <span>-'.$value.'</span>
+        </div>
+        </div>';
+    }
+    elseif ($type === "circle") {
+        $stylec = sprintf(
+        '--badge-circlebgcolor:%s; --badge-circletxt:%s;',
+        $style['bgclr'] ?? 'radial-gradient(circle, #ff4d6d 0%, #ff0033 100%)',
+        $style['textclr'] ?? '#ffffff',
+    );
+      return'
+        <div class="s1-adv-css-badge s1-circle">
+        <div class="s1-off-badge" style="'.esc_attr($stylec).'">
+        <div class="s1-off-inner">
+          <span class="s1-off-value">'.$value.'</span>
+          <span class="s1-off-text">OFF</span>
+        </div>
+        </div>
+      </div>';
     }
 
     return '<div class="s1-adv-circle" style="'.esc_attr($style).'">
@@ -520,4 +636,5 @@ private function get_advance_inner_style( $style ) {
     return in_array( $product->get_id(), $top_ids, true );
  }
 
+ 
 }

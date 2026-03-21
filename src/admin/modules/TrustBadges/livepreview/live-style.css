@@ -149,8 +149,8 @@
    SALE BADGE (DIAMOND IMPROVED)
 ================================ */
 .s1-css-badge-sale {
-  width: 70px;
-  height: 70px;
+  width: 60px;
+    height: 60px;
   transform: rotate(45deg);
   display: flex;
   align-items: center;
@@ -549,8 +549,8 @@
 
 /* s1-sale_badge_pink */
 .s1-sale_badge_pink .s1-sale-badge {
-  width: 90px;
-  height: 90px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   position: relative;
 

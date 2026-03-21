@@ -94,10 +94,10 @@ const newBadgesTRule = () => ({
       align: "left",
     },
     margin: {
-      top: "5px",
-      right: "5px",
-      bottom: "5px",
-      left: "5px",
+      top: "0px",
+      right: "0px",
+      bottom: "0px",
+      left: "0px",
     },
     padding: {
       top: "0px",
@@ -338,6 +338,25 @@ export default function TrustBadgesRules({ rules, onChange, onLivePreview }) {
             ...currentStyle.border,
             color: "#8BC34A",
           },
+          padding: {
+            top: "6px",
+            right: "12px",
+            bottom: "6px",
+            left: "12px",
+          },
+         margin: {
+            top: "0px",
+            right: "0px",
+            bottom: "0px",
+            left: "0px",
+          },
+          position: {
+          mode: "custom",
+          unit: "px",
+          anchor: "top-left",
+          top: "0",
+          left: "0",
+        },
         },
       };
     }
@@ -350,8 +369,28 @@ export default function TrustBadgesRules({ rules, onChange, onLivePreview }) {
           ...currentStyle,
           bgclr: "#45d0eb",
           textclr: "#ffffff",
-        },
-      };
+          padding: {
+            top: "0px",
+            right: "0px",
+            bottom: "0px",
+            left: "0px",
+          },
+          margin: {
+            top: "0px",
+            right: "0px",
+            bottom: "0px",
+            left: "0px",
+          },
+          position: {
+            mode: "custom",
+            unit: "px",
+            anchor: "top-right",
+            top: "0",
+            right: "0",
+          },
+         },
+         
+       };
     }
     if (type === "sale") {
       return {
@@ -364,6 +403,31 @@ export default function TrustBadgesRules({ rules, onChange, onLivePreview }) {
           border: {
             ...currentStyle.border,
             color: "#FF5722",
+            radius: {
+            top: "4px",
+            right: "4px",
+            bottom: "4px",
+            left: "4px",
+             },
+          },
+          padding: {
+            top: "0px",
+            right: "0px",
+            bottom: "0px",
+            left: "0px",
+          },
+          margin: {
+            top: "15px",
+            right: "15px",
+            bottom: "15px",
+            left: "15px",
+          },
+          position: {
+            mode: "custom",
+            unit: "px",
+            anchor: "top-left",
+            top: "10",
+            left: "10",
           },
         },
       };
@@ -376,6 +440,26 @@ export default function TrustBadgesRules({ rules, onChange, onLivePreview }) {
           ...currentStyle,
           bgclr: "#d4547e",
           textclr: "#ffffff",
+          padding: {
+            top: "0px",
+            right: "0px",
+            bottom: "0px",
+            left: "0px",
+          },
+          margin: {
+            top: "0px",
+            right: "0px",
+            bottom: "0px",
+            left: "0px",
+          },
+          position: {
+            mode: "custom",
+            unit: "px",
+            anchor: "top-left",
+            top: "12",
+            left: "12",
+          },
+         
           
         },
       };
@@ -389,6 +473,26 @@ export default function TrustBadgesRules({ rules, onChange, onLivePreview }) {
           ...currentStyle,
           bgclr: "linear-gradient(90deg, #6366f1, #8b5cf6)",
           textclr: "#1e293b",
+          padding: {
+            top: "0px",
+            right: "0px",
+            bottom: "0px",
+            left: "0px",
+          },
+          margin: {
+            top: "0px",
+            right: "0px",
+            bottom: "0px",
+            left: "0px",
+          },
+          position: {
+            mode: "custom",
+            unit: "px",
+            anchor: "top-left",
+           top: "12",
+            left: "12",
+          },
+         
           
         },
       };
