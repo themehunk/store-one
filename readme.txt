@@ -34,8 +34,10 @@ We are continuously improving the plugin with new features and enhancements.
 ### Pro Features:-
 
 * Frequently bought together
-* Bundle products
+Suggest related products that are commonly purchased together to increase average order value and improve the shopping experience.
 
+* Bundle products
+Group multiple products into a single bundle, allowing customers to purchase them together easily, often with added convenience or value.
 
 ### Theme Compatibility:-
 
