@@ -706,10 +706,13 @@ private function get_advance_inner_style( $style ) {
        HELPERS
     ========================= */
     private function is_recent_product( $product ) {
+
     static $recent_ids = null;
+
     if ( $recent_ids === null ) {
-        // Allow dev override (important)
+
         $limit = apply_filters( 'storeone_recent_products_limit', 10 );
+
         $args = array(
             'post_type'      => 'product',
             'posts_per_page' => $limit,
@@ -717,14 +720,16 @@ private function get_advance_inner_style( $style ) {
             'orderby'        => 'date',
             'order'          => 'DESC',
             'fields'         => 'ids',
-            'meta_query'     => WC()->query->get_meta_query(),
-            'tax_query'      => WC()->query->get_tax_query(),
+            'no_found_rows'  => true, // performance boost
         );
+
         $query = new WP_Query( $args );
+
         $recent_ids = $query->posts;
     }
+
     return in_array( $product->get_id(), $recent_ids, true );
-    }
+   }
 
     private function is_low_stock( $product ) {
 
@@ -771,21 +776,19 @@ private function get_advance_inner_style( $style ) {
 
     if ( $top_ids === null ) {
 
-        $args = array(
-            'post_type'      => 'product',
-            'posts_per_page' => 10,
-            'meta_key'       => 'total_sales',
-            'orderby'        => 'meta_value_num',
-            'order'          => 'DESC',
-            'fields'         => 'ids',
-        );
+        $limit = 10;
 
-        $query = new WP_Query( $args );
-        $top_ids = $query->posts;
+        $query = new WC_Product_Query( array(
+            'limit'   => $limit,
+            'orderby' => 'popularity',
+            'return'  => 'ids',
+        ) );
+
+        $top_ids = $query->get_products();
     }
 
     return in_array( $product->get_id(), $top_ids, true );
- }
+}
 
  
 }
