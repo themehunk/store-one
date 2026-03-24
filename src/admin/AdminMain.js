@@ -12,7 +12,7 @@ import LicensePage from "@th-storeone-global/LicensePage";
 import { Notice, Spinner, Button } from "@wordpress/components";
 import "./admin.scss";
 
-const modulesList = [ 
+const modulesList = [
   {
     id: "frequently-bought",
     label: __("Frequently Bought Together", "th-store-one"),
@@ -212,36 +212,36 @@ const modulesList = [
     premium: false,
   },
   {
-  id: "trust-badges",
-  label: __("Trust Badges", "th-store-one"),
-  description: __(
-    "Display trust badges like secure checkout, money-back guarantee, and verified payment icons to increase customer confidence and improve conversions.",
-    "th-store-one"
-  ),
-  icon: (
-    <svg
-      className="w-6 h-6"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M12 3L20 6V11C20 16 16.5 20.5 12 22C7.5 20.5 4 16 4 11V6L12 3Z"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M9 12L11 14L15 10"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  ),
-  premium: false,
-}
+    id: "trust-badges",
+    label: __("Trust Badges", "th-store-one"),
+    description: __(
+      "Display trust badges like secure checkout, money-back guarantee, and verified payment icons to increase customer confidence and improve conversions.",
+      "th-store-one",
+    ),
+    icon: (
+      <svg
+        className="w-6 h-6"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M12 3L20 6V11C20 16 16.5 20.5 12 22C7.5 20.5 4 16 4 11V6L12 3Z"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M9 12L11 14L15 10"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
+    premium: false,
+  },
 ];
 const AdminMain = () => {
   const [livePreviewSettings, setLivePreviewSettings] = useState(null);
@@ -268,18 +268,16 @@ const AdminMain = () => {
     "trust-badges": false,
   });
   const tabs = [
-  {
-    name: "all",
-    title: __("All Modules", "th-store-one"),
-    modules: modulesList.map((m) => m.id),
-  },
-  {
-    name: "active",
-    title: __("Active Modules", "th-store-one"),
-    modules: modulesList
-      .filter((m) => modulesState[m.id])
-      .map((m) => m.id),
-  },
+    {
+      name: "all",
+      title: __("All Modules", "th-store-one"),
+      modules: modulesList.map((m) => m.id),
+    },
+    {
+      name: "active",
+      title: __("Active Modules", "th-store-one"),
+      modules: modulesList.filter((m) => modulesState[m.id]).map((m) => m.id),
+    },
   ];
   const originalSettings = useRef({});
   const skipFirstChange = useRef(false);
@@ -328,7 +326,6 @@ const AdminMain = () => {
         setError(__("Failed to load settings.", "th-store-one"));
       })
       .finally(() => setLoading(false));
-    
   }, []);
 
   /**
@@ -371,24 +368,22 @@ const AdminMain = () => {
    * Master switch (Enable all / Disable all).
    */
   const handleToggleAllModules = (enableAll) => {
-  setModulesState((prev) => {
-    const next = {};
+    setModulesState((prev) => {
+      const next = {};
 
-    modulesList.forEach((mod) => {
+      modulesList.forEach((mod) => {
+        // premium module + license inactive → force disable
+        if (mod.premium && !licenseActive) {
+          next[mod.id] = false;
+        } else {
+          next[mod.id] = !!enableAll;
+        }
+      });
 
-      // premium module + license inactive → force disable
-      if (mod.premium && !licenseActive) {
-        next[mod.id] = false;
-      } else {
-        next[mod.id] = !!enableAll;
-      }
-
+      saveModules(next);
+      return next;
     });
-
-    saveModules(next);
-    return next;
-  });
-};
+  };
 
   const [hideToast, setHideToast] = useState(false);
 
@@ -465,50 +460,48 @@ const AdminMain = () => {
       setSaving(false);
     }
   };
-//************************/
-// for licence pro
-//*********************/
-useEffect(() => {
-  apiFetch({ path: `${th_StoreOneAdmin.restUrl}pro-status` })
-    .then((res) => {
-      if (res?.pro_active) {
-        setProActive(true);
-      }
-      if (res?.license_active) {
-        setLicenseActive(true);
-      }
-    })
-    .catch(() => {})
-    .finally(() => {
-      setLicenseLoading(false);
-    });
-}, []);
+  //************************/
+  // for licence pro
+  //*********************/
+  useEffect(() => {
+    apiFetch({ path: `${th_StoreOneAdmin.restUrl}pro-status` })
+      .then((res) => {
+        if (res?.pro_active) {
+          setProActive(true);
+        }
+        if (res?.license_active) {
+          setLicenseActive(true);
+        }
+      })
+      .catch(() => {})
+      .finally(() => {
+        setLicenseLoading(false);
+      });
+  }, []);
 
-// licence page load
-useEffect(() => {
-  if (currentPage !== "license") {
-    return;
-  }
-  setLoading(true);
-  apiFetch({ path: `${th_StoreOneAdmin.restUrl}license-html` })
-    .then((html) => {
-      const el = document.getElementById("store-one-license-root");
+  // licence page load
+  useEffect(() => {
+    if (currentPage !== "license") {
+      return;
+    }
+    setLoading(true);
+    apiFetch({ path: `${th_StoreOneAdmin.restUrl}license-html` })
+      .then((html) => {
+        const el = document.getElementById("store-one-license-root");
 
-      if (el) {
-        el.innerHTML = html;
-      }
-    })
-    .catch(() => {
-      console.log("License page load failed");
-    })
-    .finally(() => {
-      setLoading(false);
-    });
-
-}, [currentPage]);
+        if (el) {
+          el.innerHTML = html;
+        }
+      })
+      .catch(() => {
+        console.log("License page load failed");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [currentPage]);
 
   return (
-      
     <div className="store-one-admin">
       {success && (
         <div
@@ -526,13 +519,12 @@ useEffect(() => {
         </div>
       )}
       {licenseLoading && (
-          <div className="store-one-admin">
-            <div className="s1-loader">
-              <Spinner />
-              {__("Loading…", "th-store-one")}
-            </div>
+        <div className="store-one-admin">
+          <div className="s1-loader">
+            <Spinner />
+            {__("Loading…", "th-store-one")}
           </div>
-        
+        </div>
       )}
       <Header
         currentPage={currentPage}
@@ -544,7 +536,9 @@ useEffect(() => {
       {/* SAVE BUTTON */}
       {isDirty && saveHandler && (
         <div className="s1-top-savebar">
-          <span>{__("Your settings have been modified. Save?","th-store-one")}</span>
+          <span>
+            {__("Your settings have been modified. Save?", "th-store-one")}
+          </span>
           <Button disabled={saving} onClick={handleTopSave}>
             {saving ? (
               <>
@@ -695,16 +689,16 @@ useEffect(() => {
           licenseActive={licenseActive}
         />
       )}
-      {currentPage === "license" && proActive && (
-      loading ? (
-        <div className="s1-loader">
-          <Spinner />
-          {__("Loading…", "th-store-one")}
-        </div>
-      ) : (
-        <LicensePage />
-      )
-    )}
+      {currentPage === "license" &&
+        proActive &&
+        (loading ? (
+          <div className="s1-loader">
+            <Spinner />
+            {__("Loading…", "th-store-one")}
+          </div>
+        ) : (
+          <LicensePage />
+        ))}
     </div>
   );
 };
