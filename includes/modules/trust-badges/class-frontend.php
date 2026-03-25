@@ -10,6 +10,13 @@ class Th_StoreOne_Trust_Badges_Frontend {
     public function __construct() {
 
         $all_modules   = get_option( 'th_store_one_module_set', array() );
+
+        $modules = get_option('th_store_one_module_option', []);
+
+        if ( empty($modules['trust-badges']) ) {
+                return;
+        } 
+
         $this->rules   = $all_modules['trust-badges']['rules'] ?? array();
 
         $enable_loop = false;
@@ -424,7 +431,7 @@ class Th_StoreOne_Trust_Badges_Frontend {
 
     global $product;
 
-    if ( ! $product || ! $product->is_on_sale() ) {
+    if ( ! $product ) {
         return;
     }
 
@@ -433,6 +440,9 @@ class Th_StoreOne_Trust_Badges_Frontend {
     $value = $this->get_discount_value( $rule );
 
     if ( $type === 'two' ) {
+        if ( ! $product || ! $product->is_on_sale() ) {
+        return;
+       }
         ?>
         <div class="s1-adv-burst" style="<?php echo esc_attr($style); ?>">
             <div><?php echo esc_html($value); ?></div>
@@ -442,7 +452,9 @@ class Th_StoreOne_Trust_Badges_Frontend {
     }
 
     elseif ( $type === "four" ) {
-
+if ( ! $product || ! $product->is_on_sale() ) {
+        return;
+       }
         $stylec = sprintf(
             '--badge-4-color:%s; --badge-4-txt:%s;',
             $style['bgclr'] ?? '#47DCBF',
@@ -465,6 +477,10 @@ class Th_StoreOne_Trust_Badges_Frontend {
 
     elseif ( $type === "five" ) {
 
+        if($product->get_stock_quantity() ==''){
+            return;
+        }
+
         $stylec = sprintf(
             '--badge-5-color:%s; --badge-5-txt:%s;',
             $style['bgclr'] ?? '#da9005',
@@ -475,14 +491,23 @@ class Th_StoreOne_Trust_Badges_Frontend {
             <div class="s1-css-s1" style="<?php echo esc_attr($stylec); ?>"></div>
 
             <div class="s1-css-text" style="<?php echo esc_attr($stylec); ?>">
-                <?php echo esc_html( $product->get_stock_quantity() ); ?> <?php echo esc_html__( 'Only available', 'th-store-one' ); ?>
+               <?php
+                echo esc_html(
+                    sprintf(
+                        __( 'Only %d available', 'th-store-one' ),
+                        $product->get_stock_quantity()
+                    )
+                );
+                ?>
             </div>
         </div>
         <?php
     }
 
     elseif ( $type === "daimond" ) {
-
+if ( ! $product || ! $product->is_on_sale() ) {
+        return;
+       }
         $stylec = sprintf(
             '--badge-daimondbgcolor:%s; --badge-daimondtxt:%s;',
             $style['bgclr'] ?? 'linear-gradient(135deg, #ff7a18, #ff3d00)',
@@ -498,7 +523,9 @@ class Th_StoreOne_Trust_Badges_Frontend {
     }
 
     elseif ( $type === "circle" ) {
-
+if ( ! $product || ! $product->is_on_sale() ) {
+        return;
+       }
         $stylec = sprintf(
             '--badge-circlebgcolor:%s; --badge-circletxt:%s;',
             $style['bgclr'] ?? 'radial-gradient(circle, #ff4d6d 0%, #ff0033 100%)',
@@ -516,9 +543,54 @@ class Th_StoreOne_Trust_Badges_Frontend {
         <?php
     }
 
-    else {
+    elseif ( $type === "simplecircle" ) {
+        if ( ! $product || ! $product->is_on_sale() ) {
+        return;
+       }
+        $stylec = sprintf(
+            '--badge-simplecirclebgcolor:%s; --badge-simplecircletxt:%s;',
+            $style['bgclr'] ?? '#8BC34A',
+            $style['textclr'] ?? '#ffffff'
+        );
         ?>
-        <div class="s1-adv-circle" style="<?php echo esc_attr($style); ?>">
+        <div class="s1-adv-css-badge s1-simple-circle">
+        <div class="s1-off-badge" style="<?php echo esc_attr($stylec); ?>">
+        <div class="s1-off-inner">
+          <span class="s1-off-value"><?php echo esc_html($value); ?></span>
+          <span class="s1-off-text"><?php echo esc_html__( 'OFF', 'th-store-one' ); ?></span>
+        </div>
+        </div>
+      </div>
+        <?php
+    }
+    elseif ( $type === "simplenew" ) {
+        if ( ! $product || ! $product->is_on_sale() ) {
+        return;
+       }
+        $stylec = sprintf(
+            '--badge-simplenewbgcolor:%s; --badge-simplenewtxt:%s;',
+            $style['bgclr'] ?? 'linear-gradient(90deg, #f59e0b, #f97316)',
+            $style['textclr'] ?? '#ffffff'
+        );
+        ?>
+        <div class="s1-preview-badge">
+          <div class="s1-css-badge-simple"  style="<?php echo esc_attr($stylec); ?>">
+            <div class="s1-css-badge-inner">
+              <span class="s1-off-value"><?php echo esc_html($value); ?> <?php echo esc_html__( 'OFF', 'th-store-one' ); ?></span>
+            </div>
+          </div>
+        </div>
+        <?php
+    }
+
+    else {
+        $stylec = sprintf(
+            '--adv-bg:%s; --adv-txt:%s;',
+            esc_attr( $style['bgclr'] ?? '#673ab7' ),
+            esc_attr( $style['textclr'] ?? '#fff' )
+        );
+        ?>
+        <div class="s1-adv-circle" style="<?php echo esc_attr($stylec); ?>">
             <div><?php echo esc_html($value); ?></div>
             <small><?php echo esc_html__( 'OFF', 'th-store-one' ); ?></small>
         </div>
@@ -600,14 +672,14 @@ class Th_StoreOne_Trust_Badges_Frontend {
     /* ---------- FIXED MODE ---------- */
     if ( ($pos['mode'] ?? '') === 'fixed' ) {
 
-        if ( ($pos['position'] ?? '') === 'top' ) $css .= 'top:10px;';
+        if ( ($pos['position'] ?? '') === 'top' ) $css .= 'top:0px;';
         if ( ($pos['position'] ?? '') === 'middle' ) $css .= 'top:50%;';
-        if ( ($pos['position'] ?? '') === 'bottom' ) $css .= 'bottom:10px;';
+        if ( ($pos['position'] ?? '') === 'bottom' ) $css .= 'bottom:0px;';
 
-        if ( ($pos['align'] ?? '') === 'left' ) $css .= 'left:10px;';
-        if ( ($pos['align'] ?? '') === 'right' ) $css .= 'right:10px;';
+        if ( ($pos['align'] ?? '') === 'left' ) $css .= 'left:0px;';
+        if ( ($pos['align'] ?? '') === 'right' ) $css .= 'right:0px;';
         if ( ($pos['align'] ?? '') === 'center' ) {
-            $css .= 'left:50%;transform:translateX(-50%);';
+            $css .= 'left:50%;transform:translate(-50%, -50%);';
         }
     }
 

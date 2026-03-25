@@ -4,14 +4,14 @@ import { getTextStyle, getRadius } from '@th-storeone/utils/styleHelpers';
 const dummyProducts = [
     {
         id: 1,
-        img: th_StoreOneAdmin.homeUrl + "wp-content/plugins/store-one/assets/images/prd1.png",
+        img: th_StoreOneAdmin.homeUrl + "wp-content/plugins/th-store-one/assets/images/prd1.png",
         name: "Dewleaf Hydration Serum",
         price: "$119.00",
         checked: true,
     },
     {
         id: 2,
-        img: th_StoreOneAdmin.homeUrl + "wp-content/plugins/store-one/assets/images/prd2.png",
+        img: th_StoreOneAdmin.homeUrl + "wp-content/plugins/th-store-one/assets/images/prd2.png",
         name: "Rosemist Daily Cream",
         price: "$40.00",
         oldPrice: "$45.00",
@@ -19,7 +19,7 @@ const dummyProducts = [
     },
     {
         id: 3,
-        img: th_StoreOneAdmin.homeUrl + "wp-content/plugins/store-one/assets/images/prd3.png",
+        img: th_StoreOneAdmin.homeUrl + "wp-content/plugins/th-store-one/assets/images/prd3.png",
         name: "Greenveil Repair Balm",
         price: "$25.00",
         checked: true,

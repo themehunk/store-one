@@ -72,18 +72,18 @@ const TrustBadges = ({ settings = {} }) => {
   }
 
   if (pos.mode === "fixed") {
-    if (pos.position === "top") positionStyle.top = "10px";
+    if (pos.position === "top") positionStyle.top = "0px";
     if (pos.position === "middle") positionStyle.top = "50%";
-    if (pos.position === "bottom") positionStyle.bottom = "10px";
+    if (pos.position === "bottom") positionStyle.bottom = "0px";
 
-    if (pos.align === "left") positionStyle.left = "10px";
+    if (pos.align === "left") positionStyle.left = "0px";
 
     if (pos.align === "center") {
       positionStyle.left = "50%";
-      positionStyle.transform = "translateX(-50%)";
+      positionStyle.transform = "translate(-50%, -50%)";
     }
 
-    if (pos.align === "right") positionStyle.right = "10px";
+    if (pos.align === "right") positionStyle.right = "0px";
   }
 
   /* ---------------- FINAL TRANSFORM ---------------- */
@@ -449,6 +449,35 @@ const withUnit = (val, unit = "px") => {
         </div>
         </div>
       </div>
+      );
+    }
+    if (type === "simplecircle") {
+      return (
+        <div className="s1-adv-css-badge s1-simple-circle" style={wrapperStyle}>
+        <div class="s1-off-badge" style={{
+              "--badge-simplecirclebgcolor": style?.bgclr,
+              "--badge-simplecircletxt": style?.textclr,
+            }}>
+        <div class="s1-off-inner">
+          <span class="s1-off-value">50%</span>
+          <span class="s1-off-text">OFF</span>
+        </div>
+        </div>
+      </div>
+      );
+    }
+    if (type === "simplenew") {
+      return (
+        <div className="s1-preview-badge" style={wrapperStyle}>
+          <div className="s1-css-badge-simple"  style={{
+              "--badge-simplenewbgcolor": style?.bgclr,
+              "--badge-simplenewtxt": style?.textclr,
+            }}>
+            <div className="s1-css-badge-inner">
+              <span class="s1-off-value">50% OFF</span>
+            </div>
+          </div>
+        </div>
       );
     }
 
