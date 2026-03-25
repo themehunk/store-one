@@ -74,7 +74,7 @@ const newBadgesTRule = () => ({
     transform: {
       opacity: "100",
       rotateX: "0",
-      rotateY: "1",
+      rotateY: "0",
       rotateZ: "0",
     },
     flip: {
@@ -168,6 +168,12 @@ export default function TrustBadgesRules({ rules, onChange, onLivePreview }) {
 
     let updatedRule = { ...arr[i], [field]: val };
 
+    /*APPLY ONLY WHEN TYPE CHANGES */
+      if (field === "badges_type" && val === "badges_text") {
+        updatedRule = applyTextBadgeDefaults(updatedRule);
+      }
+     
+
     /*ONLY CSS TYPE */
     if (
       field === "badge_css_type" &&
@@ -232,22 +238,22 @@ export default function TrustBadgesRules({ rules, onChange, onLivePreview }) {
     {
       id: "last_minitue",
       type: "image",
-      url: `${th_StoreOneAdmin.homeUrl}wp-content/plugins/store-one/assets/images/last_miniute.svg`,
+      url: `${th_StoreOneAdmin.homeUrl}wp-content/plugins/th-store-one/assets/images/last_miniute.svg`,
     },
     {
       id: "buy_free",
       type: "image",
-      url: `${th_StoreOneAdmin.homeUrl}wp-content/plugins/store-one/assets/images/buy_free.svg`,
+      url: `${th_StoreOneAdmin.homeUrl}wp-content/plugins/th-store-one/assets/images/buy_free.svg`,
     },
     {
       id: "buy_get_blue",
       type: "image",
-      url: `${th_StoreOneAdmin.homeUrl}wp-content/plugins/store-one/assets/images/buy_get_blue.svg`,
+      url: `${th_StoreOneAdmin.homeUrl}wp-content/plugins/th-store-one/assets/images/buy_get_blue.svg`,
     },
     {
       id: "christmas",
       type: "image",
-      url: `${th_StoreOneAdmin.homeUrl}wp-content/plugins/store-one/assets/images/christmas.svg`,
+      url: `${th_StoreOneAdmin.homeUrl}wp-content/plugins/th-store-one/assets/images/christmas.svg`,
     },
     
   ];
@@ -257,31 +263,31 @@ export default function TrustBadgesRules({ rules, onChange, onLivePreview }) {
       id: "new",
       label: "New",
       preview:
-        `${th_StoreOneAdmin.homeUrl}wp-content/plugins/store-one/assets/images/new.svg`,
+        `${th_StoreOneAdmin.homeUrl}wp-content/plugins/th-store-one/assets/images/new.svg`,
     },
     {
       id: "sale",
       label: "Sale",
       preview:
-        `${th_StoreOneAdmin.homeUrl}wp-content/plugins/store-one/assets/images/sale1.svg`,
+        `${th_StoreOneAdmin.homeUrl}wp-content/plugins/th-store-one/assets/images/sale1.svg`,
     },
     {
       id: "newsale",
       label: "NewSale",
       preview:
-        `${th_StoreOneAdmin.homeUrl}wp-content/plugins/store-one/assets/images/newsale.svg`,
+        `${th_StoreOneAdmin.homeUrl}wp-content/plugins/th-store-one/assets/images/newsale.svg`,
     },
     {
       id: "sale_badge_pink",
       label: "sale_badge_pink",
       preview:
-        `${th_StoreOneAdmin.homeUrl}wp-content/plugins/store-one/assets/images/sale_badge_pink.svg`,
+        `${th_StoreOneAdmin.homeUrl}wp-content/plugins/th-store-one/assets/images/sale_badge_pink.svg`,
     },
     {
       id: "saletxt",
       label: "saletxt",
       preview:
-        `${th_StoreOneAdmin.homeUrl}wp-content/plugins/store-one/assets/images/sale.svg`,
+        `${th_StoreOneAdmin.homeUrl}wp-content/plugins/th-store-one/assets/images/sale.svg`,
     },
     
   ];
@@ -291,37 +297,84 @@ export default function TrustBadgesRules({ rules, onChange, onLivePreview }) {
       id: "one",
       label: "One",
       preview:
-        `${th_StoreOneAdmin.homeUrl}wp-content/plugins/store-one/assets/images/circle1.svg`,
+        `${th_StoreOneAdmin.homeUrl}wp-content/plugins/th-store-one/assets/images/circle1.svg`,
     },
     {
       id: "two",
       label: "Two",
       preview:
-        `${th_StoreOneAdmin.homeUrl}wp-content/plugins/store-one/assets/images/circle2.svg`,
+        `${th_StoreOneAdmin.homeUrl}wp-content/plugins/th-store-one/assets/images/circle2.svg`,
     },
     {
       id: "four",
       label: "Four",
       preview:
-        `${th_StoreOneAdmin.homeUrl}wp-content/plugins/store-one/assets/images/cornerribbon.svg`,
+        `${th_StoreOneAdmin.homeUrl}wp-content/plugins/th-store-one/assets/images/cornerribbon.svg`,
     },
     {
       id: "five",
       label: "Five",
       preview:
-        `${th_StoreOneAdmin.homeUrl}wp-content/plugins/store-one/assets/images/lastmint.svg`,
+        `${th_StoreOneAdmin.homeUrl}wp-content/plugins/th-store-one/assets/images/lastmint.svg`,
     },
     {
       id: "daimond",
       label: "daimond",
-      preview: `${th_StoreOneAdmin.homeUrl}wp-content/plugins/store-one/assets/images/daimond.svg`,
+      preview: `${th_StoreOneAdmin.homeUrl}wp-content/plugins/th-store-one/assets/images/daimond.svg`,
     },
     {
       id: "circle",
       label: "cirlce",
-      preview: `${th_StoreOneAdmin.homeUrl}wp-content/plugins/store-one/assets/images/circle.svg`,
+      preview: `${th_StoreOneAdmin.homeUrl}wp-content/plugins/th-store-one/assets/images/circle.svg`,
+    },
+    {
+      id: "simplecircle",
+      label: "simplecircle",
+      preview: `${th_StoreOneAdmin.homeUrl}wp-content/plugins/th-store-one/assets/images/simplecircle.svg`,
+    },
+    {
+      id: "simplenew",
+      label: "simplenew",
+      preview: `${th_StoreOneAdmin.homeUrl}wp-content/plugins/th-store-one/assets/images/simplenew.svg`,
     },
   ];
+
+  const applyTextBadgeDefaults = (rule, type) => {
+    const currentStyle = rule.badge_style || {}; 
+    return {
+        ...rule,
+        badge_css_type: type,
+        badge_style: {
+          ...currentStyle,
+          bgclr: "#0a70ed",
+          textclr: "#ffffff",
+          border: {
+            ...currentStyle.border,
+            color: "#0a70ed",
+          },
+        
+        padding: {
+          top: "12px",
+          right: "15px",
+          bottom: "12px",
+          left: "15px",
+        },
+         margin: {
+            top: "0px",
+            right: "0px",
+            bottom: "0px",
+            left: "0px",
+          },
+          position: {
+          mode: "custom",
+          unit: "px",
+          anchor: "top-left",
+          top: "0",
+          left: "0",
+        },
+        },
+      }; 
+  }
 
   // for type css helper deafult
   const applyCssBadgeDefaults = (rule, type) => {
@@ -335,6 +388,7 @@ export default function TrustBadgesRules({ rules, onChange, onLivePreview }) {
           ...currentStyle,
           bgclr: "#8BC34A",
           textclr: "#ffffff",
+          text_size: "12px",
           border: {
             ...currentStyle.border,
             color: "#8BC34A",
@@ -347,10 +401,10 @@ export default function TrustBadgesRules({ rules, onChange, onLivePreview }) {
           left: "12px",
         },
          margin: {
-            top: "0px",
-            right: "0px",
-            bottom: "0px",
-            left: "0px",
+            top: "2px",
+            right: "2px",
+            bottom: "2px",
+            left: "2px",
           },
           position: {
           mode: "custom",
@@ -367,6 +421,7 @@ export default function TrustBadgesRules({ rules, onChange, onLivePreview }) {
       return {
         ...rule,
         badge_css_type: type,
+       badgetext: "SALE!",
         badge_style: {
           ...currentStyle,
           bgclr: "#45d0eb",
@@ -398,10 +453,12 @@ export default function TrustBadgesRules({ rules, onChange, onLivePreview }) {
       return {
         ...rule,
         badge_css_type: type,
+         badgetext: "NEW!",
         badge_style: {
           ...currentStyle,
           bgclr: "#FF5722",
           textclr: "#ffffff",
+          text_size: "12px",
           border: {
             ...currentStyle.border,
             color: "#FF5722",
@@ -419,17 +476,17 @@ export default function TrustBadgesRules({ rules, onChange, onLivePreview }) {
             left: "0px",
           },
           margin: {
-            top: "15px",
-            right: "15px",
-            bottom: "15px",
-            left: "15px",
+            top: "0px",
+            right: "0px",
+            bottom: "0px",
+            left: "0px",
           },
           position: {
             mode: "custom",
             unit: "px",
             anchor: "top-left",
-            top: "10",
-            left: "10",
+            top: "12",
+            left: "12",
           },
         },
       };
@@ -438,6 +495,7 @@ export default function TrustBadgesRules({ rules, onChange, onLivePreview }) {
       return {
         ...rule,
         badge_css_type: type,
+        badgetext: "SALE!",
         badge_style: {
           ...currentStyle,
           bgclr: "#d4547e",
@@ -471,6 +529,7 @@ export default function TrustBadgesRules({ rules, onChange, onLivePreview }) {
       return {
         ...rule,
         badge_css_type: type,
+        badgetext: "SALE!",
         badge_style: {
           ...currentStyle,
           bgclr: "linear-gradient(90deg, #6366f1, #8b5cf6)",
@@ -491,10 +550,10 @@ export default function TrustBadgesRules({ rules, onChange, onLivePreview }) {
             mode: "custom",
             unit: "px",
             anchor: "top-left",
-           top: "12",
-            left: "12",
+           top: "5",
+            left: "5",
           },
-          text_size:"21px",
+          text_size:"12px",
          
           
         },
@@ -517,6 +576,7 @@ const applyAdvanceBadgeDefaults = (rule, type) => {
         ...currentStyle,
         bgclr: "#673AB7",
         textclr: "#ffffff",
+        
         margin: {
         top: "0px",
         right: "0px",
@@ -527,8 +587,8 @@ const applyAdvanceBadgeDefaults = (rule, type) => {
         mode: "custom",
         unit: "px",
         anchor: "top-left",
-        top: "12",
-        left: "12",
+        top: "3",
+        left: "3",
       },
       },
     };
@@ -542,6 +602,7 @@ const applyAdvanceBadgeDefaults = (rule, type) => {
         ...currentStyle,
         bgclr: "#d946ef",
         textclr: "#ffffff",
+        text_size:"14px",
         margin: {
         top: "0px",
         right: "0px",
@@ -552,8 +613,8 @@ const applyAdvanceBadgeDefaults = (rule, type) => {
         mode: "custom",
         unit: "px",
         anchor: "top-left",
-        top: "12",
-        left: "12",
+         top: "3",
+        left: "3",
       },
       },
     };
@@ -625,8 +686,8 @@ const applyAdvanceBadgeDefaults = (rule, type) => {
         mode: "custom",
         unit: "px",
         anchor: "top-left",
-        top: "12",
-        left: "12",
+        top: "4",
+        left: "14",
        },
       },
     };
@@ -639,6 +700,7 @@ const applyAdvanceBadgeDefaults = (rule, type) => {
         ...currentStyle,
         bgclr: "linear-gradient(135deg, #ff7a18, #ff3d00)",
         textclr: "#ffffff",
+        
         margin: {
         top: "0px",
         right: "0px",
@@ -664,6 +726,7 @@ const applyAdvanceBadgeDefaults = (rule, type) => {
         ...currentStyle,
         bgclr: "radial-gradient(circle, #ff4d6d 0%, #ff0033 100%)",
         textclr: "#ffffff",
+        
          margin: {
         top: "0px",
         right: "0px",
@@ -674,8 +737,58 @@ const applyAdvanceBadgeDefaults = (rule, type) => {
         mode: "custom",
         unit: "px",
         anchor: "top-left",
-        top: "10",
-        left: "10",
+        top: "4",
+        left: "4",
+      },
+      },
+    };
+  }
+  if (type === "simplecircle") {
+    return {
+      ...rule,
+      badge_advance_type: type,
+      badge_style: {
+        ...currentStyle,
+        bgclr: "#8BC34A",
+        textclr: "#ffffff",
+        
+        margin: {
+        top: "0px",
+        right: "0px",
+        bottom: "0px",
+        left: "0px",
+      },
+      position: {
+        mode: "custom",
+        unit: "px",
+        anchor: "top-left",
+        top: "3",
+        left: "3",
+      },
+      },
+    };
+  }
+  if (type === "simplenew") {
+    return {
+      ...rule,
+      badge_advance_type: type,
+      badge_style: {
+        ...currentStyle,
+        bgclr:"linear-gradient(90deg, #f59e0b, #f97316)",
+        textclr: "#ffffff",
+        
+        margin: {
+        top: "0px",
+        right: "0px",
+        bottom: "0px",
+        left: "0px",
+      },
+      position: {
+        mode: "custom",
+        unit: "px",
+        anchor: "top-left",
+        top: "3",
+        left: "3",
       },
       },
     };
