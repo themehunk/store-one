@@ -72,20 +72,36 @@ const TrustBadges = ({ settings = {} }) => {
   }
 
   if (pos.mode === "fixed") {
-    if (pos.position === "top") positionStyle.top = "0px";
-    if (pos.position === "middle") positionStyle.top = "50%";
-    if (pos.position === "bottom") positionStyle.bottom = "0px";
+  let translate = "";
 
-    if (pos.align === "left") positionStyle.left = "0px";
-
-    if (pos.align === "center") {
-      positionStyle.left = "50%";
-      positionStyle.transform = "translate(-50%, -50%)";
-    }
-
-    if (pos.align === "right") positionStyle.right = "0px";
+  if (pos.position === "top") {
+    positionStyle.top = "0px";
   }
 
+  if (pos.position === "middle") {
+    positionStyle.top = "50%";
+    translate += " translateY(-50%)";
+  }
+
+  if (pos.position === "bottom") {
+    positionStyle.bottom = "0px";
+  }
+
+  if (pos.align === "left") {
+    positionStyle.left = "0px";
+  }
+
+  if (pos.align === "center") {
+    positionStyle.left = "50%";
+    translate += " translateX(-50%)";
+  }
+
+  if (pos.align === "right") {
+    positionStyle.right = "0px";
+  }
+
+  positionStyle.transform = translate.trim();
+}
   /* ---------------- FINAL TRANSFORM ---------------- */
   const finalTransform = `     ${rotateTransform}
     ${flipTransform}

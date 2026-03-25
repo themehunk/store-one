@@ -670,36 +670,51 @@ if ( ! $product || ! $product->is_on_sale() ) {
     }
 
     /* ---------- FIXED MODE ---------- */
-    if ( ($pos['mode'] ?? '') === 'fixed' ) {
+$translate = '';
 
-        if ( ($pos['position'] ?? '') === 'top' ) $css .= 'top:0px;';
-        if ( ($pos['position'] ?? '') === 'middle' ) $css .= 'top:50%;';
-        if ( ($pos['position'] ?? '') === 'bottom' ) $css .= 'bottom:0px;';
+if ( ($pos['mode'] ?? '') === 'fixed' ) {
 
-        if ( ($pos['align'] ?? '') === 'left' ) $css .= 'left:0px;';
-        if ( ($pos['align'] ?? '') === 'right' ) $css .= 'right:0px;';
-        if ( ($pos['align'] ?? '') === 'center' ) {
-            $css .= 'left:50%;transform:translate(-50%, -50%);';
-        }
+    if ( ($pos['position'] ?? '') === 'top' ) $css .= 'top:0px;';
+    
+    if ( ($pos['position'] ?? '') === 'middle' ) {
+        $css .= 'top:50%;';
+        $translate .= 'translateY(-50%) ';
     }
 
-    /* ---------- ROTATE ---------- */
-    $rotate = sprintf(
-        'rotateX(%sdeg) rotateY(%sdeg) rotateZ(%sdeg)',
-        $transform['rotateX'] ?? 0,
-        $transform['rotateY'] ?? 0,
-        $transform['rotateZ'] ?? 0
-    );
+    if ( ($pos['position'] ?? '') === 'bottom' ) $css .= 'bottom:0px;';
 
-    /* ---------- FLIP ---------- */
-    $flip_css = '';
-    if ( ! empty($flip['enabled']) ) {
-        if ( $flip['orientation'] === 'horizontal' ) $flip_css = 'scaleX(-1)';
-        elseif ( $flip['orientation'] === 'vertical' ) $flip_css = 'scaleY(-1)';
-        elseif ( $flip['orientation'] === 'both' ) $flip_css = 'scale(-1,-1)';
+    if ( ($pos['align'] ?? '') === 'left' ) $css .= 'left:0px;';
+
+    if ( ($pos['align'] ?? '') === 'right' ) $css .= 'right:0px;';
+
+    if ( ($pos['align'] ?? '') === 'center' ) {
+        $css .= 'left:50%;';
+        $translate .= 'translateX(-50%) ';
     }
+}
 
-    $css .= 'transform:' . trim($rotate . ' ' . $flip_css) . ';';
+/* ---------- ROTATE ---------- */
+$rotate = sprintf(
+    'rotateX(%sdeg) rotateY(%sdeg) rotateZ(%sdeg)',
+    $transform['rotateX'] ?? 0,
+    $transform['rotateY'] ?? 0,
+    $transform['rotateZ'] ?? 0
+);
+
+/* ---------- FLIP ---------- */
+$flip_css = '';
+if ( ! empty($flip['enabled']) ) {
+    if ( $flip['orientation'] === 'horizontal' ) $flip_css = 'scaleX(-1)';
+    elseif ( $flip['orientation'] === 'vertical' ) $flip_css = 'scaleY(-1)';
+    elseif ( $flip['orientation'] === 'both' ) $flip_css = 'scale(-1,-1)';
+}
+
+/* ---------- FINAL TRANSFORM (SINGLE) ---------- */
+$final_transform = trim($rotate . ' ' . $flip_css . ' ' . $translate);
+
+if ( ! empty($final_transform) ) {
+    $css .= 'transform:' . $final_transform . ';';
+}
 
     /* ---------- OPACITY ---------- */
     $opacity = isset($transform['opacity']) ? ($transform['opacity'] / 100) : 1;
