@@ -486,14 +486,13 @@ const withUnit = (val, unit = "px") => {
       return (
         <div className="s1-preview-badge" style={wrapperStyle}>
           <div className="s1-css-badge-simple"  style={{
-  "--badge-simplenewbgcolor": style?.bgclr,
-  "--badge-simplenewtxt": style?.textclr,
-
-  borderTopLeftRadius: border?.radius?.top || "0px",
-  borderTopRightRadius: border?.radius?.right || "0px",
-  borderBottomRightRadius: border?.radius?.bottom || "0px",
-  borderBottomLeftRadius: border?.radius?.left || "0px",
-}}>
+          "--badge-simplenewbgcolor": style?.bgclr,
+          "--badge-simplenewtxt": style?.textclr,
+          borderTopLeftRadius: border?.radius?.top || "0px",
+          borderTopRightRadius: border?.radius?.right || "0px",
+          borderBottomRightRadius: border?.radius?.bottom || "0px",
+          borderBottomLeftRadius: border?.radius?.left || "0px",
+        }}>
             <div className="s1-css-badge-inner">
               <span class="s1-off-value">50% OFF</span>
             </div>
@@ -501,7 +500,24 @@ const withUnit = (val, unit = "px") => {
         </div>
       );
     }
-
+    if (type === "simpleaval") {
+      return (
+        <div className="s1-preview-badge" style={wrapperStyle}>
+          <div className="s1-css-badge-simple-available"  style={{
+            "--badge-simpleavalbgcolor": style?.bgclr,
+            "--badge-simpleavaltxt": style?.textclr,
+            borderTopLeftRadius: border?.radius?.top || "0px",
+            borderTopRightRadius: border?.radius?.right || "0px",
+            borderBottomRightRadius: border?.radius?.bottom || "0px",
+            borderBottomLeftRadius: border?.radius?.left || "0px",
+          }}>
+            <div className="s1-css-badge-inner">
+              <span class="s1-off-value">{"Only 5 availables"}</span>
+            </div>
+          </div>
+        </div>
+      );
+    }
     return null;
   };
 
