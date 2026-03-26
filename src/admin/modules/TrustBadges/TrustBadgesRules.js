@@ -49,7 +49,7 @@ const newBadgesTRule = () => ({
 
   flexible_id: crypto.randomUUID(),
 
-  badges_type: "badges_images",
+  badges_type: "badges_text",
   badge_library: "default",
   badge_image: "",
   badge_css_type: "",
@@ -66,12 +66,12 @@ const newBadgesTRule = () => ({
   exclude_roles: [],
   exclude_users: [],
   exclude_users_enabled: false,
-  badgetext: "Text",
+  badgetext: "Sale!",
   badge_style: {
     image_width: "100px",
     bgclr: "#0a70ed",
     textclr: "#fff",
-    text_size: "15px",
+    text_size: "12px",
     transform: {
       opacity: "100",
       rotateX: "0",
@@ -100,10 +100,10 @@ const newBadgesTRule = () => ({
       left: "0px",
     },
     padding: {
-      top: "0px",
-      right: "0px",
-      bottom: "0px",
-      left: "0px",
+      top: "6px",
+      right: "8px",
+      bottom: "6px",
+      left: "8px",
     },
     border: {
       width: {
@@ -113,7 +113,7 @@ const newBadgesTRule = () => ({
         left: "1px",
       },
       style: "solid",
-      color: "#111",
+      color: "#0a70ed",
       radius: {
         top: "4px",
         right: "4px",
@@ -171,7 +171,7 @@ export default function TrustBadgesRules({ rules, onChange, onLivePreview }) {
 
     /*APPLY ONLY WHEN TYPE CHANGES */
       if (field === "badges_type" && val === "badges_text") {
-        updatedRule = applyTextBadgeDefaults(updatedRule);
+        updatedRule = applyTextBadgeDefaults(updatedRule, val);
       }
      
 
@@ -350,20 +350,22 @@ export default function TrustBadgesRules({ rules, onChange, onLivePreview }) {
     return {
         ...rule,
         badge_css_type: type,
+        badgetext: "Sale!",
         badge_style: {
           ...currentStyle,
           bgclr: "#0a70ed",
           textclr: "#ffffff",
+          text_size: "12px",
           border: {
             ...currentStyle.border,
             color: "#0a70ed",
           },
         
         padding: {
-          top: "12px",
-          right: "15px",
-          bottom: "12px",
-          left: "15px",
+          top: "6px",
+          right: "8px",
+          bottom: "6px",
+          left: "8px",
         },
          margin: {
             top: "0px",
@@ -1130,16 +1132,19 @@ const applyAdvanceBadgeDefaults = (rule, type) => {
                             }
                           />
                         </S1Field>
+            {(rule.badges_type === "badges_text" || rule.badges_type === "badges_css") &&(
+                                    <S1Field label={__("Badge Text", "th-store-one")}>
+                                          <TextControl
+                                            value={rule.badgetext || "Sale!"}
+                                            onChange={(v) =>
+                                              updateField(index, "badgetext", v)
+                                            }
+                                          />
+                                        </S1Field>
+            )}
                         {rule.badges_type === "badges_text" && (
                           <>
-                            <S1Field label={__("Badge Text", "th-store-one")}>
-                              <TextControl
-                                value={rule.badgetext || ""}
-                                onChange={(v) =>
-                                  updateField(index, "badgetext", v)
-                                }
-                              />
-                            </S1Field>
+                           
                             <S1FieldGroup title={__("Style", "th-store-one")}>
                             <UniversalRangeControl
                               label={__("Font Size", "th-store-one")}
@@ -1263,14 +1268,14 @@ const applyAdvanceBadgeDefaults = (rule, type) => {
                                 badgeType="css"
                               />
                            
-                            <S1Field label={__("Badge Text", "th-store-one")}>
+                            {/* <S1Field label={__("Badge Text", "th-store-one")}>
                               <TextControl
-                                value={rule.badgetext || ""}
+                                value={rule.badgetext || "Sale!"}
                                 onChange={(v) =>
                                   updateField(index, "badgetext", v)
                                 }
                               />
-                            </S1Field>
+                            </S1Field> */}
                              <UniversalRangeControl
                               label={__("Font Size", "th-store-one")}
                               responsive={false}

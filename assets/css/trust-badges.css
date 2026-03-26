@@ -1,11 +1,12 @@
 .s1-badge-container{
-     z-index:1;
+     z-index:999;
 }
 .s1-product-image-wrap.s1-loop{
 position: relative;
 }
 .s1-badge.s1-badge-text{
 line-height:1;
+font-weight: 600;
 }
 /* ================================
    SALE BADGE (DIAMOND IMPROVED)
@@ -58,6 +59,7 @@ line-height:1;
   align-items: center;
   justify-content: center;
   font-weight: 700;
+  line-height: 1.3;
 }
 
 .s1-adv-circle::after {
@@ -99,7 +101,7 @@ line-height:1;
 }
 
 /* text */
-.s1-adv-burst div {
+.s1-adv-burst{
   font-size: 14px;
 line-height: 1.2;
 }
