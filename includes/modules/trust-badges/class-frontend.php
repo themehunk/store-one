@@ -9,6 +9,9 @@ class Th_StoreOne_Trust_Badges_Frontend {
 
     public function __construct() {
 
+         $theme = wp_get_theme();
+         $text_domain = $theme->get( 'TextDomain' );
+
         $all_modules   = get_option( 'th_store_one_module_set', array() );
 
         $modules = get_option('th_store_one_module_option', []);
@@ -31,12 +34,34 @@ class Th_StoreOne_Trust_Badges_Frontend {
         }
 
         if ( $enable_loop ) {
-            add_action( 'woocommerce_before_shop_loop_item_title', array( $this, 'loop_wrap_start' ), 8 );
 
-            add_action( 'woocommerce_before_shop_loop_item_title', array( $this, 'wrap_product_image_with_badge' ), 11 );
+            // Detect block theme
+            if ( function_exists('wp_is_block_theme') && wp_is_block_theme() ) {
 
-            add_action( 'woocommerce_before_shop_loop_item_title', array( $this, 'loop_wrap_end' ), 12 );
+                //Block theme support
+               add_filter(
+                'render_block',
+                array( $this, 'wrap_block_product_image_with_badge' ),
+                10,
+                2
+            );
+
+            } else {
+
+               if($text_domain == 'th-shop-mania'){
+
+               add_action( 'woocommerce_before_shop_loop_item', array( $this, 'shopmania_start_buffer' ), 0 );
+               add_action( 'woocommerce_after_shop_loop_item', array( $this, 'shopmania_end_buffer' ), 999 );
+
+               }else{
+                //Classic theme (tumhara existing code)
+                add_action( 'woocommerce_before_shop_loop_item_title', array( $this, 'loop_wrap_start' ), 8 );
+                add_action( 'woocommerce_before_shop_loop_item_title', array( $this, 'wrap_product_image_with_badge' ), 11 );
+                add_action( 'woocommerce_before_shop_loop_item_title', array( $this, 'loop_wrap_end' ), 12 );
+                }
+            }
         }
+
         $enable_single = false;
 
         if ( ! empty( $this->rules ) ) {
@@ -49,16 +74,29 @@ class Th_StoreOne_Trust_Badges_Frontend {
         }
 
         if ( $enable_single ) {
+            if($text_domain == 'blocksy'){
             add_filter(
-                'woocommerce_single_product_image_thumbnail_html',
-                array( $this, 'wrap_single_image_with_badge' ),
-                10,
-                2
-            );
-        }
+                    'woocommerce_single_product_image_thumbnail_html',
+                    array( $this, 'blockcy_wrap_single_image_with_badge' ),
+                    10,
+                    2
+                );
+            }else{
+                add_filter(
+                    'woocommerce_single_product_image_thumbnail_html',
+                    array( $this, 'wrap_single_image_with_badge' ),
+                    10,
+                    2
+                );
+                }
+                
+            }
 
+        
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
     }
+
+    
 
     public function enqueue_assets() {
         wp_enqueue_style(
@@ -68,6 +106,8 @@ class Th_StoreOne_Trust_Badges_Frontend {
             TH_STORE_ONE_VERSION
         );
     }
+
+    
 
     public function loop_wrap_start(){?>
     <div class="s1-product-image-wrap s1-loop">
@@ -103,9 +143,9 @@ class Th_StoreOne_Trust_Badges_Frontend {
         return $html;
     }
 
-    if ( $attachment_id !== $product->get_image_id() ) {
-        return $html;
-    }
+    // if ( $attachment_id !== $product->get_image_id() ) {
+    //     return $html;
+    // }
 
     ob_start();
 
@@ -136,9 +176,36 @@ class Th_StoreOne_Trust_Badges_Frontend {
     }
 
     return $html;
+    }
 
-   }
+    /**********************/
+    // for block used only
+    /**********************/
+    public function wrap_block_product_image_with_badge( $block_content, $block ) {
 
+    if ( empty( $block['blockName'] ) || $block['blockName'] !== 'woocommerce/product-image' ) {
+        return $block_content;
+    }
+
+    global $product;
+
+    if ( ! $product || empty( $this->rules ) ) {
+        return $block_content;
+    }
+
+    ob_start();
+    $this->wrap_product_image_with_badge();
+    $badges = ob_get_clean();
+
+    if ( empty( $badges ) ) {
+        return $block_content;
+    }
+
+    return '<div class="s1-product-image-wrap s1-loop">'
+        . $badges
+        . $block_content
+        . '</div>';
+    }
     /* =========================
        RULE VALIDATION
     ========================= */
@@ -919,5 +986,96 @@ private function get_advance_inner_style( $style ) {
     return in_array( $product->get_id(), $top_ids, true );
 }
 
- 
+
+//*****************************/
+// Theme competiblity code
+//*****************************/
+    public function shopmania_start_buffer() {
+        ob_start();
+    }
+
+    public function shopmania_end_buffer() {
+
+        $html = ob_get_clean();
+
+        global $product;
+
+        if ( ! $product || empty( $this->rules ) ) {
+            echo $html;
+            return;
+        }
+        ob_start();
+        foreach ( $this->rules as $rule ) {
+
+            if ( ! $this->is_rule_valid( $rule, $product ) ) {
+                continue;
+            }
+
+            $this->render_single_badge( $rule );
+        }
+        $badges = ob_get_clean();
+
+        if ( empty( $badges ) ) {
+            echo $html;
+            return;
+        }
+
+        //inject inside thunk-product-image
+        if (
+        strpos( $html, 'thunk-product-image' ) !== false &&
+        strpos( $html, 's1-badge-container' ) === false
+        ) {
+            $html = preg_replace(
+                '/(<div class="thunk-product-image[^"]*">)/',
+                '$1' . $badges,
+                $html,
+                1
+            );
+        }
+
+        echo $html;
+    }
+
+    public function blockcy_wrap_single_image_with_badge( $html, $attachment_id ) {
+
+    global $product;
+
+    if ( ! $product || empty( $this->rules ) ) {
+        return $html;
+    }
+
+    // if ( $attachment_id !== $product->get_image_id() ) {
+    //     return $html;
+    // }
+
+    ob_start();
+
+    foreach ( $this->rules as $rule ) {
+
+        if ( ! $this->is_rule_valid( $rule, $product ) ) {
+            continue;
+        }
+
+        $this->render_single_badge( $rule ); 
+    }
+
+    $badges = ob_get_clean();
+
+    if ( empty( $badges ) ) {
+        return $html;
+    }
+
+    if ( strpos( $html, 'ct-media-container' ) !== false ) {
+
+    $html = preg_replace(
+        '/(<figure[^>]*class="[^"]*ct-media-container[^"]*"[^>]*>)/',
+        '$1<div class="s1-badges-wrap">' . $badges . '</div>',
+        $html,
+        1
+    );
+}
+
+    return $html;
+    }
+
 }
