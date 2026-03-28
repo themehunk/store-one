@@ -348,7 +348,7 @@ class Th_StoreOne_Trust_Badges_Frontend {
 
     ?>
     <div class="s1-badge s1-badge-text" style="<?php echo esc_attr( $style ); ?>">
-        <?php echo esc_html( $rule['badgetext'] ?? 'Badge' ); ?>
+        <?php echo esc_html( $rule['badgetext'] ?? 'Sale!' ); ?>
     </div>
     <?php
    }
@@ -851,19 +851,19 @@ if ( ! empty($final_transform) ) {
 
     $padding['top']    = ! empty($padding['top']) && $padding['top'] !== '0'
         ? th_store_one_with_unit($padding['top'])
-        : '12px';
+        : '6px';
 
     $padding['right']  = ! empty($padding['right']) && $padding['right'] !== '0'
         ? th_store_one_with_unit($padding['right'])
-        : '15px';
+        : '8px';
 
     $padding['bottom'] = ! empty($padding['bottom']) && $padding['bottom'] !== '0'
         ? th_store_one_with_unit($padding['bottom'])
-        : '12px';
+        : '6px';
 
     $padding['left']   = ! empty($padding['left']) && $padding['left'] !== '0'
         ? th_store_one_with_unit($padding['left'])
-        : '15px';
+        : '8px';
     }
     return sprintf(
         'background:%s;color:%s;font-size:%s;padding:%s %s %s %s;border-style:%s;border-color:%s;border-width:%s %s %s %s;border-radius:%s %s %s %s;',

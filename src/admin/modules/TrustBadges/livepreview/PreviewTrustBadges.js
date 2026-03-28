@@ -173,10 +173,9 @@ const TrustBadges = ({ settings = {} }) => {
 
   const renderTextBadge = () => (
     <div className="s1-preview-badge" style={wrapperStyle}>
-      {" "}
       <div className="s1-text-badge" style={innerStyle}>
-        {settings.badgetext || "Badge"}{" "}
-      </div>{" "}
+        {settings.badgetext || "Sale!"}
+      </div>
     </div>
   );
 
