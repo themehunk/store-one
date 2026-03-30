@@ -9,9 +9,6 @@ import {
     Button 
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-
-import FrequentlyBoughtSettings from '../../modules/frequentlyBoughtTogether/FrequentlyBoughtSettings';
-import BundleProductSettings from '../../modules/BundleProductSetting/BundleProductSettings';
 import BuytoListSettings from '../../modules/BuytoList/BuytoListSettings';
 import QuickSocialSettings from '../../modules/QuickSocial/QuickSocialSettings';
 import ProductBrandSettings from '../../modules/ProductBrand/ProductBrandSettings';
@@ -25,18 +22,6 @@ const ModuleSettings = ({ currentModule, modulesState, onToggleModule, saving, o
 
     const renderModuleContent = () => {
         switch (currentModule.id) {
-            case 'frequently-bought':
-                return <FrequentlyBoughtSettings
-                    onSettingsChange={onSettingsChange}
-                    onLivePreview={onLivePreview}
-                    onRegisterSave={onRegisterSave}
-                />
-            case 'bundle-product':
-                return <BundleProductSettings
-                    onSettingsChange={onSettingsChange}
-                    onLivePreview={onLivePreview}
-                    onRegisterSave={onRegisterSave}
-                />
             case 'buy-to-list':
                 return <BuytoListSettings
                     onSettingsChange={onSettingsChange}
