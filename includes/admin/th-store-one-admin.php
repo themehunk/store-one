@@ -148,7 +148,7 @@ class Th_Store_One_Admin {
 
 	public function enqueue_admin_css(){
 
-	$css_path = 'assets/css/storeone-admin.css';
+	$css_path = 'assets/css/th-storeone-admin.css';
 
 	$css_ver = file_exists( TH_STORE_ONE_PLUGIN_DIR . $css_path )
 		? filemtime( TH_STORE_ONE_PLUGIN_DIR . $css_path )

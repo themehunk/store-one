@@ -14,105 +14,6 @@ import "./admin.scss";
 
 const modulesList = [
   {
-    id: "frequently-bought",
-    label: __("Frequently Bought Together", "th-store-one"),
-    description: __(
-      "Displays related products often purchased together, allowing customers to add multiple complementary items to their cart with one click.",
-      "th-store-one",
-    ),
-    icon: (
-      <svg
-        class="w-6 h-6"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        ></path>
-        <path
-          d="M14 14.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
-          fill="currentColor"
-          fill-opacity="0.2"
-          stroke="currentColor"
-          stroke-width="1.5"
-        ></path>
-        <circle
-          cx="18"
-          cy="18"
-          r="4"
-          fill="white"
-          stroke="currentColor"
-          stroke-width="2"
-        ></circle>
-        <path
-          d="M18 16v4M16 18h4"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-        ></path>
-      </svg>
-    ),
-    premium: true,
-  },
-  {
-    id: "bundle-product",
-    label: __("Bundle Product", "th-store-one"),
-    description: __(
-      "Create customizable product bundles that combine multiple items into one offer, increasing average order value and improving the shopping experience.",
-      "th-store-one",
-    ),
-    icon: (
-      <svg
-        class="w-6 h-6"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M21 7.5L12 3L3 7.5V16.5L12 21L21 16.5V7.5Z"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        ></path>
-        <path
-          d="M12 21V12"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        ></path>
-        <path
-          d="M12 12L21 7.5"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        ></path>
-        <path
-          d="M12 12L3 7.5"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        ></path>
-        <path
-          d="M7.5 5.25L16.5 9.75"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        ></path>
-      </svg>
-    ),
-    premium: true,
-  },
-  {
     id: "buy-to-list",
     label: __("Featured List", "th-store-one"),
     description: __(
@@ -460,46 +361,7 @@ const AdminMain = () => {
       setSaving(false);
     }
   };
-  //************************/
-  // for licence pro
-  //*********************/
-  useEffect(() => {
-    apiFetch({ path: `${th_StoreOneAdmin.restUrl}pro-status` })
-      .then((res) => {
-        if (res?.pro_active) {
-          setProActive(true);
-        }
-        if (res?.license_active) {
-          setLicenseActive(true);
-        }
-      })
-      .catch(() => {})
-      .finally(() => {
-        setLicenseLoading(false);
-      });
-  }, []);
-
-  // licence page load
-  useEffect(() => {
-    if (currentPage !== "license") {
-      return;
-    }
-    setLoading(true);
-    apiFetch({ path: `${th_StoreOneAdmin.restUrl}license-html` })
-      .then((html) => {
-        const el = document.getElementById("store-one-license-root");
-
-        if (el) {
-          el.innerHTML = html;
-        }
-      })
-      .catch(() => {
-        console.log("License page load failed");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [currentPage]);
+  
 
   return (
     <div className="store-one-admin">
@@ -518,14 +380,7 @@ const AdminMain = () => {
           <span>{error}</span>
         </div>
       )}
-      {licenseLoading && (
-        <div className="store-one-admin">
-          <div className="s1-loader">
-            <Spinner />
-            {__("Loading…", "th-store-one")}
-          </div>
-        </div>
-      )}
+      
       <Header
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
@@ -689,16 +544,6 @@ const AdminMain = () => {
           licenseActive={licenseActive}
         />
       )}
-      {currentPage === "license" &&
-        proActive &&
-        (loading ? (
-          <div className="s1-loader">
-            <Spinner />
-            {__("Loading…", "th-store-one")}
-          </div>
-        ) : (
-          <LicensePage />
-        ))}
     </div>
   );
 };

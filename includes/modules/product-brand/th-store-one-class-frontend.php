@@ -24,7 +24,7 @@ class Th_StoreOne_Product_Brand_Frontend {
         add_action( 'wp', array( $this, 'register_hooks' ) );
         add_action( 'wp_enqueue_scripts', array( $this, 'add_inline_dynamic_css' ), 20 );
         add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_assets' ] );
-        add_shortcode( 'storeone_featured_list', array( $this, 'shortcode_render' ) );
+        add_shortcode( 'th_store_one_featured_brand', array( $this, 'shortcode_render' ) );
     }
 
     /* --------------------------------------------------------------------
@@ -302,10 +302,10 @@ class Th_StoreOne_Product_Brand_Frontend {
     $margin_t  = $rule['margin_top'] ?? 10;
     $margin_b  = $rule['margin_bottom'] ?? 10;
 
-    $css  = "#{$id} { margin-top: {$margin_t}px; margin-bottom: {$margin_b}px; }";
-    $css .= "#{$id}.storeone-product-brand-wrapper { background: {$bg}; }";
-    $css .= "#{$id} .storeone-product-brand-title { color: {$title}; }";
-    $css .= "#{$id} .storeone-product-brand-list { gap: {$gap}px; }";
+    $css  = "#".esc_attr($id)." { margin-top: ".esc_attr($margin_t)."{}px; margin-bottom: ".esc_attr($margin_b)."px; }";
+    $css .= "#".esc_attr($id).".storeone-product-brand-wrapper { background: ".esc_attr($bg)."; }";
+    $css .= "#".esc_attr($id)." .storeone-product-brand-title { color: ".esc_attr($title)."; }";
+    $css .= "#".esc_attr($id)." .storeone-product-brand-list { gap: ".esc_attr($gap)."px; }";
 
     return $css;
 }

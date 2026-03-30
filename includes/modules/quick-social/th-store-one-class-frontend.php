@@ -20,7 +20,7 @@ class Th_StoreOne_Quick_Social {
         $this->rules = $all_modules['quick-social']['rules'] ?? array();
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
         add_action( 'wp_footer', array( $this, 'render_auto' ), 99 );
-        add_shortcode( 'storeone_quick_social', array( $this, 'shortcode' ) );
+        add_shortcode( 'th_store_one_quick_social', array( $this, 'shortcode' ) );
         add_action( 'wp', array( $this, 'register_single_hooks' ) );
         
     }
@@ -414,10 +414,10 @@ echo wp_kses(
     } else {
 
         $styles = array(
-            '--s1-icon-color'       => $rule['icon_clr'] ?? '#111',
-            '--s1-icon-bg'          => $rule['icon_bg_clr'] ?? '#fff',
-            '--s1-icon-bg-hover'    => $rule['icon_bg_hvr_clr'] ?? '#eee',
-            '--s1-icon-color-hover' => $rule['icon_hvr_clr'] ?? '#2563eb',
+            '--s1-icon-color'       => esc_attr($rule['icon_clr']) ?? '#111',
+            '--s1-icon-bg'          => esc_attr($rule['icon_bg_clr']) ?? '#fff',
+            '--s1-icon-bg-hover'    => esc_attr($rule['icon_bg_hvr_clr']) ?? '#eee',
+            '--s1-icon-color-hover' => esc_attr($rule['icon_hvr_clr']) ?? '#2563eb',
         );
 
         foreach ( $styles as $key => $value ) {

@@ -24,7 +24,7 @@ class Th_StoreOne_Buy_To_List_Frontend {
         add_action( 'wp', array( $this, 'register_hooks' ) );
         add_action( 'wp_enqueue_scripts', array( $this, 'add_inline_dynamic_css' ), 20 );
         add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_assets' ] );
-        add_shortcode( 'storeone_featured_list', array( $this, 'shortcode_render' ) );
+        add_shortcode( 'th_store_one_featured_list', array( $this, 'shortcode_render' ) );
     }
 
     /* --------------------------------------------------------------------
@@ -212,7 +212,7 @@ class Th_StoreOne_Buy_To_List_Frontend {
         $wrapper_id = 'storeone-btl-' . sanitize_html_class( $rule['flexible_id'] ?? uniqid() );
         $styleBlt = sanitize_html_class( $rule['buy_to_list_style'] ?? 'style_1' );
 
-        ob_start();
+        
         ?>
 
         <div id="<?php echo esc_attr( $wrapper_id ); ?>" class="storeone-btl-wrapper <?php echo esc_attr( $styleBlt ); ?>">
@@ -349,12 +349,6 @@ class Th_StoreOne_Buy_To_List_Frontend {
         </div>
 
         <?php
-        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-        echo apply_filters(
-            'storeone_buy_to_list_output',
-            ob_get_clean(),
-            $rule
-        );
     }
 
     /**
@@ -387,6 +381,8 @@ class Th_StoreOne_Buy_To_List_Frontend {
             return '';
         }
 
+        
+
         $id = 'storeone-btl-' . sanitize_html_class( $rule['flexible_id'] );
 
         $bg        = th_store_one_normalize_color( $rule['btl_bg_clr'] ?? '#ffffff' );
@@ -397,22 +393,23 @@ class Th_StoreOne_Buy_To_List_Frontend {
         $icon_clr  = th_store_one_normalize_color( $rule['btl_icon_clr'] ?? '#2563eb' );
         $radius    = th_store_one_normalize_color( $rule['btl_border_radius']?? '8px');
         $border_clr  = th_store_one_normalize_color( $rule['btl_border_clr'] ?? '#e5e7eb' );
-        $display_style = $rule['display_style'] ?? 'style_1';
+        $display_style = $rule['buy_to_list_style'] ?? 'style_1';
 
         if($display_style === 'style_4'){
-           $css .= "#{$id} { background: #fff; border-color: {$border_clr};border-radius: {$radius};}";
-           $css .= "#{$id} .storeone-btl-item { background: {$bg}; }";
+           
+           $css .= "#".esc_attr($id)." { background: #fff; border-color:".esc_attr($border_clr).";border-radius:".esc_attr($radius).";}";
+           $css .= "#".esc_attr($id)." .storeone-btl-item { background: ".esc_attr($bg)."; }";
         }else{
-            $css  = "#{$id} { background: {$bg}; border-color: {$border_clr};border-radius: {$radius}; }";
+            $css  = "#".esc_attr($id)." { background: ".esc_attr($bg)."; border-color: ".esc_attr($border_clr).";border-radius: ".esc_attr($radius)."; }";
         }
 
          if($display_style === 'style_5'){
-            $css .= "#{$id} .storeone-btl-item{ border-color: {$border_clr};border-radius: {$radius}; }";
+            $css .= "#".esc_attr($id)." .storeone-btl-item{ border-color: ".esc_attr($border_clr).";border-radius: ".esc_attr($radius)."; }";
          }
         
-        $css .= "#{$id} .storeone-btl-title { color: {$title}; }";
-        $css .= "#{$id} .storeone-btl-text { color: {$list}; }";
-        $css .= "#{$id} .storeone-btl-icon { background: {$icon_bg}; color: {$icon_clr}; }";
+        $css .= "#".esc_attr($id)." .storeone-btl-title { color: ".esc_attr($title)."; }";
+        $css .= "#".esc_attr($id)." .storeone-btl-text { color: ".esc_attr($list)."; }";
+        $css .= "#".esc_attr($id)." .storeone-btl-icon { background: ".esc_attr($icon_bg)."; color: ".esc_attr($icon_clr)."; }";
 
         return $css;
     }
