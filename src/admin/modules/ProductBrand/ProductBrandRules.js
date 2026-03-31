@@ -14,7 +14,7 @@ import TabSwitcher from "@th-storeone-global/TabSwitcher";
 import THBackgroundControl from "@th-storeone-control/color";
 import UniversalRangeControl from "@th-storeone-global/UniversalRangeControl";
 import PlacementPriorityControl from "@th-storeone-global/PlacementPriorityControl";
-
+import UniversalBorderControl from "@th-storeone-control/UniversalBorderControl";
 import {
   CopyIcon,
   TrashIcon,
@@ -27,6 +27,7 @@ import { ICONS } from "@th-storeone-global/icons";
 import ResetModuleButton from "@th-storeone-global/ResetModuleButton";
 import PresetImageSelector from "./PresetImageSelector.js";
 /* Default Rule */
+const DEFAULT_BADGE = `${th_StoreOneAdmin.homeUrl}wp-content/plugins/th-store-one/assets/images/trustbadges/visa.svg`;
 const newBrlistTRule = () => ({
   status: "active",
   list_title: "",
@@ -43,7 +44,7 @@ const newBrlistTRule = () => ({
       link_url: "https://example.com",
       open: true,
       badegs_type: "preset",
-      image_url: "",
+      image_url: DEFAULT_BADGE,
     },
   ],
   placement: "after_summary",
@@ -78,6 +79,22 @@ const newBrlistTRule = () => ({
   btl_icon_bg_clr: "#fff",
   btl_icon_clr: "#2563eb",
   btl_bg_clr: "#fff",
+  border: {
+      width: {
+        top: "1px",
+        right: "1px",
+        bottom: "1px",
+        left: "1px",
+      },
+      style: "solid",
+      color: "#eee",
+      radius: {
+        top: "4px",
+        right: "4px",
+        bottom: "4px",
+        left: "4px",
+      },
+    },
 });
 
 /** menu tabs */
@@ -638,7 +655,7 @@ export default function BuytoListRules({ rules, onChange, onLivePreview }) {
                                     </S1Field>
                                   )}
 
-                                    {item.badegs_type === "preset" && (
+                                    {(item.badegs_type || "preset") === "preset" && (
                                     
                                     <S1Field label="Trust Badge">
                                     <PresetImageSelector
@@ -793,6 +810,11 @@ export default function BuytoListRules({ rules, onChange, onLivePreview }) {
                             }}
                           />
                         </S1Field>
+
+                        <UniversalBorderControl
+                          value={rule.border}
+                          onChange={(v) => updateField(index, "border", v)}
+                        />
                       </div>
                     ),
                   },

@@ -3,6 +3,20 @@ import './live-style.css';
 const PreviewBuyToList = ({ settings = {} }) => {
 
     const hasBrands = settings.brand_list && settings.brand_list.length > 0;
+    const getBorderStyle = (border = {}) => ({
+  borderStyle: border.style || "solid",
+  borderColor: border.color || "#eee",
+
+  borderTopWidth: border?.width?.top || "1px",
+  borderRightWidth: border?.width?.right || "1px",
+  borderBottomWidth: border?.width?.bottom || "1px",
+  borderLeftWidth: border?.width?.left || "1px",
+
+  borderTopLeftRadius: border?.radius?.top || "4px",
+  borderTopRightRadius: border?.radius?.right || "4px",
+  borderBottomRightRadius: border?.radius?.bottom || "4px",
+  borderBottomLeftRadius: border?.radius?.left || "4px",
+});
 
     return (
         <div
@@ -52,7 +66,8 @@ const PreviewBuyToList = ({ settings = {} }) => {
                             style={{
                                 gap: settings.image_gap
                                     ? `${settings.image_gap}px`
-                                    : '15px'
+                                    : '15px',
+                                   
                             }}
                         >
 
@@ -86,7 +101,7 @@ const PreviewBuyToList = ({ settings = {} }) => {
         );
 
         return (
-            <li key={index} className="s1-btl-item">
+            <li key={index} className="s1-btl-item" style={getBorderStyle(settings.border)}>
 
                 {item.link_enabled && item.link_url ? (
                     <a
@@ -116,7 +131,8 @@ const PreviewBuyToList = ({ settings = {} }) => {
                     width: settings.max_width
                         ? `${settings.max_width}px`
                         : '100px',
-                    height: '60px'
+                    height: '60px',
+                    ...getBorderStyle(settings.border)
                 }}
             />
         </li>

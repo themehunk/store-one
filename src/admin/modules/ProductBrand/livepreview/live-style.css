@@ -68,3 +68,11 @@
     gap:15px;
     flex-wrap: wrap;
 }
+.product-brand .s1-btl-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+    border: 1px solid #eee;
+    padding: 0.3rem;
+}

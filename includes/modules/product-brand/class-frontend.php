@@ -304,11 +304,27 @@ class Th_StoreOne_Product_Brand_Frontend {
     $margin_t  = $rule['margin_top'] ?? 10;
     $margin_b  = $rule['margin_bottom'] ?? 10;
 
+    $border = $rule['border'] ?? [];
+    $bw = $border['width'] ?? [];
+    $br = $border['radius'] ?? [];
+    $border_style = $border['style'] ?? 'solid';
+    $border_color = $border['color'] ?? '#eee';
     $css  = "#{$id} { margin-top: {$margin_t}px; margin-bottom: {$margin_b}px; }";
     $css .= "#{$id}.storeone-product-brand-wrapper { background: {$bg}; }";
     $css .= "#{$id} .storeone-product-brand-title { color: {$title}; }";
     $css .= "#{$id} .storeone-product-brand-list { gap: {$gap}; }";
-
+    $css .= "#{$id} .storeone-product-brand-list .storeone-product-brand-item{
+        border-style: {$border_style};
+        border-color: {$border_color};
+        border-top-width: " . ($bw['top'] ?? '0px') . ";
+        border-right-width: " . ($bw['right'] ?? '0px') . ";
+        border-bottom-width: " . ($bw['bottom'] ?? '0px') . ";
+        border-left-width: " . ($bw['left'] ?? '0px') . ";
+        border-top-left-radius: " . ($br['top'] ?? '0px') . ";
+        border-top-right-radius: " . ($br['right'] ?? '0px') . ";
+        border-bottom-right-radius: " . ($br['bottom'] ?? '0px') . ";
+        border-bottom-left-radius: " . ($br['left'] ?? '0px') . ";
+    }";
     return $css;
 }
  

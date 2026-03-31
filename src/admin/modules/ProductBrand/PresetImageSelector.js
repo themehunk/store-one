@@ -120,7 +120,7 @@ const handleSearch = (value) => {
                                 type="text"
                                 placeholder="Search badges..."
                                 value={search}
-                                onChange={(e) => setSearch(e.target.value)}
+                               onChange={(e) => handleSearch(e.target.value)}
                             />
                             <span className="s1-preset-search-icon">
                             <MagnifyingGlassIcon />
