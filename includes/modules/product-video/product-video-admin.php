@@ -74,7 +74,7 @@ public function render($post) {
                 </div>
 
                 <div class="th-featured-wrap">
-
+<div class="th-featured-inner">
                     <div class="th-field">
                         <label><?php echo esc_html__('Video Source', 'th-store-one'); ?></label>
                         <select name="th_source">
@@ -96,13 +96,14 @@ public function render($post) {
                             name="th_video_url"
                             value="<?php echo esc_attr($url); ?>">
                     </div>
-
-                    <button type="button" class="button th-upload-btn">
-                        <?php echo esc_html__('Upload Video', 'th-store-one'); ?>
-                    </button>
-
+                <div class="th-field fetiured-upload-btn">
+                    <label><?php echo esc_html__('Video', 'th-store-one'); ?></label>
+                                    <button type="button" class="button th-upload-btn">
+                                        <?php echo esc_html__('Upload', 'th-store-one'); ?>
+                                    </button>
+                                    </div>
+                   </div>
                 </div>
-
             </div>
 
             <!-- GALLERY -->
@@ -179,9 +180,24 @@ if (!is_array($gallery_types)) $gallery_types = [];
                 </div>
 
             </div>
-
+              <div class="th-field">
+               <label><?php echo esc_html__('Video Auto Play','th-store-one'); ?></label>
+                    <div class="th-toggle-wrap">
+                        <label class="th-switch">
+                            <input type="checkbox"
+                                id="th_enable_video_auto_play"
+                                name="th_enable_video_auto_play"
+                                value="yes"
+                                <?php checked($enable_video_auto_play,'yes'); ?>>
+                            <span class="th-slider"></span>
+                        </label>
+                        <span class="th-toggle-label"></span>
+                    </div>
+                </div>
             <!-- POSITION -->
             <div class="th-box th-s1-other">
+
+            
 
                 <div class="th-field">
                     <label><?php echo esc_html__('Position','th-store-one'); ?></label>
@@ -203,6 +219,7 @@ if (!is_array($gallery_types)) $gallery_types = [];
                         </option>
                         <option value="16:9" <?php selected($aspect,'16:9');?>>16:9</option>
                         <option value="4:3" <?php selected($aspect,'4:3');?>>4:3</option>
+                        <option value="auto" <?php selected($aspect,'auto');?>>auto</option>
                     </select>
                 </div>
 
@@ -230,6 +247,7 @@ public function save($post_id) {
     ) return;
 
     update_post_meta($post_id,'_th_enable_video', isset($_POST['th_enable_video'])?'yes':'no');
+    update_post_meta($post_id,'_th_enable_video_auto_play', isset($_POST['th_enable_video_auto_play'])?'yes':'no');
     update_post_meta($post_id,'_th_enable_gallery', isset($_POST['th_enable_gallery'])?'yes':'no');
 
     update_post_meta($post_id,'_th_video_url', esc_url_raw($_POST['th_video_url'] ?? ''));
