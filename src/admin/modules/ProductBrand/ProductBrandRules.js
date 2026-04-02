@@ -14,6 +14,8 @@ import TabSwitcher from "@th-storeone-global/TabSwitcher";
 import THBackgroundControl from "@th-storeone-control/color";
 import UniversalRangeControl from "@th-storeone-global/UniversalRangeControl";
 import PlacementPriorityControl from "@th-storeone-global/PlacementPriorityControl";
+import SliderControl from "@th-storeone-global/SliderControl";
+
 import UniversalBorderControl from "@th-storeone-control/UniversalBorderControl";
 import {
   CopyIcon,
@@ -47,6 +49,13 @@ const newBrlistTRule = () => ({
       image_url: DEFAULT_BADGE,
     },
   ],
+  slider: {
+  enabled: false,
+  slides: 4,
+  autoplay: false,
+  navigation: true,
+  },
+  black_image_enabled: false,
   placement: "after_summary",
   priority: 10,
   margin_top: "10",
@@ -751,6 +760,26 @@ export default function BuytoListRules({ rules, onChange, onLivePreview }) {
                     icon: ICONS[menuItems[1].icon],
                     content: (
                       <div className="store-one-rule-body">
+
+                        <SliderControl
+                            value={rule.slider || {}}
+                            onChange={(val) => updateField(index, "slider", val)}
+
+                            labels={{
+                                enable: __("Display Trust in Slider", "th-store-one"),
+                                slides: __("Slides to Show", "th-store-one"),
+                                autoplay: __("Auto Play", "th-store-one"),
+                                navigation: __("Show Navigation", "th-store-one"),
+                            }}
+
+                            fields={{
+                                enable: true,
+                                slides: true,
+                                autoplay: true,
+                                navigation: true,
+                            }}
+                        />
+                       
                         <PlacementPriorityControl
                           placement={rule.placement}
                           priority={rule.priority}
@@ -804,6 +833,13 @@ export default function BuytoListRules({ rules, onChange, onLivePreview }) {
                           min={1}
                           max={100}
                         />
+
+                        <S1Field label={__("EnableBlack/White Images", "th-store-one")}>
+                          <ToggleControl
+                              checked={rule.black_image_enabled}
+                              onChange={(v) => updateField(index, "black_image_enabled", v)}
+                          />
+                      </S1Field>
 
                         <S1Field>
                           <THBackgroundControl

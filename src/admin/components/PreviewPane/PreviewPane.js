@@ -4,7 +4,7 @@ import PreviewFBT from '../../modules/frequentlyBoughtTogether/livepreview/Previ
 import PreviewBndl from '../../modules/BundleProductSetting/livepreview/PreviewBndl';
 import PreviewBuyToList from '../../modules/BuytoList/livepreview/PreviewBuyToList';
 import PreviewQuickSocial from '../../modules/QuickSocial/livepreview/PreviewQuickSocial';
-import ProductBrand from '../../modules/ProductBrand/livepreview/PreviewProductBrand';
+import PreviewProductBrand from '../../modules/ProductBrand/livepreview/PreviewProductBrand';
 import TrustBadges from '../../modules/TrustBadges/livepreview/PreviewTrustBadges';
 import ProductVideo from '../../modules/ProductVideo/livepreview/PreviewProductVideo';
 
@@ -59,7 +59,7 @@ const PreviewPane = ({ currentModule, settings }) => {
                                 />
                             )}
                              {currentModule?.id === "product-brand" && activeRule && (
-                                <ProductBrand
+                                <PreviewProductBrand
                                      key={currentModule.id}
                                     settings={activeRule}
                                 />

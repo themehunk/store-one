@@ -38,7 +38,27 @@ class Th_StoreOne_Product_Brand_Frontend {
             [],
             TH_STORE_ONE_VERSION
         );
+        wp_enqueue_style(
+            'swiper-css',
+            TH_STORE_ONE_PLUGIN_URL . 'assets/css/swiper/swiper-bundle.min.css',
+            array(),
+            '11'
+        );
 
+        wp_enqueue_script(
+            'swiper-js',
+           TH_STORE_ONE_PLUGIN_URL . 'assets/js/swiper/swiper-bundle.min.js',
+            array(),
+            '11',
+            true
+        );
+        wp_enqueue_script(
+            'th-store-trust-badges',
+           TH_STORE_ONE_PLUGIN_URL . 'assets/js/th-store-trust-badges.js',
+            array(),
+            TH_STORE_ONE_VERSION,
+            false
+        );
        
     }
 
@@ -218,13 +238,62 @@ class Th_StoreOne_Product_Brand_Frontend {
 
     ?>
     <div id="<?php echo esc_attr( $wrapper_id ); ?>" 
-         class="storeone-product-brand-wrapper">
+         class="storeone-product-brand-wrapper <?php echo ! empty($rule['black_image_enabled']) ? 's1-bw-mode' : ''; ?>"">
 
         <?php if ( ! empty( $rule['list_title'] ) ) : ?>
             <h3 class="storeone-product-brand-title">
                 <?php echo esc_html( $rule['list_title'] ); ?>
             </h3>
         <?php endif; ?>
+
+        <?php if ( ! empty( $rule['slider']['enabled'] ) ) : ?>
+
+<div 
+    class="storeone-product-brand-swiper swiper"
+    data-slides="<?php echo esc_attr( $rule['slider']['slides'] ?? 4 ); ?>"
+    data-autoplay="<?php echo ! empty($rule['slider']['autoplay']) ? 'true' : 'false'; ?>"
+    data-nav="<?php echo ! empty($rule['slider']['navigation']) ? 'true' : 'false'; ?>"
+>
+
+    <div class="swiper-wrapper">
+
+        <?php foreach ( $rule['brand_list'] as $item ) : ?>
+
+            <?php if ( empty( $item['image_url'] ) ) continue; ?>
+
+            <div class="swiper-slide">
+
+                <div class="storeone-product-brand-item">
+
+                    <?php if ( ! empty( $item['link_enabled'] ) && ! empty( $item['link_url'] ) ) : ?>
+                        <a href="<?php echo esc_url( $item['link_url'] ); ?>" target="_blank">
+                    <?php endif; ?>
+
+                    <img 
+                        src="<?php echo esc_url( $item['image_url'] ); ?>" 
+                        style="max-width:<?php echo esc_attr( $rule['max_width'] ?? 100 ); ?>px;"
+                    />
+
+                    <?php if ( ! empty( $item['link_enabled'] ) ) : ?>
+                        </a>
+                    <?php endif; ?>
+
+                </div>
+
+            </div>
+
+        <?php endforeach; ?>
+
+    </div>
+
+    <?php if ( ! empty( $rule['slider']['navigation'] ) ) : ?>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+    <?php endif; ?>
+
+</div>
+
+<?php else : ?>
 
         <ul class="storeone-product-brand-list">
 
@@ -261,7 +330,7 @@ class Th_StoreOne_Product_Brand_Frontend {
             <?php endforeach; ?>
 
         </ul>
-
+<?php  endif;?>
     </div>
     <?php
    }
@@ -310,10 +379,10 @@ class Th_StoreOne_Product_Brand_Frontend {
     $border_style = $border['style'] ?? 'solid';
     $border_color = $border['color'] ?? '#eee';
     $css  = "#{$id} { margin-top: {$margin_t}px; margin-bottom: {$margin_b}px; }";
-    $css .= "#{$id}.storeone-product-brand-wrapper { background: {$bg}; }";
+    $css .= "#{$id}.storeone-product-brand-wrapper .swiper-slide .storeone-product-brand-item,#{$id}.storeone-product-brand-wrapper .storeone-product-brand-item{ background: {$bg}; }";
     $css .= "#{$id} .storeone-product-brand-title { color: {$title}; }";
     $css .= "#{$id} .storeone-product-brand-list { gap: {$gap}; }";
-    $css .= "#{$id} .storeone-product-brand-list .storeone-product-brand-item{
+    $css .= "#{$id} .storeone-product-brand-list .storeone-product-brand-item,#{$id}.storeone-product-brand-wrapper .swiper-slide .storeone-product-brand-item{
         border-style: {$border_style};
         border-color: {$border_color};
         border-top-width: " . ($bw['top'] ?? '0px') . ";

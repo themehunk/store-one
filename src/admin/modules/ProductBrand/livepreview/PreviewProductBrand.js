@@ -1,28 +1,37 @@
 import './live-style.css';
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/navigation";
 
-const PreviewBuyToList = ({ settings = {} }) => {
+import { Navigation, Autoplay } from "swiper/modules";
+
+const PreviewProductBrand = ({ settings = {} }) => {
 
     const hasBrands = settings.brand_list && settings.brand_list.length > 0;
+
+    const isSlider =
+        settings?.slider?.enabled === true ||
+        settings?.slider?.enabled === "true";
+
+    const slidesToShow = settings?.slider?.slides || 4;
+
     const getBorderStyle = (border = {}) => ({
-  borderStyle: border.style || "solid",
-  borderColor: border.color || "#eee",
+        borderStyle: border.style || "solid",
+        borderColor: border.color || "#eee",
 
-  borderTopWidth: border?.width?.top || "1px",
-  borderRightWidth: border?.width?.right || "1px",
-  borderBottomWidth: border?.width?.bottom || "1px",
-  borderLeftWidth: border?.width?.left || "1px",
+        borderTopWidth: border?.width?.top || "1px",
+        borderRightWidth: border?.width?.right || "1px",
+        borderBottomWidth: border?.width?.bottom || "1px",
+        borderLeftWidth: border?.width?.left || "1px",
 
-  borderTopLeftRadius: border?.radius?.top || "4px",
-  borderTopRightRadius: border?.radius?.right || "4px",
-  borderBottomRightRadius: border?.radius?.bottom || "4px",
-  borderBottomLeftRadius: border?.radius?.left || "4px",
-});
+        borderTopLeftRadius: border?.radius?.top || "4px",
+        borderTopRightRadius: border?.radius?.right || "4px",
+        borderBottomRightRadius: border?.radius?.bottom || "4px",
+        borderBottomLeftRadius: border?.radius?.left || "4px",
+    });
 
     return (
-        <div
-            className="s1-product-preview product-brand"
-            
-        >
+        <div className="s1-product-preview product-brand ">
 
             <div className="s1-main-product">
 
@@ -37,110 +46,163 @@ const PreviewBuyToList = ({ settings = {} }) => {
 
                     {/* ================= BRAND SECTION ================= */}
                     <div
-                        className="s1-btl-preview"
-                       
+                        className={`s1-trust-preview ${
+        settings.black_image_enabled ? "s1-bw-mode" : ""
+    }`}
                         style={{
-                            background: settings.btl_bg_clr || "#fff",
-                marginTop: settings.margin_top
-                    ? `${settings.margin_top}px`
-                    : '10px',
-                marginBottom: settings.margin_bottom
-                    ? `${settings.margin_bottom}px`
-                    : '10px',
-            }}
+                            
+                            marginTop: settings.margin_top ? `${settings.margin_top}px` : '10px',
+                            marginBottom: settings.margin_bottom ? `${settings.margin_bottom}px` : '10px',
+                        }}
                     >
 
                         {settings.list_title && settings.list_title.trim() !== '' && (
-    <div
-        className="s1-btl-title"
-        style={{
-            color: settings.btl_title_clr || "#111"
-        }}
-    >
-        {settings.list_title}
-    </div>
-)}
+                            <div
+                                className="s1-btl-title"
+                                style={{ color: settings.btl_title_clr || "#111" }}
+                            >
+                                {settings.list_title}
+                            </div>
+                        )}
 
-                        <ul
-                            className="s1-btl-list"
-                            style={{
-                                gap: settings.image_gap
-                                    ? `${settings.image_gap}px`
-                                    : '15px',
-                                   
-                            }}
-                        >
+                        {/* ================= SLIDER / LIST ================= */}
+                        {isSlider ? (
+                            <Swiper
+                                modules={[Navigation, Autoplay]}
+                                slidesPerView={slidesToShow}
+                                spaceBetween={15}
 
-                            {hasBrands ? (
+                                navigation={settings?.slider?.navigation}
 
-    settings.brand_list.map((item, index) => {
+                                autoplay={
+                                    settings?.slider?.autoplay
+                                        ? { delay: 2000 }
+                                        : false
+                                }
 
-        const ImageElement = item.image_url ? (
-            <img
-                src={item.image_url}
-                alt=""
-                style={{
-                    maxWidth: settings.max_width
-                        ? `${settings.max_width}px`
-                        : '100px',
-                    width: '100%',
-                    height: 'auto',
-                    objectFit: 'contain'
-                }}
-            />
-        ) : (
-            <div
-                className="static-skeleton static-brand-img"
-                style={{
-                    width: settings.max_width
-                        ? `${settings.max_width}px`
-                        : '100px',
-                    height: '60px'
-                }}
-            />
-        );
+                                style={{ padding: "5px 0" }}
+                            >
 
-        return (
-            <li key={index} className="s1-btl-item" style={getBorderStyle(settings.border)}>
+                                {hasBrands ? (
+                                    settings.brand_list.map((item, index) => {
 
-                {item.link_enabled && item.link_url ? (
-                    <a
-                        href={item.link_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="s1-brand-link"
-                    >
-                        {ImageElement}
-                    </a>
-                ) : (
-                    ImageElement
-                )}
+                                        const ImageElement = item.image_url ? (
+                                            <img
+                                                src={item.image_url}
+                                                alt=""
+                                                style={{
+                                                    maxWidth: settings.max_width
+                                                        ? `${settings.max_width}px`
+                                                        : '100px',
+                                                    width: '100%',
+                                                    height: 'auto',
+                                                    objectFit: 'contain'
+                                                }}
+                                            />
+                                        ) : (
+                                            <div
+                                                className="static-skeleton static-brand-img"
+                                                style={{
+                                                    width: settings.max_width
+                                                        ? `${settings.max_width}px`
+                                                        : '100px',
+                                                    height: '60px'
+                                                }}
+                                            />
+                                        );
 
-            </li>
-        );
+                                        return (
+                                            <SwiperSlide key={index}>
+                                                <div
+                                                    className="s1-btl-item"
+                                                    style={{
+                                                ...getBorderStyle(settings.border),
+                                                background: settings.btl_bg_clr || "#fff",
+                                            }}
+                                                >
 
-    })
+                                                    {item.link_enabled && item.link_url ? (
+                                                        <a
+                                                            href={item.link_url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="s1-brand-link"
+                                                        >
+                                                            {ImageElement}
+                                                        </a>
+                                                    ) : (
+                                                        ImageElement
+                                                    )}
 
-) : (
+                                                </div>
+                                            </SwiperSlide>
+                                        );
+                                    })
 
-    [1,2,3].map((_, i) => (
-        <li key={i} className="s1-btl-item">
-            <div
-                className="static-skeleton static-brand-img"
-                style={{
-                    width: settings.max_width
-                        ? `${settings.max_width}px`
-                        : '100px',
-                    height: '60px',
-                    ...getBorderStyle(settings.border)
-                }}
-            />
-        </li>
-    ))
+                                ) : (
 
-)}
+                                    [1, 2, 3].map((_, i) => (
+                                        <SwiperSlide key={i}>
+                                            <div
+                                                className="s1-btl-item"
+                                                style={{
+                                                ...getBorderStyle(settings.border),
+                                                background: settings.btl_bg_clr || "#fff",
+                                            }}
+                                            >
+                                                <div
+                                                    className="static-skeleton static-brand-img"
+                                                    style={{
+                                                        width: settings.max_width
+                                                            ? `${settings.max_width}px`
+                                                            : '100px',
+                                                        height: '60px'
+                                                    }}
+                                                />
+                                            </div>
+                                        </SwiperSlide>
+                                    ))
 
-                        </ul>
+                                )}
+
+                            </Swiper>
+                        ) : (
+                            <ul
+                                className="s1-btl-list"
+                                style={{
+                                    display: "flex",
+                                    gap: settings.image_gap
+                                        ? `${settings.image_gap}px`
+                                        : '15px',
+                                }}
+                            >
+                                {hasBrands ? (
+                                    settings.brand_list.map((item, index) => (
+                                        <li
+                                            key={index}
+                                            className="s1-btl-item"
+                                            style={{
+                                                ...getBorderStyle(settings.border),
+                                                background: settings.btl_bg_clr || "#fff",
+                                            }}
+                                        >
+                                            <img src={item.image_url} style={{
+                                            maxWidth: settings.max_width
+                                                ? `${settings.max_width}px`
+                                                : "100px",
+                                            width: "100%",
+                                            height: "auto",
+                                            objectFit: "contain"
+                                        }} alt="trust image" />
+                                        </li>
+                                    ))
+                                ) : (
+                                    [1, 2, 3].map((_, i) => (
+                                        <li key={i} className="s1-btl-item"></li>
+                                    ))
+                                )}
+                            </ul>
+                        )}
 
                     </div>
                     {/* ================= END BRAND SECTION ================= */}
@@ -157,4 +219,4 @@ const PreviewBuyToList = ({ settings = {} }) => {
     );
 };
 
-export default PreviewBuyToList;
+export default PreviewProductBrand;
