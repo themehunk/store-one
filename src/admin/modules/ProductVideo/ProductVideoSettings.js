@@ -140,16 +140,16 @@ export default function ProductVideoSettings({
           {/* ---------------------------------
            * PRODUCT PAGE SETTINGS
            * --------------------------------- */}
-          <h3 className="store-one-section-title">
+          {/* <h3 className="store-one-section-title">
             {__("Product Video settings", "th-store-one")}
           </h3>
 
           <div className="store-one-content-settings">
 
-          </div>
+          </div> */}
         </>
       )}
-      <div className="store-one-rules-footer bundle-footer">
+      {/* <div className="store-one-rules-footer bundle-footer">
         <ResetModuleButton
         moduleId={MODULE_ID}
         label="Reset"
@@ -168,7 +168,7 @@ export default function ProductVideoSettings({
             })
         }
         />
-        </div>
+        </div> */}
     </div>
   );
 }

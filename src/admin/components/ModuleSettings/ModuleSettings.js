@@ -101,6 +101,21 @@ const ModuleSettings = ({ currentModule, modulesState, onToggleModule, saving, o
                         </Button>
                         
                         )}
+                        {currentModule.id === 'product-video' && (
+                        
+                         <Button
+                         className="s1-settings__redirect-btn"
+                                        onClick={() =>
+                                            window.open(
+                                            `${th_StoreOneAdmin.adminUrl}post-new.php?post_type=product`,
+                                            "_blank"
+                                            )
+                                        }
+                                        >
+                                        {__("Add Video", "th-store-one")}
+                        </Button>
+                        
+                        )}
                          
                     </FlexBlock>
 

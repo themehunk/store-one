@@ -182,23 +182,22 @@ jQuery(function($){
 
     });
 
-
-    $(document).on('click', '.th-video-play', function(e){
+   // for shop video
+   $(document).on('click', '.th-loop-video .th-video-play', function(e){
 
     e.preventDefault();
     e.stopPropagation();
+    e.stopImmediatePropagation(); //IMPORTANT
 
     let wrap = $(this).closest('.th-video-wrap');
     let url = wrap.data('src');
 
-    let video = `
-        <video src="${url}" autoplay controls muted playsinline 
-        style="width:100%;height:100%;object-fit:cover;"></video>
-    `;
+    let video = `<video src="${url}" autoplay controls muted playsinline 
+        style="width:100%;height:100%;object-fit:cover;"></video>`;
 
-    wrap.replaceWith(video);
+    wrap.html(video);
+
+    return false;
 });
 
 });
-
-

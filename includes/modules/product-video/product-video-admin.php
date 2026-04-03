@@ -42,9 +42,6 @@ public function render($post) {
         <div class="th-tab active" data-tab="video">
             <?php echo esc_html__('Product Video', 'th-store-one'); ?>
         </div>
-        <div class="th-tab" data-tab="audio">
-            <?php echo esc_html__('Product Audio', 'th-store-one'); ?>
-        </div>
     </div>
 
     <div class="th-content">
@@ -180,7 +177,7 @@ if (!is_array($gallery_types)) $gallery_types = [];
                 </div>
 
             </div>
-              <div class="th-field">
+              <div class="th-field th-s1-auto-play">
                <label><?php echo esc_html__('Video Auto Play','th-store-one'); ?></label>
                     <div class="th-toggle-wrap">
                         <label class="th-switch">
