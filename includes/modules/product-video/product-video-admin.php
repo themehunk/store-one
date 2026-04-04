@@ -138,35 +138,60 @@ if (!is_array($gallery_types)) $gallery_types = [];
 ?>
 
 <li class="th-item">
+     <div class="th-item-inner">
     <span class="drag">☰</span>
-
     <select name="th_gallery_type[]">
         <option value="youtube" <?php selected($type,'youtube'); ?>>
             <?php echo esc_html__('YouTube','th-store-one'); ?>
         </option>
-
         <option value="vimeo" <?php selected($type,'vimeo'); ?>>
             <?php echo esc_html__('Vimeo','th-store-one'); ?>
         </option>
-
         <option value="upload" <?php selected($type,'upload'); ?>>
             <?php echo esc_html__('Upload','th-store-one'); ?>
         </option>
     </select>
-
     <input type="text"
         name="th_gallery[]"
         value="<?php echo esc_attr($g); ?>">
-
     <button class="button upload">
         <?php echo esc_html__('Upload','th-store-one'); ?>
     </button>
-
     <a href="#" class="remove">
         <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="s1-icon s1-icon-danger"><path d="M5.5 1C5.22386 1 5 1.22386 5 1.5C5 1.77614 5.22386 2 5.5 2H9.5C9.77614 2 10 1.77614 10 1.5C10 1.22386 9.77614 1 9.5 1H5.5ZM3 3.5C3 3.22386 3.22386 3 3.5 3H5H10H11.5C11.7761 3 12 3.22386 12 3.5C12 3.77614 11.7761 4 11.5 4H11V12C11 12.5523 10.5523 13 10 13H5C4.44772 13 4 12.5523 4 12V4L3.5 4C3.22386 4 3 3.77614 3 3.5ZM5 4H10V12H5V4Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
     </a>
-</li>
+    </div>
+    <?php
+    $gallery_thumbs = get_post_meta($post->ID, '_th_gallery_thumb', true);
+    if (!is_array($gallery_thumbs)) $gallery_thumbs = [];
+    $thumb_val = $gallery_thumbs[$index] ?? '';
+    ?>
+    <div class="th-thumb-wrap" style="<?php echo ($type === 'upload') ? '' : 'display:none;'; ?>">
+    
+    <div class="th-thumb-left">
+        <div class="th-thumb-preview">
+            <?php if($thumb_val): ?>
+                <img src="<?php echo esc_url($thumb_val); ?>">
+            <?php else: ?>
+                <div class="th-thumb-placeholder">No Image</div>
+            <?php endif; ?>
+        </div>
+    </div>
 
+    <div class="th-thumb-right">
+        <input type="text"
+            class="th-thumb-input"
+            name="th_gallery_thumb[]"
+            value="<?php echo esc_attr($thumb_val); ?>"
+            placeholder="Thumbnail URL">
+
+        <div class="th-thumb-buttons">
+            <button class="button upload-thumb">Upload</button>
+            <a href="#" class="remove-thumb">Remove</a>
+        </div>
+    </div>
+    </div>
+    </li>
 <?php endforeach; ?>
                     </ul>
 
@@ -211,13 +236,17 @@ if (!is_array($gallery_types)) $gallery_types = [];
                 <div class="th-field">
                     <label><?php echo esc_html__('Aspect Ratio','th-store-one'); ?></label>
                     <select name="th_aspect">
-                        <option value="default" <?php selected($aspect,'default');?>>
-                            <?php echo esc_html__('Default','th-store-one'); ?>
-                        </option>
-                        <option value="16:9" <?php selected($aspect,'16:9');?>>16:9</option>
-                        <option value="4:3" <?php selected($aspect,'4:3');?>>4:3</option>
-                        <option value="auto" <?php selected($aspect,'auto');?>>auto</option>
-                    </select>
+                <option value="default" <?php selected($aspect,'default');?>>
+                    <?php echo esc_html__('Default','th-store-one'); ?>
+                </option>
+
+                <option value="1:1" <?php selected($aspect,'1:1');?>>1:1</option>
+                <option value="16:9" <?php selected($aspect,'16:9');?>>16:9</option>
+                <option value="9:16" <?php selected($aspect,'9:16');?>>9:16</option>
+                <option value="4:3" <?php selected($aspect,'4:3');?>>4:3</option>
+                <option value="3:2" <?php selected($aspect,'3:2');?>>3:2</option>
+                <option value="auto" <?php selected($aspect,'auto');?>>auto</option>
+            </select>
                 </div>
 
             </div>
@@ -231,10 +260,8 @@ if (!is_array($gallery_types)) $gallery_types = [];
 
     </div>
 </div>
-
 <?php
 }
-
 
 public function save($post_id) {
 
@@ -246,6 +273,7 @@ public function save($post_id) {
     update_post_meta($post_id,'_th_enable_video', isset($_POST['th_enable_video'])?'yes':'no');
     update_post_meta($post_id,'_th_enable_video_auto_play', isset($_POST['th_enable_video_auto_play'])?'yes':'no');
     update_post_meta($post_id,'_th_enable_gallery', isset($_POST['th_enable_gallery'])?'yes':'no');
+    
 
     update_post_meta($post_id,'_th_video_url', esc_url_raw($_POST['th_video_url'] ?? ''));
     update_post_meta($post_id,'_th_source', sanitize_text_field($_POST['th_source'] ?? ''));
@@ -257,11 +285,15 @@ public function save($post_id) {
     /* =================FIX: GALLERY TYPE SAVE ================= */
     $gallery_type = array_map('sanitize_text_field', $_POST['th_gallery_type'] ?? []);
     update_post_meta($post_id,'_th_gallery_type', $gallery_type);
+    
+    /* ================= GALLERY THUMB ================= */
+    $gallery_thumb = array_map('esc_url_raw', $_POST['th_gallery_thumb'] ?? []);
+    update_post_meta($post_id,'_th_gallery_thumb', $gallery_thumb);
 
     /* ================= OTHER ================= */
     update_post_meta($post_id,'_th_position', sanitize_text_field($_POST['th_position'] ?? 'before'));
     update_post_meta($post_id,'_th_aspect', sanitize_text_field($_POST['th_aspect'] ?? 'default'));
-}
+    }
 
      public function scripts($hook){
 

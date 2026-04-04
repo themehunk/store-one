@@ -253,6 +253,7 @@ class Th_StoreOne_Product_Brand_Frontend {
     data-slides="<?php echo esc_attr( $rule['slider']['slides'] ?? 4 ); ?>"
     data-autoplay="<?php echo ! empty($rule['slider']['autoplay']) ? 'true' : 'false'; ?>"
     data-nav="<?php echo ! empty($rule['slider']['navigation']) ? 'true' : 'false'; ?>"
+    data-gap="<?php echo esc_attr( $rule['image_gap'] ?? 15 ); ?>"
 >
 
     <div class="swiper-wrapper">

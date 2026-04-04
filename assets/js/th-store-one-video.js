@@ -1,8 +1,6 @@
 jQuery(function($){  
 
-    let isInitialized = false;
-
-    /* ================= YOUTUBE ID ================= */
+    /* ================= HELPERS ================= */
     function getYouTubeId(url){
         try {
             let u = new URL(url);
@@ -13,21 +11,18 @@ jQuery(function($){
         return '';
     }
 
-    /* ================= VIMEO ID ================= */
     function getVimeoId(url){
-        return url.split('/').pop();
+        return url.split('/').pop().split('?')[0];
     }
 
-    /* ================= BUILD VIDEO ================= */
     function buildVideo(video, type, autoplay){
-
         let auto = autoplay ? 1 : 0;
         let mute = autoplay ? 1 : 0;
 
         if(type === 'youtube'){
             let id = getYouTubeId(video);
             if(!id) return '';
-            return `<iframe src="https://www.youtube.com/embed/${id}?autoplay=${auto}&mute=${mute}"
+            return `<iframe src="https://www.youtube.com/embed/${id}?autoplay=${auto}&mute=${mute}&rel=0"
                      allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
         }
 
@@ -37,11 +32,13 @@ jQuery(function($){
                      allow="autoplay; fullscreen" allowfullscreen></iframe>`;
         }
 
-        return `<video src="${video}" ${autoplay ? 'autoplay muted' : 'controls'}></video>`;
+        return `<video src="${video}" ${autoplay ? 'autoplay muted' : 'controls'} playsinline></video>`;
     }
 
-    /* ================= PLAY VIDEO ================= */
+    /* ================= PLAY VIDEO ON SLIDE ================= */
     function playVideo($slide){
+        if($slide.find('iframe, video').length) return; 
+
         let video = $slide.data('video');
         let type  = $slide.data('type') || 'youtube';
         let autoplay = $slide.data('autoplay') == 1;
@@ -49,155 +46,109 @@ jQuery(function($){
         let html  = buildVideo(video, type, autoplay);
         if(!html) return;
 
-        $slide.html(html);
+        // Image ko hide karke video dikhayenge taaki zoom trigger na ho
+        $slide.find('a').css('visibility', 'hidden'); 
+        $slide.append('<div class="th-video-wrapper">' + html + '</div>');
     }
 
-    /* ================= INIT GALLERY ================= */
-    function initGallery(){
-        let $gallery = $('.woocommerce-product-gallery');
-        if(!$gallery.length) return;
-
-        $gallery.trigger('woocommerce_gallery_reset');
-
-        $gallery.each(function(){
-            $(this).wc_product_gallery();
-        });
-
-        isInitialized = true;
-    }
-
-    function safeInit(){
-        if(isInitialized) return;
-        initGallery();
-    }
-
-    setTimeout(safeInit, 400);
-
-    /* ================= MODIFY VIDEO THUMBS ================= */
+    /* ================= THUMBS & ICONS ================= */
     function modifyVideoThumbs(){
-
-        let thumbs = $('.flex-control-thumbs > li');
-        let slides = $('.woocommerce-product-gallery__wrapper .woocommerce-product-gallery__image');
-
+        let $gallery = $('.woocommerce-product-gallery');
+        let thumbs = $gallery.find('.flex-control-thumbs > li');
+        let slides = $gallery.find('.woocommerce-product-gallery__wrapper .woocommerce-product-gallery__image');
         if(!thumbs.length) return;
+         slides.each(function(index){
+        if($(this).hasClass('th-video-slide')){
+            thumbs.eq(index).addClass('th-video-thumb');
+        }
+    });
 
         slides.each(function(index){
-
             let slide = $(this);
-
             if(!slide.hasClass('th-video-slide')) return;
 
             let thumb = slide.data('thumb');
             let li = thumbs.eq(index);
 
-            if(!li.length) return;
-
-            // replace image
-            li.find('img').attr('src', thumb);
-
-            // remove old icon
-            li.find('.th-video-thumb-icon').remove();
-
-            // force position
-            li.css('position','relative');
-
-            // add icon
-            li.append(`
-                <span class="th-video-thumb-icon"><svg width="34" height="34" fill="#e3e3e3" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g><path d="M0 0h24v24H0z" fill="none"></path><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM10.622 8.415l4.879 3.252a.4.4 0 0 1 0 .666l-4.88 3.252a.4.4 0 0 1-.621-.332V8.747a.4.4 0 0 1 .622-.332z"></path></g></svg></span>
-            `);
+            if(li.length && !li.find('.th-video-thumb-icon').length){
+                li.find('img').attr('src', thumb);
+                li.css('position','relative');
+                li.append('<span class="th-video-thumb-icon"><svg width="34" height="34" fill="#e3e3e3" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g><path d="M0 0h24v24H0z" fill="none"></path><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM10.622 8.415l4.879 3.252a.4.4 0 0 1 0 .666l-4.88 3.252a.4.4 0 0 1-.621-.332V8.747a.4.4 0 0 1 .622-.332z"></path></g></svg></span>');
+            }
         });
     }
 
-    /* RUN AFTER FULL LOAD */
-    $(window).on('load', function(){
+    /* ================= EVENT HANDLERS ================= */
+
+    // 1. Click on Slide to Play
+    $(document).on('click', '.th-video-slide', function(e){
+        // Agar WooCommerce ke zoom button par click hai toh default behavior chalne do
+        if($(e.target).closest('.woocommerce-product-gallery__trigger').length) return;
+        
+        e.preventDefault();
+        playVideo($(this));
+    });
+
+    // 2. Click on Thumbnail
+    $(document).on('click', '.flex-control-thumbs li', function(){
+        let index = $(this).index();
         setTimeout(function(){
-            modifyVideoThumbs();
+            let targetSlide = $('.woocommerce-product-gallery__wrapper .woocommerce-product-gallery__image').eq(index);
+            if(targetSlide.hasClass('th-video-slide')){
+                playVideo(targetSlide);
+            }
         }, 300);
     });
 
-    /* ================= CLICK VIDEO ================= */
-    $(document).on('click', '.th-video-slide a:not(.th-video-trigger)', function(e){
+    // 3. Fix for Variation & Initial Load
+    function runFixes() {
+        modifyVideoThumbs();
+    }
 
-        e.preventDefault();
-        e.stopPropagation();
+    $(window).on('load', runFixes);
 
-        let slide = $(this).closest('.th-video-slide');
-        if(slide.find('iframe, video').length) return;
+    /* ================= INITIAL LOAD VIDEO ================= */
+function loadInitialVideo(){
+    let activeSlide = $('.woocommerce-product-gallery__wrapper .flex-active-slide');
+    if(activeSlide.hasClass('th-video-slide')){
+        playVideo(activeSlide);
+    }
+}
 
-        playVideo(slide);
-    });
+/* ================= SLIDE CHANGE VIDEO ================= */
+function onSlideChange(){
+    setTimeout(function(){
+        let activeSlide = $('.woocommerce-product-gallery__wrapper .flex-active-slide');
 
-    /* ================= LIGHTBOX ================= */
-    $(document).on('click', '.th-video-trigger', function(e){
+        // Remove old videos
+        $('.th-video-wrapper').remove();
+        $('.th-video-slide a').css('visibility','visible');
 
-        e.preventDefault();
-
-        let parent = $(this).closest('.th-video-slide');
-        let video  = parent.data('video');
-        let type   = parent.data('type');
-        let autoplay = parent.data('autoplay') == 1;
-
-        let html = buildVideo(video, type, autoplay);
-        if(!html) return;
-
-        $('#th-video-lightbox .th-video-content').html(html);
-        $('#th-video-lightbox').addClass('active');
-    });
-
-    $(document).on('click', '.th-close', function(){
-        $('#th-video-lightbox').removeClass('active');
-        $('.th-video-content').html('');
-    });
-
-    /* ================= THUMB CLICK ================= */
-    $(document).on('click', '.flex-control-thumbs li', function(){
-
-        let index = $(this).index();
-
-        $('.flex-control-thumbs li').removeClass('flex-active');
-        $(this).addClass('flex-active');
-
-        let slides = $('.woocommerce-product-gallery__wrapper .woocommerce-product-gallery__image');
-        let targetSlide = slides.eq(index);
-
-        if(targetSlide.hasClass('th-video-slide')){
-            setTimeout(function(){
-                playVideo(targetSlide);
-            }, 200);
+        if(activeSlide.hasClass('th-video-slide')){
+            playVideo(activeSlide);
         }
-    });
+    }, 400);
+}
 
-    /* ================= VARIATION ================= */
-    $(document).ajaxComplete(function(){
-
-        isInitialized = false;
-
-        setTimeout(function(){
-            safeInit();
-        }, 500);
-
-        setTimeout(function(){
-            modifyVideoThumbs();
-        }, 700);
-
-    });
-
-   // for shop video
-   $(document).on('click', '.th-loop-video .th-video-play', function(e){
-
-    e.preventDefault();
-    e.stopPropagation();
-    e.stopImmediatePropagation(); //IMPORTANT
-
-    let wrap = $(this).closest('.th-video-wrap');
-    let url = wrap.data('src');
-
-    let video = `<video src="${url}" autoplay controls muted playsinline 
-        style="width:100%;height:100%;object-fit:cover;"></video>`;
-
-    wrap.html(video);
-
-    return false;
+$(window).on('load', function(){
+    loadInitialVideo();
 });
+
+/* Flexslider change detect */
+$(document).on('click', '.flex-control-thumbs li', onSlideChange);
+$(document).on('click', '.flex-next, .flex-prev', onSlideChange);
+    
+    // Ajax complete ki jagah WooCommerce variation event use karein (STUCK FIX)
+    $(document).on('found_variation', 'form.variations_form', function() {
+        setTimeout(runFixes, 500);
+    });
+
+    /* ================= SHOP LOOP VIDEO ================= */
+    $(document).on('click', '.th-loop-video .th-video-play', function(e){
+        e.preventDefault();
+        let wrap = $(this).closest('.th-video-wrap');
+        let url = wrap.data('src');
+        wrap.html(`<video src="${url}" autoplay controls muted playsinline style="width:100%;height:100%;object-fit:cover;"></video>`);
+    });
 
 });

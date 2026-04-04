@@ -5,10 +5,11 @@ document.addEventListener("DOMContentLoaded", function () {
         const slides = parseInt(el.dataset.slides) || 4;
         const autoplay = el.dataset.autoplay === "true";
         const nav = el.dataset.nav === "true";
+        const gap = el.dataset.gap || 15;
 
         new Swiper(el, {
     slidesPerView: slides,
-    spaceBetween: 15,
+    spaceBetween: parseInt(gap),
 
     navigation: nav ? {
         nextEl: el.querySelector('.swiper-button-next'),

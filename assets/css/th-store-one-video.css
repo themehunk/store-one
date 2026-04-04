@@ -1,4 +1,38 @@
-.th-video-slide{position:relative;}
+
+/* Slide container fix */
+.woocommerce-product-gallery__image.th-video-slide{
+    position: relative;
+    overflow: hidden;
+    background: #000;
+}
+
+/* Remove any gap */
+.th-video-slide iframe,
+.th-video-slide video{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+    border: 0 !important;
+    display: block;
+}
+
+/* Remove inline spacing issue */
+.th-video-slide iframe{
+    vertical-align: top;
+}
+
+/* Prevent white edges */
+.th-video-slide{
+    line-height: 0;
+    font-size: 0;
+}
+
+/* Fix flexslider weird spacing */
+.flex-viewport{
+    overflow: hidden !important;
+}
 .th-video-thumb-icon {
     position: absolute;
     top: 50%;
@@ -15,23 +49,32 @@
     z-index: 10;
     pointer-events: none;
 }
-.th-aspect-16-9  embed, .th-aspect-16-9  iframe, .th-aspect-16-9  object, .th-aspect-16-9  video{
-    aspect-ratio: 16 / 9;
-}
-/* 4:3 */
-.th-aspect-4-3  embed, .th-aspect-4-3 iframe, .th-aspect-4-3 object, .th-aspect-4-3 video{
-    aspect-ratio: 16 / 9;
+/* Default */
+.th-aspect-default{
+    aspect-ratio: 1/1;
 }
 
-/* auto (natural size) */
-.th-aspect-auto {
-    aspect-ratio: auto;
-}
+.th-aspect-1-1{ aspect-ratio: 1/1; }
+.th-aspect-16-9{ aspect-ratio: 16/9; }
+.th-aspect-9-16{ aspect-ratio: 9/16; }
+.th-aspect-4-3{ aspect-ratio: 4/3; }
+.th-aspect-3-2{ aspect-ratio: 3/2; }
+.th-aspect-auto{ aspect-ratio: auto; }
+.th-aspect-default{ aspect-ratio: 16/9; }
 
-.th-aspect-auto iframe,
-.th-aspect-auto video {
+/* Important for video/image fit */
+.woocommerce-product-gallery__image.th-video-slide{
+    overflow: hidden;
     position: relative;
-    height: auto;
+    background: #fff;
+}
+
+.woocommerce-product-gallery__image.th-video-slide img,
+.woocommerce-product-gallery__image.th-video-slide iframe,
+.woocommerce-product-gallery__image.th-video-slide video{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 /* video shop page  */
@@ -80,4 +123,35 @@
 }
 .th-video-play:hover{
     cursor:poinet;
+}
+
+
+/* 1. Thumbnails ko Square (1:1) banane ke liye */
+.flex-control-thumbs li {
+    aspect-ratio: 1 / 1; /* Force Square Ratio */
+    overflow: hidden;
+    position: relative;
+}
+
+.flex-control-thumbs li img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover; /* Yeh image ko bina khinche (stretch) square mein fit karega */
+}
+
+/* 2. Video Play Icon ko thumbnail ke center mein laane ke liye */
+.th-video-thumb-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* 3. Main Gallery Slide Image (YouTube Thumbnail) ko Square karne ke liye */
+.th-video-slide img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
 }

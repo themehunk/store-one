@@ -4,40 +4,37 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 class TH_Store_One_Product_Video_Frontend {
 
     public function __construct() {
-
-
          $modules = get_option('th_store_one_module_option', []);
-
         if ( empty($modules['product-video']) ) {
                 return;
         } 
-
         // TEMPLATE OVERRIDE
         add_filter( 'wc_get_template', [ $this, 'override_template' ], 10, 5 );
-
         // REMOVE DEFAULT THUMBNAIL
+        if ( $this->is_block_theme() ) {
+        add_filter( 'render_block', [ $this, 'inject_video_in_block' ], 10, 2 );
+        }else{
         remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_template_loop_product_thumbnail', 10 );
-
         // ADD VIDEO / IMAGE
         add_action( 'woocommerce_before_shop_loop_item_title', [ $this, 'add_video_loop_media' ], 10 );
-
         //REMOVE DEFAULT LINKS (GLOBAL)
         remove_action( 'woocommerce_before_shop_loop_item', 'woocommerce_template_loop_product_link_open', 10 );
         remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_product_link_close', 5 );
-
         //ADD CONDITIONAL LINKS
         add_action( 'woocommerce_before_shop_loop_item', [ $this, 'custom_link_open' ], 10 );
         add_action( 'woocommerce_after_shop_loop_item', [ $this, 'custom_link_close' ], 5 );
-
         // TITLE LINK (ONLY VIDEO PRODUCTS)
         add_action( 'woocommerce_shop_loop_item_title', [ $this, 'wrap_title_link_open' ], 1 );
         add_action( 'woocommerce_shop_loop_item_title', [ $this, 'wrap_title_link_close' ], 20 );
-
+        }
         // ADD CLASS
         add_filter( 'post_class', [ $this, 'add_product_video_class' ], 10, 3 );
-
         // FRONTEND ASSETS
         add_action( 'wp_enqueue_scripts', [ $this, 'enqueue' ] );
+    }
+
+    private function is_block_theme() {
+    return function_exists('wp_is_block_theme') && wp_is_block_theme();
     }
 
     /* ================= TEMPLATE OVERRIDE ================= */
@@ -121,6 +118,87 @@ class TH_Store_One_Product_Video_Frontend {
         if ( $this->has_video( $product->get_id() ) ) : ?>
             </a>
         <?php endif;
+    }
+
+    public function inject_video_in_block( $block_content, $block ) {
+
+    // only product image block
+    if ( empty( $block['blockName'] ) || $block['blockName'] !== 'woocommerce/product-image' ) {
+        return $block_content;
+    }
+
+    global $product;
+    if ( ! $product ) return $block_content;
+
+    $product_id = $product->get_id();
+
+    $enable = get_post_meta( $product_id, '_th_enable_video', true );
+    $source = get_post_meta( $product_id, '_th_source', true );
+    $url    = get_post_meta( $product_id, '_th_video_url', true );
+
+    if ( $enable !== 'yes' || empty($url) ) {
+        return $block_content;
+    }
+
+    ob_start();
+    ?>
+
+    <div class="th-loop-video">
+
+            <?php if ( $source === 'youtube' ) :
+
+                parse_str( parse_url( $url, PHP_URL_QUERY ), $vars );
+                $id = $vars['v'] ?? '';
+
+                if ( empty($id) ) {
+                    $id = trim( parse_url( $url, PHP_URL_PATH ), '/' );
+                }
+
+                if ( $id ) : ?>
+
+                    <iframe 
+                        src="https://www.youtube.com/embed/<?php echo esc_attr($id); ?>?mute=1&loop=1&playlist=<?php echo esc_attr($id); ?>" 
+                        allow="autoplay">
+                    </iframe>
+
+                <?php endif; ?>
+
+            <?php elseif ( $source === 'vimeo' ) :
+
+                $id = trim( parse_url( $url, PHP_URL_PATH ), '/' );
+
+                if ( $id ) : ?>
+
+                    <iframe 
+                        src="https://player.vimeo.com/video/<?php echo esc_attr($id); ?>?muted=1&loop=1" 
+                        allow="autoplay">
+                    </iframe>
+
+                <?php endif; ?>
+
+            <?php else : ?>
+
+                <!-- SELF HOSTED VIDEO -->
+                <div class="th-video-wrap" data-src="<?php echo esc_url($url); ?>">
+
+                    <video 
+                        src="<?php echo esc_url($url); ?>" 
+                        muted 
+                        playsinline
+                        style="width:100%;height:100%;object-fit:cover;">
+                    </video>
+
+                    <span class="th-video-play">
+                       <svg width="34" height="34" fill="#e3e3e3" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g><path d="M0 0h24v24H0z" fill="none"></path><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM10.622 8.415l4.879 3.252a.4.4 0 0 1 0 .666l-4.88 3.252a.4.4 0 0 1-.621-.332V8.747a.4.4 0 0 1 .622-.332z"></path></g></svg>
+                    </span>
+
+                </div>
+
+            <?php endif; ?>
+
+        </div>
+    <?php
+    return ob_get_clean();
     }
 
     /* ================= VIDEO / IMAGE ================= */
