@@ -237,11 +237,11 @@ if (!is_array($gallery_types)) $gallery_types = [];
                     <label><?php echo esc_html__('Aspect Ratio','th-store-one'); ?></label>
                     <select name="th_aspect">
                 <option value="default" <?php selected($aspect,'default');?>>
-                    <?php echo esc_html__('Default','th-store-one'); ?>
+                    <?php echo esc_html__('Default 16:9','th-store-one'); ?>
                 </option>
 
                 <option value="1:1" <?php selected($aspect,'1:1');?>>1:1</option>
-                <option value="16:9" <?php selected($aspect,'16:9');?>>16:9</option>
+               
                 <option value="9:16" <?php selected($aspect,'9:16');?>>9:16</option>
                 <option value="4:3" <?php selected($aspect,'4:3');?>>4:3</option>
                 <option value="3:2" <?php selected($aspect,'3:2');?>>3:2</option>
