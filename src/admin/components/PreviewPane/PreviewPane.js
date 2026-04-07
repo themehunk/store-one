@@ -7,13 +7,20 @@ import PreviewQuickSocial from '../../modules/QuickSocial/livepreview/PreviewQui
 import PreviewProductBrand from '../../modules/ProductBrand/livepreview/PreviewProductBrand';
 import TrustBadges from '../../modules/TrustBadges/livepreview/PreviewTrustBadges';
 import ProductVideo from '../../modules/ProductVideo/livepreview/PreviewProductVideo';
+import { useSelect } from '@wordpress/data';
 
+import { STORE_NAME } from '@th-storeone/store/productVideoStore';
 const PreviewPane = ({ currentModule, settings }) => {
     
     const moduleSettings = settings || {};
     const activeRule = Array.isArray(moduleSettings.rules) && moduleSettings.rules.length > 0
         ? moduleSettings.rules[0]
         : moduleSettings;
+
+    const activeTab = useSelect(
+  (select) => select(STORE_NAME)?.getActiveTab(),
+  []
+);
 
     return (
         <Card className="preview-card">
@@ -72,10 +79,11 @@ const PreviewPane = ({ currentModule, settings }) => {
                             )}
                             {currentModule?.id === "product-video" && activeRule && (
                                 <ProductVideo
-                                    key={(activeRule.flexible_id || 'rule') + (activeRule.bundle_style || '')}
+                                    key={currentModule.id}
                                     settings={settings}
+                                    activeTab={activeTab}
                                 />
-                                // key={(activeRule.flexible_id || 'rule') + (activeRule.bundle_style || '')}
+            
                             )}
                         </div>
                     </div>

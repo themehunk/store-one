@@ -6,6 +6,13 @@ global $product;
 if ( ! function_exists( 'wc_get_gallery_image_html' ) ) {
     return;
 }
+
+$settings = storeone_get_video_settings();
+$global_thumb  = $settings['image_url'];
+$global_icon   = $settings['icon'];
+$icon_color    = $settings['icon_clr'];
+$global_aspect = $settings['aspect'];
+
 $post_thumbnail_id = $product->get_image_id();
 $attachment_ids    = $product->get_gallery_image_ids();
 $product_id        = $product->get_id();
@@ -25,8 +32,6 @@ if ( empty($position) ) $position = 'before';
 $gallery_thumbs = get_post_meta($product_id, '_th_gallery_thumb', true);
 if (!is_array($gallery_thumbs)) $gallery_thumbs = [];
 
-
-
 /* ================= BUILD VIDEO HTML ================= */
 $video_html = '';
 
@@ -36,39 +41,39 @@ if ( $enable === 'yes' && ! empty( $videos ) && is_array( $videos ) ) {
 
         if ( empty( $video ) ) continue;
 
-        $thumb = wc_placeholder_img_src();
+        
         $type  = $gallery_types[$index] ?? 'youtube';
 
         /* YOUTUBE */
         
-if ( $type === 'youtube' ) {
+    if ( $type === 'youtube' ) {
 
-    $id = '';
+        $id = '';
 
-    // youtube.com/watch?v=
-    parse_str( parse_url( $video, PHP_URL_QUERY ), $vars );
-    if ( ! empty( $vars['v'] ) ) {
-        $id = $vars['v'];
-    }
-
-    // youtu.be/
-    if ( empty( $id ) ) {
-        $path = trim( parse_url( $video, PHP_URL_PATH ), '/' );
-        if ( strpos($video, 'youtu.be') !== false ) {
-            $id = $path;
+        // youtube.com/watch?v=
+        parse_str( parse_url( $video, PHP_URL_QUERY ), $vars );
+        if ( ! empty( $vars['v'] ) ) {
+            $id = $vars['v'];
         }
-    }
 
-    // embed URL
-    if ( empty( $id ) && strpos($video, '/embed/') !== false ) {
-        $parts = explode('/embed/', $video);
-        $id = $parts[1] ?? '';
-    }
+        // youtu.be/
+        if ( empty( $id ) ) {
+            $path = trim( parse_url( $video, PHP_URL_PATH ), '/' );
+            if ( strpos($video, 'youtu.be') !== false ) {
+                $id = $path;
+            }
+        }
 
-    if ( ! empty( $id ) ) {
-        $thumb = 'https://img.youtube.com/vi/' . $id . '/hqdefault.jpg';
-    }
-    }
+        // embed URL
+        if ( empty( $id ) && strpos($video, '/embed/') !== false ) {
+            $parts = explode('/embed/', $video);
+            $id = $parts[1] ?? '';
+        }
+
+        if ( ! empty( $id ) ) {
+            $thumb = 'https://img.youtube.com/vi/' . $id . '/hqdefault.jpg';
+        }
+        }
 
         /* VIMEO */
         elseif ( $type === 'vimeo' ) {
@@ -81,27 +86,62 @@ if ( $type === 'youtube' ) {
         }/* SELF HOSTED VIDEO */
         elseif ( $type === 'upload' ) {
 
-        if (!empty($gallery_thumbs[$index])) {
-            $thumb = esc_url($gallery_thumbs[$index]);
-            }
-           
-        // still empty
-        if ( empty( $thumb ) ) {
-                $thumb = wc_placeholder_img_src();
-            }
+        // 1. gallery thumb (highest priority)
+        if ( !empty($gallery_thumbs[$index]) ) {
+
+            echo $thumb = esc_url($gallery_thumbs[$index]);
+
         }
-        $full = esc_url( $thumb );
+        //2. global thumb
+        elseif ( !empty($global_thumb) ) {
+
+            $thumb = esc_url($global_thumb);
+
+        }
+        //3. fallback placeholder
+        else {
+
+            $thumb = wc_placeholder_img_src();
+        }
+        }
+        $full = esc_url( $video );
 
         ob_start(); 
         
+            //FINAL aspect decide
+            $final_aspect = $aspect;
+
+            // agar meta empty ya auto → global use karo
+            if ( empty($final_aspect) || $final_aspect === 'auto' ) {
+                $final_aspect = $global_aspect;
+            }
+
+            // fallback
+            if ( empty($final_aspect) ) {
+                $final_aspect = 'default';
+            }
+
+            // class mapping
             $aspect_class = 'th-aspect-default';
 
-            if ( $aspect === '16:9' ) $aspect_class = 'th-aspect-16-9';
-            elseif ( $aspect === '9:16' ) $aspect_class = 'th-aspect-9-16';
-            elseif ( $aspect === '4:3' ) $aspect_class = 'th-aspect-4-3';
-            elseif ( $aspect === '3:2' ) $aspect_class = 'th-aspect-3-2';
-            elseif ( $aspect === '1:1' ) $aspect_class = 'th-aspect-1-1';
-            elseif ( $aspect === 'auto' ) $aspect_class = 'th-aspect-auto';
+            if ( $final_aspect === '16:9' || $final_aspect === 'default' ) {
+                $aspect_class = 'th-aspect-16-9';
+            }
+            elseif ( $final_aspect === '9:16' ) {
+                $aspect_class = 'th-aspect-9-16';
+            }
+            elseif ( $final_aspect === '4:3' ) {
+                $aspect_class = 'th-aspect-4-3';
+            }
+            elseif ( $final_aspect === '3:2' ) {
+                $aspect_class = 'th-aspect-3-2';
+            }
+            elseif ( $final_aspect === '1:1' ) {
+                $aspect_class = 'th-aspect-1-1';
+            }
+            elseif ( $final_aspect === 'auto' ) {
+                $aspect_class = 'th-aspect-auto';
+            }
             ?>
             <div class="woocommerce-product-gallery__image th-video-slide <?php echo esc_attr($aspect_class); ?>"
             data-autoplay="<?php echo esc_attr( get_post_meta($product_id, '_th_enable_video_auto_play', true) === 'yes' ? '1' : '0' ); ?>"
@@ -109,12 +149,14 @@ if ( $type === 'youtube' ) {
                 data-video="<?php echo esc_url( $video ); ?>"
                 data-thumb="<?php echo esc_url( $thumb ); ?>"
                 data-src="<?php echo esc_url( $full ); ?>"
-                data-large_image="<?php echo esc_url( $full ); ?>"
+                data-large_image="<?php echo esc_url( $thumb ); ?>"
                 data-large_image_width="800"
                 data-large_image_height="800">
-                <a href="#" class="th-video-trigger">
+                <a href="<?php echo esc_url($thumb); ?>" class="th-video-trigger">
                     <img src="<?php echo esc_url( $thumb ); ?>" class="wp-post-image" />
-                    <span class="th-video-thumb-icon"><svg width="34" height="34" fill="#e3e3e3" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g><path d="M0 0h24v24H0z" fill="none"></path><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM10.622 8.415l4.879 3.252a.4.4 0 0 1 0 .666l-4.88 3.252a.4.4 0 0 1-.621-.332V8.747a.4.4 0 0 1 .622-.332z"></path></g></svg></span>
+                    <span class="th-video-thumb-icon">
+                      <?php echo storeone_get_video_icon($global_icon, $icon_color); ?>
+                </span>
                 </a>
             </div>
         <?php

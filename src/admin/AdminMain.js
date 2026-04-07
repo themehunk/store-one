@@ -10,6 +10,7 @@ import GlobalSettings from "@th-storeone-global/GlobalSettings";
 import LicensePage from "@th-storeone-global/LicensePage";
 
 import { Notice, Spinner, Button } from "@wordpress/components";
+import "@th-storeone/store/productVideoStore";
 import "./admin.scss";
 
 const modulesList = [

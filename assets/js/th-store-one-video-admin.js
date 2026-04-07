@@ -146,18 +146,24 @@ jQuery(function ($) {
   $(document).on("click", ".upload, .th-upload-btn", function (e) {
     e.preventDefault();
 
-    let input = $(this).closest(".th-item").find("input");
+    let button = $(this);
+
+    //FIX: only video input target
+    let input = button.closest(".th-item").find('input[name="th_gallery[]"]');
+
     if (!input.length) {
-      input = $('[name="th_video_url"]');
+        input = $('[name="th_video_url"]');
     }
 
     let frame = wp.media({ multiple: false, library: { type: "video" } });
+
     frame.on("select", function () {
-      let file = frame.state().get("selection").first().toJSON();
-      input.val(file.url);
+        let file = frame.state().get("selection").first().toJSON();
+        input.val(file.url);
     });
+
     frame.open();
-  });
+    });
 
   $("#th_gallery_list").sortable({ handle: ".drag" });
 });
@@ -214,18 +220,55 @@ jQuery(function($){
 
     /* ================= INIT ON LOAD ================= */
     function initThumbFields(){
-        $('select[name="th_gallery_type[]"]').each(function(){
-            let li = $(this).closest('.th-item');
-            let thumbWrap = li.find('.th-thumb-wrap');
 
-            if($(this).val() === 'upload'){
-                thumbWrap.show();
-            }else{
-                thumbWrap.hide();
+    $('select[name="th_gallery_type[]"]').each(function(){
+
+        let li = $(this).closest('.th-item');
+
+        let type = $(this).val();
+
+        let toggleWrap = li.find('.th-thumb-toggle-wrap');
+        let uploadWrap = li.find('.th-thumb-upload-wrap');
+        let checkbox = li.find('input[name="th_enable_custom_poster[]"]');
+
+        // STEP 1: type check
+        if(type === 'upload'){
+            toggleWrap.show();
+
+            // STEP 2: toggle check
+            if(checkbox.is(':checked')){
+                uploadWrap.show();
+            } else {
+                uploadWrap.hide();
             }
-        });
-    }
 
+        } else {
+            toggleWrap.hide();
+            uploadWrap.hide();
+        }
+    });
+}
+
+/* ON TYPE CHANGE */
+$(document).on('change', 'select[name="th_gallery_type[]"]', function(){
     initThumbFields();
+});
+
+/*ON TOGGLE CHANGE */
+$(document).on('change', 'input[name="th_enable_custom_poster[]"]', function(){
+
+    let li = $(this).closest('.th-item');
+    let uploadWrap = li.find('.th-thumb-upload-wrap');
+
+    if($(this).is(':checked')){
+        uploadWrap.show();
+    } else {
+        uploadWrap.hide();
+    }
+});
+
+/* INIT */
+initThumbFields();
+
 
 });

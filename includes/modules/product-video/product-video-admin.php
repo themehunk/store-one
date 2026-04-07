@@ -162,12 +162,33 @@ if (!is_array($gallery_types)) $gallery_types = [];
     </a>
     </div>
     <?php
-    $gallery_thumbs = get_post_meta($post->ID, '_th_gallery_thumb', true);
-    if (!is_array($gallery_thumbs)) $gallery_thumbs = [];
-    $thumb_val = $gallery_thumbs[$index] ?? '';
+    $gallery_thumbss = get_post_meta($post->ID, '_th_gallery_thumb', true);
+    if (!is_array($gallery_thumbss)) $gallery_thumbss = [];
+    $thumb_val = $gallery_thumbss[$index] ?? '';
+    $enable_custom_post = get_post_meta($post->ID, '_th_enable_custom_poster', true);
+    if (!is_array($enable_custom_post)) {
+        $enable_custom_post = [];
+    }
+    $enable_custom = $enable_custom_post[$index] ?? '';
     ?>
-    <div class="th-thumb-wrap" style="<?php echo ($type === 'upload') ? '' : 'display:none;'; ?>">
-    
+
+     <div class="th-thumb-wrap th-thumb-toggle-wrap">
+                    <strong><?php echo esc_html__('Enable Custom Poster', 'th-store-one'); ?></strong>
+
+                    <div class="th-toggle-wrap">
+                        <label class="th-switch">
+                            <input type="checkbox"
+                                id="th_enable_custom_poster"
+                                name="th_enable_custom_poster[]"
+                                value="yes"
+                                <?php checked($enable_custom,'yes'); ?>>
+                            <span class="th-slider"></span>
+                        </label>
+                        <span class="th-toggle-label"></span>
+                    </div>
+                </div>
+    <div class="th-thumb-wrap th-thumb-upload-wrap" style="<?php echo ($type === 'upload') ? '' : 'display:none;'; ?>">
+   
     <div class="th-thumb-left">
         <div class="th-thumb-preview">
             <?php if($thumb_val): ?>
@@ -289,6 +310,9 @@ public function save($post_id) {
     /* ================= GALLERY THUMB ================= */
     $gallery_thumb = array_map('esc_url_raw', $_POST['th_gallery_thumb'] ?? []);
     update_post_meta($post_id,'_th_gallery_thumb', $gallery_thumb);
+
+    $th_enable_custom_poster = array_map('sanitize_text_field', $_POST['th_enable_custom_poster'] ?? []);
+    update_post_meta($post_id, '_th_enable_custom_poster', $th_enable_custom_poster);
 
     /* ================= OTHER ================= */
     update_post_meta($post_id,'_th_position', sanitize_text_field($_POST['th_position'] ?? 'before'));
