@@ -1,4 +1,6 @@
-
+.th-has-video img.attachment-woocommerce_thumbnail{
+    display:none!important;
+}
 /* Slide container fix */
 .woocommerce-product-gallery__image.th-video-slide{
     position: relative;

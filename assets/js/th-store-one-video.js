@@ -1,14 +1,33 @@
 jQuery(function($){  
     /* ================= HELPERS ================= */
     function getYouTubeId(url){
-        try {
-            let u = new URL(url);
-            if (u.searchParams.get("v")) return u.searchParams.get("v");
-            if (u.hostname.includes("youtu.be")) return u.pathname.replace("/", "");
-            if (u.pathname.includes("/embed/")) return u.pathname.split("/embed/")[1];
-        } catch(e){}
-        return '';
-    }
+    try {
+        let u = new URL(url);
+
+        // watch?v=
+        if (u.searchParams.get("v")) {
+            return u.searchParams.get("v");
+        }
+
+        // youtu.be/
+        if (u.hostname.includes("youtu.be")) {
+            return u.pathname.replace("/", "");
+        }
+
+        // embed/
+        if (u.pathname.includes("/embed/")) {
+            return u.pathname.split("/embed/")[1];
+        }
+
+        //SHORTS SUPPORT
+        if (u.pathname.includes("/shorts/")) {
+            return u.pathname.split("/shorts/")[1];
+        }
+
+    } catch(e){}
+
+    return '';
+}
 
     function getVimeoId(url){
         return url.split('/').pop().split('?')[0];
@@ -51,19 +70,19 @@ jQuery(function($){
         let html  = buildVideo(video, type, autoplay, thumb);
         if(!html) return;
 
-        // Image ko hide karke video dikhayenge taaki zoom trigger na ho
+        
         let $link = $slide.find('a');
 
-// image ko completely hide nahi karna
-$link.css({
-    opacity: 0,
-    pointerEvents: 'none'
-});
+        
+        $link.css({
+            opacity: 0,
+            pointerEvents: 'none'
+        });
 
-// wrapper add karo (agar pehle se nahi hai)
-if(!$slide.find('.th-video-wrapper').length){
-    $slide.append('<div class="th-video-wrapper">' + html + '</div>');
-}
+        
+        if(!$slide.find('.th-video-wrapper').length){
+            $slide.append('<div class="th-video-wrapper">' + html + '</div>');
+        }
     }
 
     /* ================= THUMBS & ICONS ================= */
@@ -89,7 +108,7 @@ if(!$slide.find('.th-video-wrapper').length){
                 li.find('img').attr('src', thumb);
                 li.css('position','relative');
                 let iconType  = thVideoData?.icon || 'outline';
-                let iconColor = thVideoData?.color || '#e3e3e3';
+                let iconColor = thVideoData?.color || '#7388FFBA';
                 let iconHtml = getVideoIcon(iconType, iconColor);
                 li.append(`<span class="th-video-thumb-icon">${iconHtml}</span>`);
             }
@@ -148,10 +167,31 @@ function onSlideChange(){
     }, 400);
 }
 
+function toggleZoomTrigger(){
+
+    let $gallery = $('.woocommerce-product-gallery');
+    let $activeSlide = $gallery.find('.flex-active-slide');
+
+    if($activeSlide.hasClass('th-video-slide')){
+        //video → hide
+        $gallery.find('.woocommerce-product-gallery__trigger').hide();
+    } else {
+        //image → show
+        $gallery.find('.woocommerce-product-gallery__trigger').show();
+    }
+}
+
 $(window).on('load', function(){
     loadInitialVideo();
+    setTimeout(function(){
+        toggleZoomTrigger();
+    }, 500);
 });
-
+$(document).on('click', '.flex-control-thumbs img', function(){
+    setTimeout(function(){
+        toggleZoomTrigger();
+    }, 300);
+});
 /* Flexslider change detect */
 $(document).on('click', '.flex-control-thumbs li', onSlideChange);
 $(document).on('click', '.flex-next, .flex-prev', onSlideChange);
@@ -195,11 +235,13 @@ function getVideoIcon(type, color){
                 <circle cx="12" cy="12" r="10" fill="${color}"/>
                 <polygon points="10,8 16,12 10,16" fill="#fff"/>
             </svg>`;
+        case 'outline':
+            return `<svg width="24" height="24" fill="${color}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g><path d="M0 0h24v24H0z" fill="none"></path><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM10.622 8.415l4.879 3.252a.4.4 0 0 1 0 .666l-4.88 3.252a.4.4 0 0 1-.621-.332V8.747a.4.4 0 0 1 .622-.332z"></path></g></svg>`;
 
         default:
-            return `<svg width="34" height="34" fill="${color}" viewBox="0 0 24 24">
-                <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
-                <path d="M10.622 8.415l4.879 3.252a.4.4 0 0 1 0 .666l-4.88 3.252a.4.4 0 0 1-.621-.332V8.747a.4.4 0 0 1 .622-.332z"/>
+            return `<svg viewBox="0 0 24 24" width="34" height="34">
+                <circle cx="12" cy="12" r="10" fill="${color}"/>
+                <polygon points="10,8 16,12 10,16" fill="#fff"/>
             </svg>`;
     }
 }

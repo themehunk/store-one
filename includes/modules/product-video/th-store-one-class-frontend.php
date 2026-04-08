@@ -9,12 +9,12 @@ class TH_Store_One_Product_Video_Frontend {
                 return;
         } 
         // TEMPLATE OVERRIDE
-        add_filter( 'wc_get_template', [ $this, 'override_template' ], 10, 5 );
+        add_filter( 'wc_get_template', [ $this, 'override_template' ], 99, 5 );
         // REMOVE DEFAULT THUMBNAIL
         if ( $this->is_block_theme() ) {
         add_filter( 'render_block', [ $this, 'inject_video_in_block' ], 10, 2 );
         }else{
-        remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_template_loop_product_thumbnail', 10 );
+        //remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_template_loop_product_thumbnail', 10 );
         // ADD VIDEO / IMAGE
         add_action( 'woocommerce_before_shop_loop_item_title', [ $this, 'add_video_loop_media' ], 10 );
         //REMOVE DEFAULT LINKS (GLOBAL)
@@ -159,6 +159,26 @@ class TH_Store_One_Product_Video_Frontend {
         return $block_content;
     }
 
+    $aspect_class  = 'th-aspect-default';
+
+        if ( $aspect_shop === '16:9' || $aspect_shop === 'default' ) {
+            $aspect_class = 'th-aspect-16-9';
+        }
+        elseif ( $aspect_shop === '9:16' ) {
+            $aspect_class = 'th-aspect-9-16';
+        }
+        elseif ( $aspect_shop === '4:3' ) {
+            $aspect_class = 'th-aspect-4-3';
+        }
+        elseif ( $aspect_shop === '3:2' ) {
+            $aspect_class = 'th-aspect-3-2';
+        }
+        elseif ( $aspect_shop === '1:1' ) {
+            $aspect_class = 'th-aspect-1-1';
+        }
+        elseif ( $aspect_shop === 'auto' ) {
+            $aspect_class = 'th-aspect-auto';
+        }
     ob_start();
     ?>
 
@@ -166,11 +186,32 @@ class TH_Store_One_Product_Video_Frontend {
 
             <?php if ( $source === 'youtube' ) :
 
+                            // watch?v=
                 parse_str( parse_url( $url, PHP_URL_QUERY ), $vars );
-                $id = $vars['v'] ?? '';
+                if ( ! empty( $vars['v'] ) ) {
+                    $id = $vars['v'];
+                }
 
-                if ( empty($id) ) {
+                // youtu.be/
+                if ( empty($id) && strpos($url, 'youtu.be') !== false ) {
                     $id = trim( parse_url( $url, PHP_URL_PATH ), '/' );
+                }
+
+                // embed/
+                if ( empty($id) && strpos($url, '/embed/') !== false ) {
+                    $parts = explode('/embed/', $url);
+                    $id = $parts[1] ?? '';
+                }
+
+                // SHORTS SUPPORT
+                if ( empty($id) && strpos($url, '/shorts/') !== false ) {
+                    $parts = explode('/shorts/', $url);
+                    $id = $parts[1] ?? '';
+                }
+
+                // extra params remove (?feature=share etc.)
+                if ( strpos($id, '?') !== false ) {
+                    $id = explode('?', $id)[0];
                 }
 
                 if ( $id ) : ?>
@@ -220,6 +261,15 @@ class TH_Store_One_Product_Video_Frontend {
 
     /* ================= VIDEO / IMAGE ================= */
     public function add_video_loop_media() {
+
+    global $product;
+    if ( ! $product ) return;
+
+    $product_id = $product->get_id();
+
+    if ( ! $this->has_video( $product_id ) ) {
+        return; 
+    }
 
     $settings      = storeone_get_video_settings();
     $global_icon   = $settings['ficon'];
@@ -271,11 +321,34 @@ class TH_Store_One_Product_Video_Frontend {
 
             <?php if ( $source === 'youtube' ) :
 
-                parse_str( parse_url( $url, PHP_URL_QUERY ), $vars );
-                $id = $vars['v'] ?? '';
+                $id = '';
 
-                if ( empty($id) ) {
+                // watch?v=
+                parse_str( parse_url( $url, PHP_URL_QUERY ), $vars );
+                if ( ! empty( $vars['v'] ) ) {
+                    $id = $vars['v'];
+                }
+
+                // youtu.be/
+                if ( empty($id) && strpos($url, 'youtu.be') !== false ) {
                     $id = trim( parse_url( $url, PHP_URL_PATH ), '/' );
+                }
+
+                // embed/
+                if ( empty($id) && strpos($url, '/embed/') !== false ) {
+                    $parts = explode('/embed/', $url);
+                    $id = $parts[1] ?? '';
+                }
+
+                // SHORTS SUPPORT
+                if ( empty($id) && strpos($url, '/shorts/') !== false ) {
+                    $parts = explode('/shorts/', $url);
+                    $id = $parts[1] ?? '';
+                }
+
+                // extra params remove (?feature=share etc.)
+                if ( strpos($id, '?') !== false ) {
+                    $id = explode('?', $id)[0];
                 }
 
                 if ( $id ) : ?>
@@ -333,19 +406,22 @@ class TH_Store_One_Product_Video_Frontend {
     }
 
     /* ================= ADD CLASS ================= */
-    public function add_product_video_class( $classes, $class, $post_id ) {
+   public function add_product_video_class( $classes, $class, $post_id ) {
 
-        if ( get_post_type( $post_id ) !== 'product' ) {
-            return $classes;
-        }
-
-        if ( $this->has_video( $post_id ) ) {
-            $classes[] = 'th-has-video';
-        }
-
+    if ( get_post_type( $post_id ) !== 'product' ) {
         return $classes;
     }
 
+    if ( is_product() && get_queried_object_id() == $post_id ) {
+        return $classes;
+    }
+
+    if ( $this->has_video( $post_id ) ) {
+        $classes[] = 'th-has-video';
+    }
+
+    return $classes;
+   }
 }
 
 
@@ -415,10 +491,13 @@ function storeone_get_video_icon($type = 'outline', $color = '#e3e3e3') {
                 <polygon points="10,8 16,12 10,16" fill="#fff"/>
             </svg>';
 
+        case 'outline':
+            return '<svg viewBox="0 0 24 24" width="34" height="34" fill="'.esc_attr($color).'" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g><path d="M0 0h24v24H0z" fill="none"></path><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM10.622 8.415l4.879 3.252a.4.4 0 0 1 0 .666l-4.88 3.252a.4.4 0 0 1-.621-.332V8.747a.4.4 0 0 1 .622-.332z"></path></g></svg>';
+
         default:
-            return '<svg width="34" height="34" fill="'.esc_attr($color).'" viewBox="0 0 24 24">
-                <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
-                <path d="M10.622 8.415l4.879 3.252a.4.4 0 0 1 0 .666l-4.88 3.252a.4.4 0 0 1-.621-.332V8.747a.4.4 0 0 1 .622-.332z"/>
+            return '<svg viewBox="0 0 24 24" width="34" height="34">
+                <circle cx="12" cy="12" r="10" fill="'.esc_attr($color).'"/>
+                <polygon points="10,8 16,12 10,16" fill="#fff"/>
             </svg>';
     }
 }

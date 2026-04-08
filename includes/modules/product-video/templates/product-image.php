@@ -8,6 +8,7 @@ if ( ! function_exists( 'wc_get_gallery_image_html' ) ) {
 }
 
 $settings = storeone_get_video_settings();
+
 $global_thumb  = $settings['image_url'];
 $global_icon   = $settings['icon'];
 $icon_color    = $settings['icon_clr'];
@@ -32,6 +33,10 @@ if ( empty($position) ) $position = 'before';
 $gallery_thumbs = get_post_meta($product_id, '_th_gallery_thumb', true);
 if (!is_array($gallery_thumbs)) $gallery_thumbs = [];
 
+$th_enable_custom_poster = get_post_meta($product_id, '_th_enable_custom_poster', true);
+if (!is_array($th_enable_custom_poster)) $th_enable_custom_poster = [];
+
+
 /* ================= BUILD VIDEO HTML ================= */
 $video_html = '';
 
@@ -48,32 +53,40 @@ if ( $enable === 'yes' && ! empty( $videos ) && is_array( $videos ) ) {
         
     if ( $type === 'youtube' ) {
 
-        $id = '';
+    $id = '';
 
-        // youtube.com/watch?v=
-        parse_str( parse_url( $video, PHP_URL_QUERY ), $vars );
-        if ( ! empty( $vars['v'] ) ) {
-            $id = $vars['v'];
-        }
+    // watch?v=
+    parse_str( parse_url( $video, PHP_URL_QUERY ), $vars );
+    if ( ! empty( $vars['v'] ) ) {
+        $id = $vars['v'];
+    }
 
-        // youtu.be/
-        if ( empty( $id ) ) {
-            $path = trim( parse_url( $video, PHP_URL_PATH ), '/' );
-            if ( strpos($video, 'youtu.be') !== false ) {
-                $id = $path;
-            }
-        }
+    // youtu.be/
+    if ( empty( $id ) && strpos($video, 'youtu.be') !== false ) {
+        $id = trim( parse_url( $video, PHP_URL_PATH ), '/' );
+    }
 
-        // embed URL
-        if ( empty( $id ) && strpos($video, '/embed/') !== false ) {
-            $parts = explode('/embed/', $video);
+    // embed/
+    if ( empty( $id ) && strpos($video, '/embed/') !== false ) {
+        $parts = explode('/embed/', $video);
+        $id = $parts[1] ?? '';
+    }
+
+        //SHORTS SUPPORT
+        if ( empty( $id ) && strpos($video, '/shorts/') !== false ) {
+            $parts = explode('/shorts/', $video);
             $id = $parts[1] ?? '';
+        }
+
+        // remove extra params (?feature etc.)
+        if ( strpos($id, '?') !== false ) {
+            $id = explode('?', $id)[0];
         }
 
         if ( ! empty( $id ) ) {
             $thumb = 'https://img.youtube.com/vi/' . $id . '/hqdefault.jpg';
         }
-        }
+    }
 
         /* VIMEO */
         elseif ( $type === 'vimeo' ) {
@@ -87,9 +100,9 @@ if ( $enable === 'yes' && ! empty( $videos ) && is_array( $videos ) ) {
         elseif ( $type === 'upload' ) {
 
         // 1. gallery thumb (highest priority)
-        if ( !empty($gallery_thumbs[$index]) ) {
+        if ( !empty($gallery_thumbs[$index]) && !empty($th_enable_custom_poster[$index]) ) {
 
-            echo $thumb = esc_url($gallery_thumbs[$index]);
+            $thumb = esc_url($gallery_thumbs[$index]);
 
         }
         //2. global thumb
@@ -155,8 +168,9 @@ if ( $enable === 'yes' && ! empty( $videos ) && is_array( $videos ) ) {
                 <a href="<?php echo esc_url($thumb); ?>" class="th-video-trigger">
                     <img src="<?php echo esc_url( $thumb ); ?>" class="wp-post-image" />
                     <span class="th-video-thumb-icon">
-                      <?php echo storeone_get_video_icon($global_icon, $icon_color); ?>
-                </span>
+                      <?php echo 
+                        storeone_get_video_icon($global_icon, $icon_color);?>
+                        </span>
                 </a>
             </div>
         <?php
