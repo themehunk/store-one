@@ -15,6 +15,12 @@ const ModuleCard = ({ mod, modulesState, setActiveModule, licenseActive  }) => {
                     isActive ? 'is-active' : '',
                     isLocked ? 'is-locked' : ''
                 ].join(' ')}
+                 onClick={() => {
+                    if (isLocked) {
+                        setActiveModule(mod.id);
+                    }
+                }}
+                style={{ cursor:isLocked ? 'pointer' : '' }}
             >
 
                 <div className="s1-module-card__top"  >
@@ -38,17 +44,16 @@ const ModuleCard = ({ mod, modulesState, setActiveModule, licenseActive  }) => {
                 <h3 className="s1-module-card__title">{ mod.label }</h3>
 
                 <p className="s1-module-card__desc">{ mod.description }</p>
-
-                <Button
-                    className="s1-module-card__btn"
-                    isPrimary
-                    onClick={() => setActiveModule(mod.id)}
-                >
-                    {isLocked
-                        ? __('Upgrade', 'th-store-one')
-                        : __('Configure', 'th-store-one')
-                    } →
-                </Button>
+                {!isLocked && (
+                    <Button
+                                    className="s1-module-card__btn"
+                                    isPrimary
+                                    onClick={() => setActiveModule(mod.id)}
+                                >
+                                   
+                                        {__('Configure', 'th-store-one') } →
+                                </Button>
+                )}
 
             </CardBody>
         </Card>

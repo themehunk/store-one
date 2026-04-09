@@ -33,14 +33,14 @@ const GlobalSettings = ({ modulesList, modulesState, onToggleAllModules,licenseA
                     <h3>{__('Support & Documentation', 'th-store-one')}</h3>
                 </CardHeader>
 
-                <CardBody>
+                <CardBody className='s1-card-body'>
                     <p>{__('Need help? Visit documentation or contact support.', 'th-store-one')}</p>
 
-                    <Button isSecondary href="https://themehunk.com/docs/store-one/" style={{ marginRight: '8px' }}>
+                    <Button className='s1-btn' href="https://themehunk.com/docs/store-one/" style={{ marginRight: '8px' }}>
                         {__('View Docs', 'th-store-one')}
                     </Button>
 
-                    <Button isSecondary target="_blank" href="https://themehunk.com/contact-us/">
+                    <Button className='s1-btn' target="_blank" href="https://themehunk.com/contact-us/">
                         {__('Contact Support', 'th-store-one')}
                     </Button>
                 </CardBody>

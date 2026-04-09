@@ -2209,7 +2209,15 @@ button.s1-settings__redirect-btn{
     margin:0.5rem 0;
     background: var(--s1-color-primary-dark);
 }
-
+.s1-license-required-badge a,.s1-license-required-badge a:hover{
+    color:#fff;
+    text-decoration:none;
+}
+.s1-card-body .s1-btn,
+.s1-card-body .s1-btn:hover{
+   border:1px solid var(--s1-color-primary-dark);
+   color:var(--s1-color-primary-dark)!important;
+}
 // licence ui style
 /* License wrapper */
 
