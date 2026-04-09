@@ -82,7 +82,9 @@ const ModuleSettings = ({ currentModule, modulesState, onToggleModule, saving, o
                     <FlexBlock className="s1-settings__info">
                         <h2 className="s1-settings__title">{currentModule.label}</h2>{isLocked && (
             <span className="s1-license-required-badge">
-                {__("Buy Pro", "th-store-one")}
+                <a href='https://themehunk.com/storeone/?utm_campaign=free_plugin&utm_source=dashboard&utm_medium=upgrade_button' target="_blank" rel="noopener noreferrer">
+                    {__("Buy Pro", "th-store-one")}
+                </a>
             </span>
         )}
                         <p className="s1-settings__desc">{currentModule.description}</p>

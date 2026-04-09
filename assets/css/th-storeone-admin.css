@@ -1,3 +1,6 @@
+.toplevel_page_th-store-one #wpcontent{
+    padding-left:0;
+}
 #toplevel_page_th-store-one .wp-submenu-wrap li a{
     padding-top:10px!important;
     padding-bottom:10px!important;
