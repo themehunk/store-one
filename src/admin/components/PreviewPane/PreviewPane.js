@@ -7,6 +7,7 @@ import PreviewQuickSocial from '../../modules/QuickSocial/livepreview/PreviewQui
 import PreviewProductBrand from '../../modules/ProductBrand/livepreview/PreviewProductBrand';
 import TrustBadges from '../../modules/TrustBadges/livepreview/PreviewTrustBadges';
 import ProductVideo from '../../modules/ProductVideo/livepreview/PreviewProductVideo';
+import SaleNotification from '../../modules/SaleNotification/livepreview/PreviewSaleNotification';
 import { useSelect } from '@wordpress/data';
 
 import { STORE_NAME } from '@th-storeone/store/productVideoStore';
@@ -85,6 +86,13 @@ const PreviewPane = ({ currentModule, settings }) => {
                                 />
             
                             )}
+                            {currentModule?.id === "sale-notification" && activeRule && (
+                                <SaleNotification
+                                    key={currentModule.id}
+                                    settings={activeRule}
+                                />
+                            )}
+                            
                         </div>
                     </div>
 
@@ -93,5 +101,4 @@ const PreviewPane = ({ currentModule, settings }) => {
         </Card>
     );
 };
-
 export default PreviewPane;

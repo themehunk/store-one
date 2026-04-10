@@ -17,6 +17,7 @@ import QuickSocialSettings from '../../modules/QuickSocial/QuickSocialSettings';
 import ProductBrandSettings from '../../modules/ProductBrand/ProductBrandSettings';
 import TrustBadgesSettings from '../../modules/TrustBadges/TrustBadgesSettings';
 import ProductVideoSettings from '../../modules/ProductVideo/ProductVideoSettings';
+import SaleNotificationSettings from '../../modules/SaleNotification/SaleNotificationSettings';
 
 const ModuleSettings = ({ currentModule, modulesState, onToggleModule, saving, onSettingsChange, onLivePreview,onRegisterSave ,licenseActive}) => {
     const enabled = !!modulesState[currentModule.id];
@@ -64,6 +65,12 @@ const ModuleSettings = ({ currentModule, modulesState, onToggleModule, saving, o
                 />
             case 'product-video':
                 return <ProductVideoSettings
+                    onSettingsChange={onSettingsChange}
+                    onLivePreview={onLivePreview}
+                    onRegisterSave={onRegisterSave}
+                />
+            case 'sale-notification':
+                return <SaleNotificationSettings
                     onSettingsChange={onSettingsChange}
                     onLivePreview={onLivePreview}
                     onRegisterSave={onRegisterSave}
