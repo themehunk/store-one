@@ -4,7 +4,7 @@ Author URI: : https://www.themehunk.com/
 Tags: trust badges, quick social, badge management
 Requires at least: 5.5 
 Tested up to: 6.9
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 Requires PHP: 7.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -107,6 +107,9 @@ It is compatible with all [ThemeHunk themes](https://themehunk.com/free-themes/)
 Yes, the plugin is translation-ready and supports multiple languages.
 
 == Changelog ==
+
+= 1.0.4 =
+Update: Sales Notification addon added.
 
 = 1.0.3 =
 Fix: Issue Fixed.

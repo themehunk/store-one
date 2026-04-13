@@ -13,6 +13,37 @@ const PreviewSaleNotification = ({ settings = {} }) => {
         );
     };
 
+    const dynamicStyle = {
+    background: settings?.noti_bg_clr || "#fff",
+
+    color: settings?.noti_text_clr || "#1e1e1e",
+
+    padding: `
+      ${settings?.noti_padding?.top || "13px"}
+      ${settings?.noti_padding?.right || "13px"}
+      ${settings?.noti_padding?.bottom || "13px"}
+      ${settings?.noti_padding?.left || "13px"}
+    `,
+
+    borderStyle: settings?.noti_border?.style || "solid",
+
+    borderColor: settings?.noti_border?.color || "#e5e7eb",
+
+    borderWidth: `
+      ${settings?.noti_border?.width?.top || "1px"}
+      ${settings?.noti_border?.width?.right || "1px"}
+      ${settings?.noti_border?.width?.bottom || "1px"}
+      ${settings?.noti_border?.width?.left || "1px"}
+    `,
+
+    borderRadius: `
+      ${settings?.noti_border?.radius?.top || "10px"}
+      ${settings?.noti_border?.radius?.right || "10px"}
+      ${settings?.noti_border?.radius?.bottom || "10px"}
+      ${settings?.noti_border?.radius?.left || "10px"}
+    `,
+  };
+
     return (
         <div className="s1-ntf-preview-wrap">
 
@@ -33,8 +64,8 @@ const PreviewSaleNotification = ({ settings = {} }) => {
   ))}
 </div>
    <div className="s1-preview-area">
-    <div className={`s1-sale-popup ${style}`}>
-        <span className="s1-close-btn">×</span>
+    <div className={`s1-sale-popup ${style}`} style={dynamicStyle}>
+        <span className="s1-close-btn" style={{ color: settings?.noti_text_clr || "#1e1e1e" }}>×</span>
     <img
     src={
         th_StoreOneAdmin.homeUrl +
@@ -44,9 +75,9 @@ const PreviewSaleNotification = ({ settings = {} }) => {
     />
 
     <div className="s1-sale-content">
-      <strong>Amit from Bangalore</strong>
-      <p>purchased Sony WH-1000XM5</p>
-      <span>7 minutes ago</span>
+      <strong style={{ color: settings?.noti_title_clr || "#111" }}>{__('Amit from Bangalore','th-store-one')}</strong>
+      <p style={{ color: settings?.noti_text_clr || "#1e1e1e" }}>{__('purchased Sony WH-1000XM5','th-store-one')}</p>
+      <span style={{ color: settings?.noti_text_clr || "#1e1e1e" }}>{__('1 Week ago','th-store-one')}</span>
     </div>
 
   </div>

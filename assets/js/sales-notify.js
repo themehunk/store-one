@@ -80,28 +80,29 @@
         showItem(currentIndex);
     }
 
-    /* 🔥 CLOSE ALL (SMOOTH FIXED) */
+    /*CLOSE ALL (SMOOTH FIXED) */
     document.addEventListener("click", function (e) {
 
-        if (e.target.classList.contains("th-close-btn")) {
+    const closeBtn = e.target.closest(".th-close-btn");
 
-            isClosed = true;
+    if (closeBtn) {
 
-            if (timer) clearTimeout(timer);
+        isClosed = true;
 
-            items.forEach(el => {
+        if (timer) clearTimeout(timer);
 
-                hideItem(el);
+        items.forEach(el => {
 
-                // optional remove after animation
-                setTimeout(() => {
-                    el.style.display = "none";
-                }, 400);
+            hideItem(el);
 
-            });
-        }
+            setTimeout(() => {
+                el.style.display = "none";
+            }, 400);
 
-    });
+        });
+    }
+
+});
 
     /* INITIAL DELAY */
     const initialDelay = parseInt(items[0].dataset.initial || 3) * 1000;

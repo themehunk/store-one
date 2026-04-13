@@ -70,6 +70,7 @@ const newSaleRule = () => ({
   exclude_productsInclude_enabled: false,
   exclude_categoryInclude_enabled: false,
   noti_title_clr: "#000000",
+  noti_text_clr:"#1e1e1e",
   noti_bg_clr: "#fff",
   noti_border: {
     width: {
@@ -79,23 +80,109 @@ const newSaleRule = () => ({
       left: "1px",
     },
     style: "solid",
-    color: "#eee",
+    color: "#e5e7eb",
     radius: {
-      top: "4px",
-      right: "4px",
-      bottom: "4px",
-      left: "4px",
+      top: "10px",
+      right: "10px",
+      bottom: "10px",
+      left: "10px",
     },
   },
   noti_padding: {
-    top: "6px",
-    right: "8px",
-    bottom: "6px",
-    left: "8px",
-  },
+    top: "13px",
+    right: "13px",
+    bottom: "13px",
+    left: "13px",
+  }
+  
 });
 
-const STYLE_DEFAULTS = {};
+const STYLE_DEFAULTS = {
+  style1: {
+    noti_title_clr: "#111",
+    noti_bg_clr: "#ffffff",
+    noti_text_clr:"#1e1e1e",
+    noti_border: {
+      style: "solid",
+      color: "#e5e7eb",
+      width: {
+      top: "1px",
+      right: "1px",
+      bottom: "1px",
+      left: "1px",
+    },
+    radius: {
+      top: "10px",
+      right: "10px",
+      bottom: "10px",
+      left: "10px",
+    },
+      }
+  },
+  style2: {
+   noti_title_clr: "#fff",
+   noti_text_clr:"#fff",
+    noti_bg_clr: "#111827",
+    noti_border: {
+      style: "solid",
+        color: "#111827",
+        width: {
+      top: "1px",
+      right: "1px",
+      bottom: "1px",
+      left: "1px",
+    },
+    radius: {
+      top: "10px",
+      right: "10px",
+      bottom: "10px",
+      left: "10px",
+    },
+      }
+  },
+  style3: {
+    noti_title_clr: "#111",
+    noti_bg_clr: "#ffffff",
+    noti_text_clr:"#1e1e1e",
+    noti_border: {
+        style: "dashed",
+        color: "#cbd5e1",
+        width: {
+      top: "1px",
+      right: "1px",
+      bottom: "1px",
+      left: "1px",
+    },
+    radius: {
+      top: "10px",
+      right: "10px",
+      bottom: "10px",
+      left: "10px",
+    },
+      }
+  },
+  style4: {
+    noti_title_clr: "#fff",
+    noti_text_clr:"#fff",
+    noti_bg_clr: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+    noti_border: {
+        style: "solid",
+        color: "transparent",
+        width: {
+      top: "1px",
+      right: "1px",
+      bottom: "1px",
+      left: "1px",
+    },
+    radius: {
+      top: "10px",
+      right: "10px",
+      bottom: "10px",
+      left: "10px",
+    },
+      }
+  },
+};
 /* Sortable */
 function SortableWrapper({ items, onSortEnd, children }) {
   const ref = useRef(null);
@@ -464,6 +551,7 @@ export default function SaleNotificationRule({
                               </S1Field>
                               <MultiWooSearchSelector
                                 searchType="product"
+                               
                                 label={__(
                                   "Add Selected Products to List",
                                   "th-store-one",
@@ -636,10 +724,10 @@ export default function SaleNotificationRule({
                                         <MultiWooSearchSelector
                                           searchType="product"
                                           label="Select Product"
-                                          value={rule.fakeProductList || []}
+                                          value={item.fakeProductList || []}
                                           onChange={(items) =>
-    updateFakeItemField(index, i, "fakeProductList", items)
-  }
+                                            updateFakeItemField(index, i, "fakeProductList", items)
+                                          }
                                           detailedView={true}
                                           isSingle={true}
                                         />
@@ -1103,7 +1191,7 @@ export default function SaleNotificationRule({
                         <S1Field>
                           <THBackgroundControl
                             allowGradient={true}
-                            label={__("Text", "th-store-one")}
+                            label={__("Title", "th-store-one")}
                             value={rule.noti_title_clr}
                             onChange={(v) => {
                               const updatedRule = {
@@ -1113,6 +1201,23 @@ export default function SaleNotificationRule({
                               };
                               updateField(index, "noti_title_clr", v);
                               updateField(index, "noti_title_clr_auto", false);
+                              onLivePreview?.(updatedRule, index);
+                            }}
+                          />
+                        </S1Field>
+                        <S1Field>
+                          <THBackgroundControl
+                            allowGradient={true}
+                            label={__("Text", "th-store-one")}
+                            value={rule.noti_text_clr}
+                            onChange={(v) => {
+                              const updatedRule = {
+                                ...rule,
+                                noti_text_clr: v,
+                                noti_text_clr_auto: false,
+                              };
+                              updateField(index, "noti_text_clr", v);
+                              updateField(index, "noti_text_clr_auto", false);
                               onLivePreview?.(updatedRule, index);
                             }}
                           />

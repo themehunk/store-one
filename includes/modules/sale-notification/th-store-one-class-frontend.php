@@ -199,7 +199,17 @@ class Th_Store_One_Sale_Notification_Frontend {
      $country = $order->get_billing_country();
      $address = $order->get_billing_address_1();
 
+
      $order_id = $order->get_id();
+
+     $order_time = human_time_diff(
+    $order->get_date_created()->getTimestamp(),
+    current_time('timestamp')
+     );
+
+     $selected_label = $this->format_show_time_label($rule['show_time']);
+
+     $time = $order_time ? $order_time . ' ago' : $selected_label;
 
      foreach ($order->get_items() as $item) {
 
@@ -242,9 +252,11 @@ class Th_Store_One_Sale_Notification_Frontend {
                'ref'     => '',
 
                /* ===== IMAGE ===== */
-               'image' => wp_get_attachment_url($product->get_image_id())
+               'image' => wp_get_attachment_url($product->get_image_id()),
+               'time' => $time,
+               'product_id' => $pid,
           ];
-     }
+        }
      }
 
     /* ================= LIMIT CONTROL ================= */
@@ -276,7 +288,49 @@ class Th_Store_One_Sale_Notification_Frontend {
      }, $statuses);
 
   }
+  private function format_show_time_label($value) {
 
+    switch ($value) {
+
+        case '24_hours':
+            return __('Last 24 hours', 'th-store-one');
+
+        case '3_days':
+            return sprintf(__('Last %d days', 'th-store-one'), 3);
+
+        case '5_days':
+            return sprintf(__('Last %d days', 'th-store-one'), 5);
+
+        case '1_week':
+            return sprintf(__('%d week ago', 'th-store-one'), 1);
+
+        case '2_weeks':
+            return sprintf(__('%d weeks ago', 'th-store-one'), 2);
+
+        case '3_weeks':
+            return sprintf(__('%d weeks ago', 'th-store-one'), 3);
+
+        case '1_month':
+            return sprintf(__('%d month ago', 'th-store-one'), 1);
+
+        case '2_months':
+            return sprintf(__('%d months ago', 'th-store-one'), 2);
+
+        case '3_months':
+            return sprintf(__('%d months ago', 'th-store-one'), 3);
+
+        case '1_year':
+            return sprintf(__('%d year ago', 'th-store-one'), 1);
+
+        case '2_years':
+            return sprintf(__('%d years ago', 'th-store-one'), 2);
+
+        case '3_years':
+            return sprintf(__('%d years ago', 'th-store-one'), 3);
+    }
+
+    return '';
+   }
    private function get_fake_data($rule) {
 
     $data = [];
@@ -331,7 +385,7 @@ class Th_Store_One_Sale_Notification_Frontend {
         'ref'     => '',
         'time'    => $fake['fakeTime'] ?? '',
 
-        'image' => wp_get_attachment_url($product->get_image_id())
+        'image' => wp_get_attachment_image_url($product->get_image_id(), 'thumbnail'),
     ];
 }
 /* ================= CUSTOM PRODUCT ================= */
@@ -400,7 +454,6 @@ else {
 
     $time = $rule['show_time'] ?? '24_hours';
 
-    // Agar invalid ya empty (---- Days ---- wala case)
     if (empty($time)) {
         return '';
     }
@@ -485,6 +538,23 @@ else {
         'ref'           => $item['ref'] ?? '',
     ];
 
+
+    // style setting
+    $title_clr = th_store_one_normalize_color($rule['noti_title_clr'] ?? '#111');
+    $text_clr  = th_store_one_normalize_color($rule['noti_text_clr'] ?? '#1e1e1e');
+
+    $product_link = !empty($item['product_id'])
+    ? get_permalink($item['product_id'])
+    : '';
+//     if (!empty($map['product_name']) && !empty($product_link)) {
+//     $map['product_name'] = '<a href="' . esc_url($product_link) . '" 
+//         target="_blank" 
+//         rel="noopener noreferrer" 
+//         style="color:' . esc_attr($text_clr) . ';">' 
+//         . esc_html($map['product_name']) . 
+//     '</a>';
+// }
+
     /* ===== PARSER FUNCTION ===== */
     $parse = function($text) use ($map) {
 
@@ -504,9 +574,62 @@ else {
     $text_bold = $parse($rule['display_notification'] ?? '');
     $text_normal = $parse($rule['display_notification_n'] ?? '');
     $delay = (int)$rule['initial_delay'] + ($i * (int)$rule['delay_between']);
-?>
 
-<div class="th-notification th-<?php echo esc_attr($rule['position']); ?> <?php echo esc_attr($rule['noti_style']); ?>"
+    
+
+    $style = "";
+
+        /* BACKGROUND */
+        $bg = th_store_one_normalize_color($rule['noti_bg_clr'] ?? '');
+        if ($bg) {
+            $style .= "background: {$bg};";
+        }
+
+        /* TEXT COLOR */
+        $text = th_store_one_normalize_color($rule['noti_text_clr'] ?? '');
+        if ($text) {
+            $style .= "color: {$text};";
+        }
+
+        /* PADDING */
+        if (!empty($rule['noti_padding'])) {
+            $p = $rule['noti_padding'];
+
+            $top    = th_store_one_with_unit($p['top'] ?? 0);
+            $right  = th_store_one_with_unit($p['right'] ?? 0);
+            $bottom = th_store_one_with_unit($p['bottom'] ?? 0);
+            $left   = th_store_one_with_unit($p['left'] ?? 0);
+
+            $style .= "padding: $top $right $bottom $left;";
+        }
+
+        /* BORDER */
+        if (!empty($rule['noti_border'])) {
+
+            $b = $rule['noti_border'];
+
+            $border_color = th_store_one_normalize_color($b['color'] ?? '');
+            $border_style = $b['style'] ?? 'solid';
+
+            $top    = th_store_one_with_unit($b['width']['top'] ?? 1);
+            $right  = th_store_one_with_unit($b['width']['right'] ?? 1);
+            $bottom = th_store_one_with_unit($b['width']['bottom'] ?? 1);
+            $left   = th_store_one_with_unit($b['width']['left'] ?? 1);
+
+            $style .= "border-style: $border_style;";
+            $style .= "border-color: $border_color;";
+            $style .= "border-width: $top $right $bottom $left;";
+
+            /* RADIUS */
+            $rt = th_store_one_normalize_radius($b['radius']['top'] ?? '0px');
+            $rr = th_store_one_normalize_radius($b['radius']['right'] ?? '0px');
+            $rb = th_store_one_normalize_radius($b['radius']['bottom'] ?? '0px');
+            $rl = th_store_one_normalize_radius($b['radius']['left'] ?? '0px');
+
+            $style .= "border-radius: $rt $rr $rb $rl;";
+        }
+?>
+<div class="th-notification th-<?php echo esc_attr($rule['position']); ?> <?php echo esc_attr($rule['noti_style']); ?>" style="<?php echo esc_attr($style); ?>" 
 data-animation="<?php echo esc_attr($rule['animation'] ?? 'slide'); ?>"     
 data-delay="<?php echo esc_attr($delay); ?>"
      data-duration="<?php echo esc_attr($rule['display_duration']); ?>"
@@ -516,27 +639,35 @@ data-delay="<?php echo esc_attr($delay); ?>"
      data-random-range="<?php echo esc_attr($rule['random_delay_range']); ?>"
      data-loop="<?php echo $rule['loop'] ? 'true' : 'false'; ?>"
 >
-
     <!-- CLOSE ICON -->
-    <span class="th-close-btn" role="button" aria-label="Close">&times;</span>
+    <span class="th-close-btn" role="button" aria-label="Close" style="color: <?php echo esc_attr($text_clr); ?>"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <line x1="18" y1="6" x2="6" y2="18"/>
+    <line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+    </span>
 
     <div class="th-inner">
+        <a href="<?php echo esc_url($product_link); ?>" 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        class="s1-sale-prd-link"
+        style="color:<?php echo esc_attr($text_clr); ?>;">
+        </a>
 
         <?php if (!empty($item['image'])): ?>
             <img src="<?php echo esc_url($item['image']); ?>">
         <?php endif; ?>
 
         <div class="th-content">
-
             <?php if ($text_bold): ?>
-                <strong class="th-line-1">
+                <strong class="th-line-1" style="color: <?php echo esc_attr($title_clr); ?>">
                     <?php echo esc_html($text_bold); ?>
                 </strong>
             <?php endif; ?>
 
             <?php if ($text_normal): ?>
-                <p class="th-line-2">
-                    <?php echo esc_html($text_normal); ?>
+                <p class="th-line-2" style="color: <?php echo esc_attr($text_clr); ?>">
+                    <?php echo wp_kses_post($text_normal); ?>
                 </p>
             <?php endif; ?>
 
