@@ -34,6 +34,7 @@ const AdminMain = () => {
     "product-brand": true,
     "trust-badges": false,
     "sale-notification": false,
+    "sticky-cart": false,
   });
   const tabs = [
     {
@@ -463,6 +464,16 @@ const AdminMain = () => {
                     />
                   )}
                   {currentModule?.id === "sale-notification" && (
+                    <PreviewPane
+                      currentModule={currentModule}
+                      settings={
+                        livePreviewSettings[currentModule.id] ||
+                        moduleSettings[currentModule.id]?.rules?.[0] ||
+                        moduleSettings[currentModule.id]
+                      }
+                    />
+                  )}
+                  {currentModule?.id === "sticky-cart" && (
                     <PreviewPane
                       currentModule={currentModule}
                       settings={

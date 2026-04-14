@@ -49,6 +49,7 @@ class Th_Store_One_Modules {
 			'trust-badges'      => false,
 			'product-video'     => false,
 			'sale-notification' => false,
+			'stikcy-cart'       => false,
 		);
 	}
 	/**

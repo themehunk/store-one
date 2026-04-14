@@ -298,4 +298,44 @@ export const modulesList = [
 ),
     premium: false,
   },
+  {
+  id: "sticky-cart",
+  label: __("Sticky Cart Bar", "th-store-one"),
+  description: __(
+    "Adds a floating sticky cart bar to improve conversions by keeping the add-to-cart option always visible while scrolling.",
+    "th-store-one"
+  ),
+  icon: (
+    <svg
+      className="w-6 h-6"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      {/* Cart */}
+      <path
+        d="M3 3H5L6.5 14H18L20 6H7"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      
+      {/* Wheels */}
+      <circle cx="9" cy="19" r="1.5" fill="currentColor" />
+      <circle cx="17" cy="19" r="1.5" fill="currentColor" />
+
+      {/* Sticky indicator (top bar) */}
+      <rect
+        x="6"
+        y="2"
+        width="12"
+        height="2"
+        rx="1"
+        fill="currentColor"
+      />
+    </svg>
+  ),
+  premium: false,
+}
 ];

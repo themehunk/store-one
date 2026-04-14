@@ -8,6 +8,7 @@ import PreviewProductBrand from '../../modules/ProductBrand/livepreview/PreviewP
 import TrustBadges from '../../modules/TrustBadges/livepreview/PreviewTrustBadges';
 import ProductVideo from '../../modules/ProductVideo/livepreview/PreviewProductVideo';
 import SaleNotification from '../../modules/SaleNotification/livepreview/PreviewSaleNotification';
+import PreviewStickyCart from '../../modules/StickyCart/livepreview/PreviewStickyCart';
 import { useSelect } from '@wordpress/data';
 
 import { STORE_NAME } from '@th-storeone/store/productVideoStore';
@@ -88,6 +89,12 @@ const PreviewPane = ({ currentModule, settings }) => {
                             )}
                             {currentModule?.id === "sale-notification" && activeRule && (
                                 <SaleNotification
+                                    key={currentModule.id}
+                                    settings={activeRule}
+                                />
+                            )}
+                            {currentModule?.id === "sticky-cart" && activeRule && (
+                                <PreviewStickyCart
                                     key={currentModule.id}
                                     settings={activeRule}
                                 />
