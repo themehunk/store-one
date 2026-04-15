@@ -6,7 +6,12 @@ import { Spinner, ToggleControl, SelectControl } from "@wordpress/components";
 import ResetModuleButton from "@th-storeone-global/ResetModuleButton";
 import TabSwitcher from "@th-storeone-global/TabSwitcher";
 import { ICONS } from "@th-storeone-global/icons";
-const MODULE_ID = "bundle-product";
+import DeviceSelector from "@th-storeone-global/DeviceSelector";
+import MultiWooSearchSelector from "@th-storeone-global/MultiWooSearchSelector";
+import ExcludeWooCondition from "@th-storeone-global/ExcludeWooCondition";
+import UserCondition from "@th-storeone-global/UserCondition";
+import THBackgroundControl from "@th-storeone-control/color";
+const MODULE_ID = "sticky-cart";
 
 /* ---------------------------------
  * DEFAULT SETTINGS
@@ -19,6 +24,7 @@ const DEFAULT_SETTINGS = {
     show_on: ["product"],
     scroll_trigger: 20,
     delay: 1,
+    animation: "slide",
     hide_when: {
       atc_visible: true,
       footer_visible: true,
@@ -41,25 +47,37 @@ const DEFAULT_SETTINGS = {
     button_action: "cart", // cart | buy_now
     offer_text: "",
     countdown: false,
+   
   },
 
   visibility: {
-    devices: ["mobile"],
-    user_roles: ["guest", "logged"],
-    products: [],
-    categories: [],
-    exclude_products: false,
+    devices: ["desktop", "tablet", "mobile"],
+    user_condition: "all",
+    exclude_enabled: false,
+
+    allowed_roles: [],
+    allowed_users: [],
+
+    exclude_roles: [],
+    exclude_users: [],
+
+    exclude_users_enabled: false,
+    trigger_type: "all_products",
+    productsInclude: [],
+    categoriesInclude: [],
+    exclude_productsInclude_enabled: false,
+    exclude_productsInclude: [],
+    exclude_categoriesInclude_enabled: false,
+    exclude_categoriesInclude: [],
   },
 
   style: {
     layout: "full",
     bg_color: "#ffffff",
-    text_color: "#000000",
-    button_color: "#facc15",
-    button_style: "solid",
-    radius: 8,
-    shadow: "soft",
-    animation: "slide",
+    text_color: "#111827",
+    btn_bg_color: "#facc15",
+    btn_text_color: "#111",
+    price_color: "#16a34a",
   },
 };
 export default function StickyCartSettings({
@@ -74,7 +92,8 @@ export default function StickyCartSettings({
   const [hideToast, setHideToast] = useState(false);
 
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
-
+  const devices = settings.visibility?.devices || [];
+  const isOnlyMobile = devices.length === 1 && devices.includes("mobile");
   /* ---------------------------------
    * LOAD SETTINGS
    * --------------------------------- */
@@ -90,14 +109,6 @@ export default function StickyCartSettings({
         setSettings({
           ...DEFAULT_SETTINGS,
           ...s,
-          product_page: {
-            ...DEFAULT_SETTINGS.product_page,
-            ...(s.product_page || {}),
-          },
-          cart_page: {
-            ...DEFAULT_SETTINGS.cart_page,
-            ...(s.cart_page || {}),
-          },
         });
       })
       .catch(() => setError(__("Failed to load settings.", "th-store-one")))
@@ -197,53 +208,21 @@ export default function StickyCartSettings({
             {__("Sticky Cart", "th-store-one")}
           </h3>
           <div className="store-one-rule-item">
-          <TabSwitcher
-            defaultTab="settings"
-            tabs={[
-              {
-                id: "settings",
-                label: "Settings",
-                icon: ICONS.SETTINGS,
-                content: (
-                  <>
-                    <S1FieldGroup title={__("Settings", "th-store-one")}>
-                      <S1Field label="Enable Sticky Cart">
-                        <ToggleControl
-                          checked={settings.general.status}
-                          onChange={(v) =>
-                            setSettings({
-                              ...settings,
-                              general: { ...settings.general, status: v },
-                            })
-                          }
-                        />
-                      </S1Field>
-
-                      <S1Field label="Style">
-                        <SelectControl
-                          value={settings.general.style}
-                          options={[
-                            { label: "Classic", value: "classic" },
-                            { label: "Floating", value: "floating" },
-                            { label: "CTA", value: "cta" },
-                            { label: "Expandable", value: "expandable" },
-                          ]}
-                          onChange={(v) =>
-                            setSettings({
-                              ...settings,
-                              general: { ...settings.general, style: v },
-                            })
-                          }
-                        />
-                      </S1Field>
-
+            <TabSwitcher
+              defaultTab="settings"
+              tabs={[
+                {
+                  id: "settings",
+                  label: "Settings",
+                  icon: ICONS.SETTINGS,
+                  content: (
+                    <>
                       <S1Field label="Position">
                         <SelectControl
                           value={settings.general.position}
                           options={[
                             { label: "Bottom Bar", value: "bottom" },
-                            { label: "Floating Left", value: "left" },
-                            { label: "Floating Right", value: "right" },
+                            { label: "Top Bar", value: "top" },
                           ]}
                           onChange={(v) =>
                             setSettings({
@@ -272,165 +251,550 @@ export default function StickyCartSettings({
                             })
                           }
                         />
-                      </S1Field>
-                    </S1FieldGroup>
-                    <S1FieldGroup title="Content">
-                      <S1Field label="Show Product Image">
-                        <ToggleControl
-                          checked={settings.content.show_image}
-                          onChange={(v) =>
-                            setSettings({
-                              ...settings,
-                              content: { ...settings.content, show_image: v },
-                            })
-                          }
-                        />
-                      </S1Field>
-
-                      <S1Field label="Show Price">
-                        <ToggleControl
-                          checked={settings.content.show_price}
-                          onChange={(v) =>
-                            setSettings({
-                              ...settings,
-                              content: { ...settings.content, show_price: v },
-                            })
-                          }
-                        />
+                        <S1Field label="Animation">
+                          <SelectControl
+                            value={settings.general.animation}
+                            options={[
+                              { label: "Slide", value: "slide" },
+                              { label: "Fade", value: "fade" },
+                              { label: "Bounce", value: "bounce" },
+                            ]}
+                            onChange={(v) =>
+                              setSettings({
+                                ...settings,
+                                general: { ...settings.general, animation: v },
+                              })
+                            }
+                          />
+                        </S1Field>
                       </S1Field>
 
-                      <S1Field label="Enable Quantity Selector">
-                        <ToggleControl
-                          checked={settings.content.show_qty}
-                          onChange={(v) =>
-                            setSettings({
-                              ...settings,
-                              content: { ...settings.content, show_qty: v },
-                            })
-                          }
-                        />
-                      </S1Field>
+                      <S1FieldGroup title="Content">
+                        <S1Field
+                          label={__("Show Product Image", "th-store-one")}
+                          classN="s1-toggle-wrpapper"
+                        >
+                          <ToggleControl
+                            checked={settings.content.show_image}
+                            onChange={(v) =>
+                              setSettings({
+                                ...settings,
+                                content: { ...settings.content, show_image: v },
+                              })
+                            }
+                          />
+                        </S1Field>
 
-                      <S1Field label="Button Text">
-                        <input
-                          type="text"
-                          value={settings.content.button_text}
-                          onChange={(e) =>
-                            setSettings({
-                              ...settings,
-                              content: {
-                                ...settings.content,
-                                button_text: e.target.value,
+                        <S1Field
+                          label={__("Show Price", "th-store-one")}
+                          classN="s1-toggle-wrpapper"
+                        >
+                          <ToggleControl
+                            checked={settings.content.show_price}
+                            onChange={(v) =>
+                              setSettings({
+                                ...settings,
+                                content: { ...settings.content, show_price: v },
+                              })
+                            }
+                          />
+                        </S1Field>
+
+                        <S1Field
+                          label={__("Enable Quantity Selector", "th-store-one")}
+                          classN="s1-toggle-wrpapper"
+                        >
+                          <ToggleControl
+                            checked={settings.content.show_qty}
+                            onChange={(v) =>
+                              setSettings({
+                                ...settings,
+                                content: { ...settings.content, show_qty: v },
+                              })
+                            }
+                          />
+                        </S1Field>
+                        <S1Field
+                          label={__("Enable Variation", "th-store-one")}
+                          classN="s1-toggle-wrpapper"
+                        >
+                          <ToggleControl
+                            checked={settings.content.show_variation}
+                            onChange={(v) =>
+                              setSettings({
+                                ...settings,
+                                content: {
+                                  ...settings.content,
+                                  show_variation: v,
+                                },
+                              })
+                            }
+                          />
+                        </S1Field>
+
+                        <S1Field label={__("Button Action", "th-store-one")}>
+                          <SelectControl
+                            value={settings.content.button_action}
+                            options={[
+                              {
+                                label: __("Cart", "th-store-one"),
+                                value: "cart",
                               },
-                            })
-                          }
-                        />
-                      </S1Field>
-                    </S1FieldGroup>
-                  </>
-                ),
-              },
-              {
-                    id: "visibility",
-                    label: "Visibility",
-                    icon: ICONS.DISPLAY,
-                    content: (
-                       <>
-                       <S1FieldGroup title="Visibility">
-
-                    <S1Field label="Enable for Mobile">
-                    <ToggleControl
-                         checked={settings.visibility.devices.includes("mobile")}
-                         onChange={(v) =>
-                         setSettings({
-                              ...settings,
-                              visibility: {
-                              ...settings.visibility,
-                              devices: v ? ["mobile"] : [],
+                              {
+                                label: __("Buy Now", "th-store-one"),
+                                value: "buynow",
                               },
-                         })
-                         }
-                    />
-                    </S1Field>
+                            ]}
+                            onChange={(value) => {
+                              let defaultText =
+                                value === "buynow"
+                                  ? __("Buy Now", "th-store-one")
+                                  : __("Add to Cart", "th-store-one");
 
-                    <S1Field label="Exclude Products">
-                    <ToggleControl
-                         checked={settings.visibility.exclude_products}
-                         onChange={(v) =>
-                         setSettings({
-                              ...settings,
-                              visibility: {
-                              ...settings.visibility,
-                              exclude_products: v,
-                              },
-                         })
-                         }
-                    />
-                    </S1Field>
+                              setSettings({
+                                ...settings,
+                                content: {
+                                  ...settings.content,
+                                  button_action: value,
 
-                    </S1FieldGroup>
-                       </>
-                    )
-               },
+                                  //auto update text only if empty OR default
+                                  button_text:
+                                    !settings.content.button_text ||
+                                    settings.content.button_text ===
+                                      "Add to Cart" ||
+                                    settings.content.button_text === "Buy Now"
+                                      ? defaultText
+                                      : settings.content.button_text,
+                                },
+                              });
+                            }}
+                          />
+                        </S1Field>
+
+                        <S1Field
+                          label={__("Button Text", "th-store-one")}
+                          classN="s1-toggle-wrpapper"
+                        >
+                          <input
+                            type="text"
+                            value={settings.content.button_text}
+                            placeholder={
+                              settings.content.button_action === "buynow"
+                                ? __("Buy Now", "th-store-one")
+                                : __("Add to Cart", "th-store-one")
+                            }
+                            onChange={(e) =>
+                              setSettings({
+                                ...settings,
+                                content: {
+                                  ...settings.content,
+                                  button_text: e.target.value,
+                                },
+                              })
+                            }
+                          />
+                        </S1Field>
+                      </S1FieldGroup>
+                    </>
+                  ),
+                },
                 {
-                     id: "style",
-                    label: "Style",
-                    icon: ICONS.DESIGN,
-                    content: (
-                       <>
-                      <S1FieldGroup title="Style">
+                  id: "visibility",
+                  label: "Visibility",
+                  icon: ICONS.DISPLAY,
+                  content: (
+                    <>
+                      <S1Field label="Trigger Type">
+                        <SelectControl
+                          value={settings.visibility.trigger_type}
+                          options={[
+                            { label: "All Products", value: "all_products" },
+                            {
+                              label: "Specific Products",
+                              value: "specific_products",
+                            },
+                            {
+                              label: "Specific Categories",
+                              value: "specific_categories",
+                            },
+                          ]}
+                          onChange={(value) =>
+                            setSettings({
+                              ...settings,
+                              visibility: {
+                                ...settings.visibility,
+                                trigger_type: value,
+                              },
+                            })
+                          }
+                        />
+                      </S1Field>
 
-  <S1Field label="Background Color">
-    <input
-      type="color"
-      value={settings.style.bg_color}
-      onChange={(e) =>
-        setSettings({
-          ...settings,
-          style: { ...settings.style, bg_color: e.target.value },
-        })
-      }
-    />
-  </S1Field>
+                      {/* Specific Products */}
+                      {settings.visibility.trigger_type ===
+                        "specific_products" && (
+                        <MultiWooSearchSelector
+                          searchType="product"
+                          label="Select Products"
+                          value={settings.visibility.productsInclude || []}
+                          onChange={(items) =>
+                            setSettings({
+                              ...settings,
+                              visibility: {
+                                ...settings.visibility,
+                                productsInclude: items,
+                              },
+                            })
+                          }
+                        />
+                      )}
 
-  <S1Field label="Button Color">
-    <input
-      type="color"
-      value={settings.style.button_color}
-      onChange={(e) =>
-        setSettings({
-          ...settings,
-          style: { ...settings.style, button_color: e.target.value },
-        })
-      }
-    />
-  </S1Field>
+                      {/* Specific Categories */}
+                      {settings.visibility.trigger_type ===
+                        "specific_categories" && (
+                        <MultiWooSearchSelector
+                          searchType="category"
+                          label="Select Categories"
+                          value={settings.visibility.categoriesInclude || []}
+                          onChange={(items) =>
+                            setSettings({
+                              ...settings,
+                              visibility: {
+                                ...settings.visibility,
+                                categoriesInclude: items,
+                              },
+                            })
+                          }
+                        />
+                      )}
 
-  <S1Field label="Animation">
-    <SelectControl
-      value={settings.style.animation}
-      options={[
-        { label: "Slide", value: "slide" },
-        { label: "Fade", value: "fade" },
-        { label: "Bounce", value: "bounce" },
-      ]}
-      onChange={(v) =>
-        setSettings({
-          ...settings,
-          style: { ...settings.style, animation: v },
-        })
-      }
-    />
-  </S1Field>
+                      {/* Exclude Products */}
+                      {(settings.visibility.trigger_type ===
+                        "specific_products" ||
+                        settings.visibility.trigger_type ===
+                          "all_products") && (
+                        <ExcludeWooCondition
+                          label={__("Exclude products", "th-store-one")}
+                          searchType="product"
+                          enabled={
+                            settings.visibility.exclude_productsInclude_enabled
+                          }
+                          items={settings.visibility.exclude_productsInclude}
+                          onToggle={(v) =>
+                            setSettings({
+                              ...settings,
+                              visibility: {
+                                ...settings.visibility,
+                                exclude_productsInclude_enabled: v,
+                              },
+                            })
+                          }
+                          onChangeItems={(items) =>
+                            setSettings({
+                              ...settings,
+                              visibility: {
+                                ...settings.visibility,
+                                exclude_productsInclude: items,
+                              },
+                            })
+                          }
+                          detailedView={true}
+                        />
+                      )}
 
-</S1FieldGroup>
-                       </>
-                    )
-               }
-            ]}
-          >
+                      {/* Exclude Categories */}
+                      {settings.visibility.trigger_type ===
+                        "specific_categories" && (
+                        <ExcludeWooCondition
+                          label={__("Exclude categories", "th-store-one")}
+                          searchType="category"
+                          enabled={
+                            settings.visibility
+                              .exclude_categoriesInclude_enabled
+                          }
+                          items={settings.visibility.exclude_categoriesInclude}
+                          onToggle={(v) =>
+                            setSettings({
+                              ...settings,
+                              visibility: {
+                                ...settings.visibility,
+                                exclude_categoriesInclude_enabled: v,
+                              },
+                            })
+                          }
+                          onChangeItems={(items) =>
+                            setSettings({
+                              ...settings,
+                              visibility: {
+                                ...settings.visibility,
+                                exclude_categoriesInclude: items,
+                              },
+                            })
+                          }
+                          detailedView={true}
+                        />
+                      )}
+                      <S1Field label={__("Device Visibility", "th-store-one")}>
+                        <DeviceSelector
+                          value={
+                            settings.visibility.devices || [
+                              "desktop",
+                              "tablet",
+                              "mobile",
+                            ]
+                          }
+                          onChange={(devices) =>
+                            setSettings({
+                              ...settings,
+                              visibility: {
+                                ...settings.visibility,
+                                devices: devices,
+                              },
+                            })
+                          }
+                        />
+                      </S1Field>
+                      {isOnlyMobile && (
+                        <S1FieldGroup title="Mobile Settings">
+                          
+                          <S1Field
+                          label={__("Enable Mobile Settings", "th-store-one")}
+                          classN="s1-toggle-wrpapper"
+                          >
+                          <ToggleControl
+                           
+                            checked={settings.content.mobile?.enabled}
+                            onChange={(v) =>
+                              setSettings({
+                                ...settings,
+                                content: {
+                                  ...settings.content,
+                                  mobile: {
+                                    ...settings.content.mobile,
+                                    enabled: v,
+                                  },
+                                },
+                              })
+                            }
+                          />
+                          </S1Field>
 
-          </TabSwitcher>
+                          {settings.content.mobile?.enabled && (
+                            <>
+
+                            <S1Field
+                          label={__("Show Product Image", "th-store-one")}
+                          classN="s1-toggle-wrpapper"
+                        >
+                          <ToggleControl
+                            checked={settings.content.mobile.show_image}
+                            onChange={(v) =>
+                              setSettings({
+                                ...settings,
+                                content: {
+                                      ...settings.content,
+                                      mobile: {
+                                        ...settings.content.mobile,
+                                        show_image: v,
+                                      },
+                                    },
+                              })
+                            }
+                          />
+                          </S1Field>
+                        
+                        <S1Field
+                          label={__("Show Price", "th-store-one")}
+                          classN="s1-toggle-wrpapper"
+                        >
+                          <ToggleControl
+                            checked={settings.content.mobile.show_price}
+                            onChange={(v) =>
+                                  setSettings({
+                                    ...settings,
+                                    content: {
+                                      ...settings.content,
+                                      mobile: {
+                                        ...settings.content.mobile,
+                                        show_price: v,
+                                      },
+                                    },
+                                  })
+                                }
+                          />
+                        </S1Field>
+<S1Field
+                          label={__("Enable Quantity Selector", "th-store-one")}
+                          classN="s1-toggle-wrpapper"
+                        >
+                          <ToggleControl
+                            checked={settings.content.mobile.show_qty}
+                                onChange={(v) =>
+                                  setSettings({
+                                    ...settings,
+                                    content: {
+                                      ...settings.content,
+                                      mobile: {
+                                        ...settings.content.mobile,
+                                        show_qty: v,
+                                      },
+                                    },
+                                  })
+                                }
+                          />
+                        </S1Field>
+                        <S1Field
+                          label={__("Enable Variation", "th-store-one")}
+                          classN="s1-toggle-wrpapper"
+                        >
+                           <ToggleControl
+                            checked={settings.content.mobile.show_variation}
+                                onChange={(v) =>
+                                  setSettings({
+                                    ...settings,
+                                    content: {
+                                      ...settings.content,
+                                      mobile: {
+                                        ...settings.content.mobile,
+                                        show_variation: v,
+                                      },
+                                    },
+                                  })
+                                }
+                          />
+                        </S1Field>
+                            
+                            </>
+                          )}
+                        </S1FieldGroup>
+                      )}
+                    </>
+                  ),
+                },
+                {
+                  id: "user",
+                  label: "User",
+                  icon: ICONS.USER,
+                  content: (
+                    <UserCondition
+                      rule={{
+                        user_condition: settings.visibility.user_condition,
+                        exclude_enabled: settings.visibility.exclude_enabled,
+                        allowed_roles: settings.visibility.allowed_roles,
+                        allowed_users: settings.visibility.allowed_users,
+                        exclude_roles: settings.visibility.exclude_roles,
+                        exclude_users: settings.visibility.exclude_users,
+                        exclude_users_enabled:
+                          settings.visibility.exclude_users_enabled,
+                      }}
+                      index={0}
+                      updateField={(i, key, value) =>
+                        setSettings({
+                          ...settings,
+                          visibility: {
+                            ...settings.visibility,
+                            [key]: value,
+                          },
+                        })
+                      }
+                    />
+                  ),
+                },
+                {
+                  id: "style",
+                  label: "Style",
+                  icon: ICONS.DESIGN,
+                  content: (
+                    <>
+                      <S1FieldGroup title={__("Bar", "th-store-one")}>
+                        <S1Field>
+                          <THBackgroundControl
+                            allowGradient={true}
+                            label={__("Background", "th-store-one")}
+                            value={settings.style.bg_color || "#ffffff"}
+                            onChange={(value) =>
+                              setSettings({
+                                ...settings,
+                                style: {
+                                  ...settings.style,
+                                  bg_color: value,
+                                },
+                              })
+                            }
+                          />
+                        </S1Field>
+                        <S1Field>
+                          <THBackgroundControl
+                            allowGradient={true}
+                            label={__("Text", "th-store-one")}
+                            value={settings.style.text_color || "#111"}
+                            onChange={(value) =>
+                              setSettings({
+                                ...settings,
+                                style: {
+                                  ...settings.style,
+                                  text_color: value,
+                                },
+                              })
+                            }
+                          />
+                        </S1Field>
+                        <S1Field>
+                          <THBackgroundControl
+                            allowGradient={true}
+                            label={__("Price", "th-store-one")}
+                            value={settings.style.price_color || "#16a34a"}
+                            onChange={(value) =>
+                              setSettings({
+                                ...settings,
+                                style: {
+                                  ...settings.style,
+                                  price_color: value,
+                                },
+                              })
+                            }
+                          />
+                        </S1Field>
+                      </S1FieldGroup>
+                      <S1FieldGroup title={__("Button", "th-store-one")}>
+                        <S1Field>
+                          <THBackgroundControl
+                            allowGradient={true}
+                            label={__("Background", "th-store-one")}
+                            value={settings.style.btn_bg_color || "#facc15"}
+                            onChange={(value) =>
+                              setSettings({
+                                ...settings,
+                                style: {
+                                  ...settings.style,
+                                  btn_bg_color: value,
+                                },
+                              })
+                            }
+                          />
+                        </S1Field>
+                        <S1Field>
+                          <THBackgroundControl
+                            allowGradient={true}
+                            label={__("Text", "th-store-one")}
+                            value={settings.style.btn_text_color || "#fff"}
+                            onChange={(value) =>
+                              setSettings({
+                                ...settings,
+                                style: {
+                                  ...settings.style,
+                                  btn_text_color: value,
+                                },
+                              })
+                            }
+                          />
+                        </S1Field>
+                      </S1FieldGroup>
+                    </>
+                  ),
+                },
+              ]}
+            ></TabSwitcher>
           </div>
         </>
       )}
@@ -442,13 +806,21 @@ export default function StickyCartSettings({
             setSettings({
               ...DEFAULT_SETTINGS,
               ...newSettings,
-              product_page: {
-                ...DEFAULT_SETTINGS.product_page,
-                ...(newSettings?.product_page || {}),
+              general: {
+                ...DEFAULT_SETTINGS.general,
+                ...(newSettings?.general || {}),
               },
-              cart_page: {
-                ...DEFAULT_SETTINGS.cart_page,
-                ...(newSettings?.cart_page || {}),
+              content: {
+                ...DEFAULT_SETTINGS.content,
+                ...(newSettings?.content || {}),
+              },
+              visibility: {
+                ...DEFAULT_SETTINGS.visibility,
+                ...(newSettings?.visibility || {}),
+              },
+              style: {
+                ...DEFAULT_SETTINGS.style,
+                ...(newSettings?.style || {}),
               },
             })
           }

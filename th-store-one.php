@@ -54,6 +54,7 @@ add_action(
 		require_once TH_STORE_ONE_PLUGIN_DIR . 'includes/modules/trust-badges/th-store-one-class-frontend.php';
 		require_once TH_STORE_ONE_PLUGIN_DIR . 'includes/modules/product-video/th-store-one-class-frontend.php';
 		require_once TH_STORE_ONE_PLUGIN_DIR . 'includes/modules/sale-notification/th-store-one-class-frontend.php';
+		require_once TH_STORE_ONE_PLUGIN_DIR . 'includes/modules/sticky-cart/th-store-one-class-frontend.php';
 		if ( class_exists( 'Th_Store_One_Buy_To_List_Frontend' ) ) {
 			new Th_Store_One_Buy_To_List_Frontend();
 		}
@@ -71,6 +72,9 @@ add_action(
 		}
 		if ( class_exists( 'Th_Store_One_Sale_Notification_Frontend' ) ) {
 			new Th_Store_One_Sale_Notification_Frontend();
+		}
+		if ( class_exists( 'Th_Store_One_Sticky_Cart_Frontend' ) ) {
+			new Th_Store_One_Sticky_Cart_Frontend();
 		}
 	}
 );

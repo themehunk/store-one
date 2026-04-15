@@ -1159,7 +1159,7 @@ export default function SaleNotificationRule({
                             detailedView={true}
                           />
                         )}
-                        <S1Field label="Device Visibility">
+                        <S1Field label={__("Device Visibility", "th-store-one")}>
                           <DeviceSelector
                             value={rule.devices || ["desktop"]}
                             onChange={(v) => updateField(index, "devices", v)}
