@@ -47,7 +47,9 @@ const DEFAULT_SETTINGS = {
     button_action: "cart", // cart | buy_now
     offer_text: "",
     countdown: false,
-   
+    mobile:{
+      enabled:false,
+    }
   },
 
   visibility: {
@@ -93,7 +95,7 @@ export default function StickyCartSettings({
 
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
   const devices = settings.visibility?.devices || [];
-  const isOnlyMobile = devices.length === 1 && devices.includes("mobile");
+  const isOnlyMobile = devices.includes("mobile");
   /* ---------------------------------
    * LOAD SETTINGS
    * --------------------------------- */
@@ -556,114 +558,115 @@ export default function StickyCartSettings({
                       </S1Field>
                       {isOnlyMobile && (
                         <S1FieldGroup title="Mobile Settings">
-                          
                           <S1Field
-                          label={__("Enable Mobile Settings", "th-store-one")}
-                          classN="s1-toggle-wrpapper"
+                            label={__("Enable Mobile Settings", "th-store-one")}
+                            classN="s1-toggle-wrpapper"
                           >
-                          <ToggleControl
-                           
-                            checked={settings.content.mobile?.enabled}
-                            onChange={(v) =>
-                              setSettings({
-                                ...settings,
-                                content: {
-                                  ...settings.content,
-                                  mobile: {
-                                    ...settings.content.mobile,
-                                    enabled: v,
+                            <ToggleControl
+                              checked={settings.content.mobile?.enabled}
+                              onChange={(v) =>
+                                setSettings({
+                                  ...settings,
+                                  content: {
+                                    ...settings.content,
+                                    mobile: {
+                                      ...settings.content.mobile,
+                                      enabled: v,
+                                    },
                                   },
-                                },
-                              })
-                            }
-                          />
+                                })
+                              }
+                            />
                           </S1Field>
 
                           {settings.content.mobile?.enabled && (
                             <>
+                              <S1Field
+                                label={__("Show Product Image", "th-store-one")}
+                                classN="s1-toggle-wrpapper"
+                              >
+                                <ToggleControl
+                                  checked={settings.content.mobile.show_image}
+                                  onChange={(v) =>
+                                    setSettings({
+                                      ...settings,
+                                      content: {
+                                        ...settings.content,
+                                        mobile: {
+                                          ...settings.content.mobile,
+                                          show_image: v,
+                                        },
+                                      },
+                                    })
+                                  }
+                                />
+                              </S1Field>
 
-                            <S1Field
-                          label={__("Show Product Image", "th-store-one")}
-                          classN="s1-toggle-wrpapper"
-                        >
-                          <ToggleControl
-                            checked={settings.content.mobile.show_image}
-                            onChange={(v) =>
-                              setSettings({
-                                ...settings,
-                                content: {
-                                      ...settings.content,
-                                      mobile: {
-                                        ...settings.content.mobile,
-                                        show_image: v,
+                              <S1Field
+                                label={__("Show Price", "th-store-one")}
+                                classN="s1-toggle-wrpapper"
+                              >
+                                <ToggleControl
+                                  checked={settings.content.mobile.show_price}
+                                  onChange={(v) =>
+                                    setSettings({
+                                      ...settings,
+                                      content: {
+                                        ...settings.content,
+                                        mobile: {
+                                          ...settings.content.mobile,
+                                          show_price: v,
+                                        },
                                       },
-                                    },
-                              })
-                            }
-                          />
-                          </S1Field>
-                        
-                        <S1Field
-                          label={__("Show Price", "th-store-one")}
-                          classN="s1-toggle-wrpapper"
-                        >
-                          <ToggleControl
-                            checked={settings.content.mobile.show_price}
-                            onChange={(v) =>
-                                  setSettings({
-                                    ...settings,
-                                    content: {
-                                      ...settings.content,
-                                      mobile: {
-                                        ...settings.content.mobile,
-                                        show_price: v,
+                                    })
+                                  }
+                                />
+                              </S1Field>
+                              <S1Field
+                                label={__(
+                                  "Enable Quantity Selector",
+                                  "th-store-one",
+                                )}
+                                classN="s1-toggle-wrpapper"
+                              >
+                                <ToggleControl
+                                  checked={settings.content.mobile.show_qty}
+                                  onChange={(v) =>
+                                    setSettings({
+                                      ...settings,
+                                      content: {
+                                        ...settings.content,
+                                        mobile: {
+                                          ...settings.content.mobile,
+                                          show_qty: v,
+                                        },
                                       },
-                                    },
-                                  })
-                                }
-                          />
-                        </S1Field>
-<S1Field
-                          label={__("Enable Quantity Selector", "th-store-one")}
-                          classN="s1-toggle-wrpapper"
-                        >
-                          <ToggleControl
-                            checked={settings.content.mobile.show_qty}
-                                onChange={(v) =>
-                                  setSettings({
-                                    ...settings,
-                                    content: {
-                                      ...settings.content,
-                                      mobile: {
-                                        ...settings.content.mobile,
-                                        show_qty: v,
+                                    })
+                                  }
+                                />
+                              </S1Field>
+                              <S1Field
+                                label={__("Enable Variation", "th-store-one")}
+                                classN="s1-toggle-wrpapper"
+                              >
+                                <ToggleControl
+                                  checked={
+                                    settings.content.mobile.show_variation
+                                  }
+                                  onChange={(v) =>
+                                    setSettings({
+                                      ...settings,
+                                      content: {
+                                        ...settings.content,
+                                        mobile: {
+                                          ...settings.content.mobile,
+                                          show_variation: v,
+                                        },
                                       },
-                                    },
-                                  })
-                                }
-                          />
-                        </S1Field>
-                        <S1Field
-                          label={__("Enable Variation", "th-store-one")}
-                          classN="s1-toggle-wrpapper"
-                        >
-                           <ToggleControl
-                            checked={settings.content.mobile.show_variation}
-                                onChange={(v) =>
-                                  setSettings({
-                                    ...settings,
-                                    content: {
-                                      ...settings.content,
-                                      mobile: {
-                                        ...settings.content.mobile,
-                                        show_variation: v,
-                                      },
-                                    },
-                                  })
-                                }
-                          />
-                        </S1Field>
-                            
+                                    })
+                                  }
+                                />
+                              </S1Field>
                             </>
                           )}
                         </S1FieldGroup>
