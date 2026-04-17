@@ -19,10 +19,10 @@ const PreviewSaleNotification = ({ settings = {} }) => {
     color: settings?.noti_text_clr || "#1e1e1e",
 
     padding: `
-      ${settings?.noti_padding?.top || "13px"}
-      ${settings?.noti_padding?.right || "13px"}
-      ${settings?.noti_padding?.bottom || "13px"}
-      ${settings?.noti_padding?.left || "13px"}
+      ${settings?.noti_padding?.top || "15px"}
+      ${settings?.noti_padding?.right || "15px"}
+      ${settings?.noti_padding?.bottom || "15px"}
+      ${settings?.noti_padding?.left || "15px"}
     `,
 
     borderStyle: settings?.noti_border?.style || "solid",

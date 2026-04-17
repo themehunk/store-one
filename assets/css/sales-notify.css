@@ -11,7 +11,7 @@
     display: flex;
     gap: 10px;
     align-items: center;
-    padding: 0.8rem;
+        padding: 15px;
 
     background: #fff;
     border-radius: 10px;
@@ -39,7 +39,7 @@
 /* INNER */
 .th-notification .th-inner {
     display: flex;
-    gap: 10px;
+    gap: 15px;
     width: 100%;
     align-items: center;
     position: relative;
@@ -54,8 +54,8 @@
 
 /* IMAGE */
 .th-notification .th-inner img {
-    width: 50px;
-    height: 50px;
+    width: 65px;
+  height: 65px;
     border-radius: 8px;
     object-fit: cover;
 }
@@ -67,19 +67,20 @@
 }
 
 .th-notification .th-line-1 {
-   font-size: 0.89rem;
-    font-weight: 600;
+   font-size: 1rem;
+  font-weight: 600;
 }
 
 .th-notification .th-line-2 {
-    margin: 0;
-    font-size: 0.78rem;
+      margin: 0;
+  font-size: 0.88rem;
     margin-bottom: 0.2rem;
 }
 
 .th-notification .th-time {
-    font-size: 11px;
-    color: #6b7280;
+   font-size: 0.75rem;
+  opacity: 0.7;
+  font-weight: 400;
 }
 
 /* POSITIONS */
@@ -91,20 +92,15 @@
 /* CLOSE BUTTON */
 .th-notification .th-close-btn {
     position: absolute;
-    top: 6px;
-    right: 8px;
-
-    width: 22px;
-    height: 22px;
-
+    top: 9px;
+    right: 9px;
+    font-size: 16px;
+   
     display: flex;
     align-items: center;
     justify-content: center;
-
-    font-size: 14px;
     color: #888;
     z-index: 9999;
-
     cursor: pointer;
     border-radius: 50%;
     transition: all 0.3s ease;
@@ -184,4 +180,57 @@ color:#fff;
 }
 .th-notification.zoom.hide {
     transform: scale(0.8);
+}
+
+
+
+@media (max-width: 767px) {
+ .th-sale-group .th-notification .th-content {
+    display: flex;
+    flex-direction: row;
+    white-space: nowrap;
+    gap:5px;
+}
+.th-sale-group .th-notification .th-inner{
+    gap:8px;
+}
+
+.th-sale-group .th-notification .th-line-1 {
+    font-size:0.78rem;
+    font-weight: 600;
+    margin-bottom:0;
+}
+
+.th-sale-group .th-notification .th-line-2{
+    font-size:0.70rem;
+     margin-bottom:0;
+}
+
+.th-sale-group  .th-notification .th-inner img {
+    width: 25px;
+    height: 25px;
+    border-radius: 4px;
+    object-fit: cover;
+}
+.th-sale-group .th-notification{
+    padding:10px!important;
+}
+.th-sale-group .th-notification {
+  
+    width: 360px;
+    
+}
+.th-sale-group .th-notification .th-close-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+     width: 22px;
+    height: 22px;
+    font-size: 12px;
+    
+}
+.th-bottom_right { bottom: 20px; right: 10px; }
+.th-bottom_left { bottom: 20px; left: 10px; }
+.th-top_right { top: 20px; right: 10px; }
+.th-top_left { top: 20px; left: 10px; }
 }

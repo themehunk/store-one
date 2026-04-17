@@ -2,7 +2,12 @@ import { useState, useEffect } from "@wordpress/element";
 import apiFetch from "@wordpress/api-fetch";
 import { __ } from "@wordpress/i18n";
 import { S1Field, S1FieldGroup } from "@th-storeone-global/S1Field";
-import { Spinner, ToggleControl, SelectControl } from "@wordpress/components";
+import {
+  Spinner,
+  ToggleControl,
+  SelectControl,
+  TextControl,
+} from "@wordpress/components";
 import ResetModuleButton from "@th-storeone-global/ResetModuleButton";
 import TabSwitcher from "@th-storeone-global/TabSwitcher";
 import { ICONS } from "@th-storeone-global/icons";
@@ -11,6 +16,7 @@ import MultiWooSearchSelector from "@th-storeone-global/MultiWooSearchSelector";
 import ExcludeWooCondition from "@th-storeone-global/ExcludeWooCondition";
 import UserCondition from "@th-storeone-global/UserCondition";
 import THBackgroundControl from "@th-storeone-control/color";
+import S1DateTimePicker from "@th-storeone-global/S1DateTimePicker";
 const MODULE_ID = "sticky-cart";
 
 /* ---------------------------------
@@ -47,9 +53,13 @@ const DEFAULT_SETTINGS = {
     button_action: "cart", // cart | buy_now
     offer_text: "",
     countdown: false,
-    mobile:{
-      enabled:false,
-    }
+    mobile: {
+      enabled: false,
+    },
+    show_ofrbnr: false,
+    ofrbnr_msg: __("Hurry! Offer will expire soon", "th-store-one"),
+    start_datetime: "",
+    end_datetime: "",
   },
 
   visibility: {
@@ -80,6 +90,9 @@ const DEFAULT_SETTINGS = {
     btn_bg_color: "#facc15",
     btn_text_color: "#111",
     price_color: "#16a34a",
+    ofr_bnr_clr:"#111",
+    ofr_bnr_bg:"#f3f4f6",
+
   },
 };
 export default function StickyCartSettings({
@@ -396,6 +409,77 @@ export default function StickyCartSettings({
                             }
                           />
                         </S1Field>
+                      </S1FieldGroup>
+
+                      <S1FieldGroup title={__("Offer Banner", "th-store-one")}>
+                        <S1Field
+                          label={__("Show Banner", "th-store-one")}
+                          classN="s1-toggle-wrpapper"
+                        >
+                          <ToggleControl
+                            checked={settings.content.show_ofrbnr}
+                            onChange={(v) =>
+                              setSettings({
+                                ...settings,
+                                content: {
+                                  ...settings.content,
+                                  show_ofrbnr: v,
+                                },
+                              })
+                            }
+                          />
+                        </S1Field>
+                        {settings.content.show_ofrbnr == true && (
+                          <>
+                            <S1Field label={__("Massege", "th-store-one")}>
+                              <TextControl
+                                value={settings.content.ofrbnr_msg}
+                                onChange={(v) =>
+                                  setSettings({
+                                    ...settings,
+                                    content: {
+                                      ...settings.content,
+                                      ofrbnr_msg: v,
+                                    },
+                                  })
+                                }
+                                placeholder={__(
+                                  "Hurry! Offer will expire soon",
+                                  "th-store-one",
+                                )}
+                              />
+                            </S1Field>
+                            
+                            <S1DateTimePicker
+                              label="Start Date & Time"
+                              value={settings.content.start_datetime}
+                              onChange={(v) =>
+                                setSettings({
+                                  ...settings,
+                                  content: {
+                                    ...settings.content,
+                                    start_datetime: v,
+                                  },
+                                })
+                              }
+                            />
+                            
+                            <S1DateTimePicker
+                              label="End Date & Time"
+                              value={settings.content.end_datetime}
+                              minDate={settings.content.start_datetime} // 🔥 LINKED
+                              onChange={(v) =>
+                                setSettings({
+                                  ...settings,
+                                  content: {
+                                    ...settings.content,
+                                    end_datetime: v,
+                                  },
+                                })
+                              }
+                            />
+                          </>
+                        )}
                       </S1FieldGroup>
                     </>
                   ),
@@ -793,6 +877,44 @@ export default function StickyCartSettings({
                           />
                         </S1Field>
                       </S1FieldGroup>
+                      {settings.content.show_ofrbnr == true && (
+                        <S1FieldGroup
+                          title={__("Offer Banner", "th-store-one")}
+                        >
+                          <S1Field>
+                            <THBackgroundControl
+                              allowGradient={true}
+                              label={__("Background", "th-store-one")}
+                              value={settings.style.ofr_bnr_bg || "#f3f4f6"}
+                              onChange={(value) =>
+                                setSettings({
+                                  ...settings,
+                                  style: {
+                                    ...settings.style,
+                                    ofr_bnr_bg: value,
+                                  },
+                                })
+                              }
+                            />
+                          </S1Field>
+                          <S1Field>
+                            <THBackgroundControl
+                              allowGradient={true}
+                              label={__("Text", "th-store-one")}
+                              value={settings.style.ofr_bnr_clr || "#111"}
+                              onChange={(value) =>
+                                setSettings({
+                                  ...settings,
+                                  style: {
+                                    ...settings.style,
+                                    ofr_bnr_clr: value,
+                                  },
+                                })
+                              }
+                            />
+                          </S1Field>
+                        </S1FieldGroup>
+                      )}
                     </>
                   ),
                 },

@@ -6,27 +6,26 @@
 /* MAIN BAR */
 .s1-preview-stickybar .s1-sticky-bar {
   position: absolute;
-  left: 10px;
-  right: 10px;
-  padding: 10px 14px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  border-radius: 12px;
-
+  left: 5px;
+  right:5px;
   /* Glass effect */
   background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(10px);
 
-  box-shadow: 
+  /* box-shadow: 
     0 6px 20px rgba(0,0,0,0.08),
-    inset 0 1px 0 rgba(255,255,255,0.6);
+    inset 0 1px 0 rgba(255,255,255,0.6); */
 
   border: 1px solid rgba(0,0,0,0.05);
 
   transition: all 0.3s ease;
 }
+.s1-sticky-content{
+display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  }
 
 .s1-preview-stickybar .s1-sticky-bar:hover {
   transform: translateY(-2px);
@@ -35,11 +34,11 @@
 
 /* POSITION */
 .s1-preview-stickybar .s1-sticky-bar.s1-bottom {
-  bottom: 10px;
+  bottom:5px;
 }
 
 .s1-preview-stickybar .s1-sticky-bar.s1-top {
-  top: 10px;
+  top: 5px;
 }
 
 /* LEFT */
@@ -123,4 +122,25 @@
 @keyframes s1-shimmer {
   0% { background-position: 100% 0 }
   100% { background-position: -100% 0 }
+}
+
+.s1-datetime-wrapper input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #fff;
+}
+
+.s1-offer-time{
+    margin-left:0.3rem;
+}
+.s1-offer-banner{
+text-align: center;
+    padding: 10px 14px;
+    background: #f3f4f6;
+    color: #111;
+    font-size: 0.82rem;
+    font-weight:normal;
 }

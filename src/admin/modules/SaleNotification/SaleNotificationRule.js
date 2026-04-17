@@ -51,6 +51,7 @@ const newSaleRule = () => ({
       fakeProductList: [],
       fakeCustomProduct: "{Product Name}, {Price}, {Sku}",
       fakeprd_image_url: "",
+      fakeprd_url: "https://",
       open: true,
     },
   ],
@@ -89,10 +90,10 @@ const newSaleRule = () => ({
     },
   },
   noti_padding: {
-    top: "13px",
-    right: "13px",
-    bottom: "13px",
-    left: "13px",
+    top: "15px",
+    right: "15px",
+    bottom: "15px",
+    left: "15px",
   }
   
 });
@@ -760,6 +761,26 @@ export default function SaleNotificationRule({
                                           </S1Field>
                                           <S1Field
                                             label={__(
+                                              "Product Link",
+                                              "th-store-one",
+                                            )}
+                                          >
+                                            <TextControl
+                                              value={item.fakeprd_url}
+                                              onChange={(v) =>
+                                                updateFakeItemField(
+                                                  index,
+                                                  i,
+                                                  "fakeprd_url",
+                                                  v,
+                                                )
+                                              }
+                                              placeholder="https://"
+                                            />
+                                            
+                                          </S1Field>
+                                          <S1Field
+                                            label={__(
                                               "Product Image",
                                               "th-store-one",
                                             )}
@@ -988,7 +1009,7 @@ export default function SaleNotificationRule({
                           >
                             {/* Initial Delay */}
                             <S1Field
-                              label={__("Initial Delay", "th-store-one")}
+                              label={__("Initial Delay Range(sec)", "th-store-one")}
                             >
                               <UniversalRangeControl
                                 value={String(rule.initial_delay ?? 2)}
@@ -1015,7 +1036,7 @@ export default function SaleNotificationRule({
                             {/* Random Delay Range */}
                             {rule.random_delay && (
                               <S1Field
-                                label={__("Random Delay Range", "th-store-one")}
+                                label={__("Random Delay Range (sec)", "th-store-one")}
                               >
                                 <UniversalRangeControl
                                   value={String(rule.random_delay_range ?? 4)}

@@ -91,7 +91,7 @@ const PreviewStickyCart = ({ settings = {} }) => {
         }}
       >
         <div className="s1-product-preview s1-preview-stickybar">
-
+    
           {/* MAIN PRODUCT */}
           <div className="s1-main-product">
             <div className="s1-main-thumb">
@@ -119,6 +119,16 @@ const PreviewStickyCart = ({ settings = {} }) => {
           >
 
             {/* LEFT */}
+            {/* offer */}
+           {content?.show_ofrbnr && (
+          <div className="s1-offer-banner"style={{
+              background: s?.style?.ofr_bnr_bg,
+              color: s?.style?.ofr_bnr_clr,
+            }}>
+            <div className="s1-offer-conetnt"> {__("Hurry! Offer will expire soon", "th-store-one")}<span className="s1-offer-time">{__("4:00", "th-store-one")}</span></div>
+          </div>
+          )}
+          <div className="s1-sticky-content">
             <div className="s1-sticky-left">
               {content?.show_image && (
                 <div className="static-skeleton s1-thumb"></div>
@@ -175,7 +185,7 @@ const PreviewStickyCart = ({ settings = {} }) => {
 
             </div>
           </div>
-
+          </div>
         </div>
       </div>
     </div>

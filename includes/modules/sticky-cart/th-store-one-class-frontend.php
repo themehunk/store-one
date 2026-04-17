@@ -121,100 +121,98 @@ class Th_Store_One_Sticky_Cart_Frontend {
         if (!$this->check_visibility($v, $product)) return;
 
         $position = $this->settings['general']['position'] ?? 'bottom';
-
+        $show_ofrbnr = $c['show_ofrbnr'] ?? '';
+    
         ?>
-
         <div class="th-sticky-cart th-<?php echo esc_attr($position); ?>"
              data-animation="<?php echo esc_attr($g['animation'] ?? 'slide'); ?>"
              data-scroll="<?php echo esc_attr($g['scroll_trigger'] ?? 20); ?>"
              style="background:<?php echo esc_attr($s['bg_color']); ?>;color:<?php echo esc_attr($s['text_color']); ?>">
+             
+            <?php
+            $end = $c['end_datetime'] ?? '';
+            $msg = $c['ofrbnr_msg'] ?? 'Hurry! Offer will expire soon';
+            ?>
 
-            <div class="th-left">
+            <?php if (!empty($end)): ?>
+            <div class="s1-offer-banner" style="background:<?php echo esc_attr($s['ofr_bnr_bg']); ?>;color:<?php echo esc_attr($s['ofr_bnr_clr']); ?>">
+                <?php echo esc_html($msg); ?>
 
-                <?php if (!empty($c['show_image'])): ?>
-                    <div class="th-thumb"><?php echo $product->get_image('thumbnail'); ?></div>
-                <?php endif; ?>
-
-                <div class="th-info">
-
-                    <?php if (!empty($c['show_title'])): ?>
-                        <div class="th-title" style="color:<?php echo esc_attr($s['text_color']); ?>"><?php echo esc_html($product->get_name()); ?></div>
-                    <?php endif; ?>
-
-                    <?php if (!empty($c['show_price'])): ?>
-                        <div class="th-price" style="color:<?php echo esc_attr($s['price_color']); ?>">
-                            <?php echo wp_kses_post($product->get_price_html()); ?>
-                        </div>
-                    <?php endif; ?>
-
-                </div>
+                <span 
+                class="s1-offer-time"
+                data-end="<?php echo esc_attr($end); ?>">
+                </span>
             </div>
+            <?php endif; ?>
 
-            <form class="th-sticky-form variations_form cart"
-                  method="post"
-                  enctype="multipart/form-data"
-                  data-product_id="<?php echo esc_attr($product->get_id()); ?>">
-                  <input type="hidden" name="product_id" value="<?php echo esc_attr($product->get_id()); ?>">
-                <?php if ( $product->is_type('variable') ) : ?>
-                    <script>
-                        window.th_product_variations = <?php 
-                            echo wp_json_encode( $product->get_available_variations() ); 
-                        ?>;
-                    </script>
-                <?php endif; ?>
-                <div class="th-right">
+            <div class="s1-sticky-content">
+                <div class="th-left">
 
-                    <?php if ($product->is_type('variable') && !empty($c['show_variation'])): ?>
-                       <?php
-                    $attributes = $product->get_variation_attributes();
-                    ?>
+                    <?php if (!empty($c['show_image'])): ?>
+                        <div class="th-thumb"><?php echo $product->get_image('thumbnail'); ?></div>
+                    <?php endif; ?>
 
-                    <div class="th-variations">
+                    <div class="th-info">
 
-                        <?php foreach ($attributes as $attribute_name => $options): ?>
-                            
-                            <div class="th-var-row">
-                                <label><?php echo wc_attribute_label($attribute_name); ?></label>
+                        <?php if (!empty($c['show_title'])): ?>
+                            <div class="th-title" style="color:<?php echo esc_attr($s['text_color']); ?>"><?php echo esc_html($product->get_name()); ?></div>
+                        <?php endif; ?>
 
-                                <select 
-                                    name="attribute_<?php echo esc_attr($attribute_name); ?>" 
-                                    data-attribute_name="attribute_<?php echo esc_attr($attribute_name); ?>" 
-                                    class="th-var-select"
-                                    >
-                                    <option value=""><?php echo esc_html('Choose','th-store-one');?></option>
-
-                                    <?php foreach ($options as $option): ?>
-                                        <option value="<?php echo esc_attr(strtolower($option)); ?>">
-                                            <?php echo esc_html($option); ?>
-                                        </option>
-                                    <?php endforeach; ?>
-
-                                </select>
+                        <?php if (!empty($c['show_price'])): ?>
+                            <div class="th-price" style="color:<?php echo esc_attr($s['price_color']); ?>">
+                                <?php echo wp_kses_post($product->get_price_html()); ?>
                             </div>
-
-                        <?php endforeach; ?>
+                        <?php endif; ?>
 
                     </div>
-
-                    <input type="hidden" name="variation_id" class="variation_id" value="0">
-
-                    <?php if (!empty($c['show_qty'])): ?>
-                        <input type="number" name="quantity" value="1" min="1" class="th-qty" />
+                </div>
+                <form class="th-sticky-form variations_form cart"
+                    method="post"
+                    enctype="multipart/form-data"
+                    data-product_id="<?php echo esc_attr($product->get_id()); ?>">
+                    <input type="hidden" name="product_id" value="<?php echo esc_attr($product->get_id()); ?>">
+                    <?php if ( $product->is_type('variable') ) : ?>
+                        <script>
+                            window.th_product_variations = <?php 
+                                echo wp_json_encode( $product->get_available_variations() ); 
+                            ?>;
+                        </script>
                     <?php endif; ?>
+                    <div class="th-right">
 
-                    <button type="submit"
-                        name="add-to-cart"
-                        value="<?php echo esc_attr($product->get_id()); ?>"
-                        class="th-btn"
-                        data-action="<?php echo esc_attr($c['button_action']); ?>">
+                        <?php if ($product->is_type('variable') && !empty($c['show_variation'])): ?>
+                        <?php
+                        $attributes = $product->get_variation_attributes();
+                        ?>
 
-                        <?php echo esc_html(
-                                !empty($c['button_text'])
-                                ? $c['button_text']
-                                : (($c['button_action'] ?? '') === 'buynow' ? 'Buy Now' : 'Add to Cart')
-                            ); ?>
-                    </button>
-                    <?php else: ?>
+                        <div class="th-variations">
+
+                            <?php foreach ($attributes as $attribute_name => $options): ?>
+                                
+                                <div class="th-var-row">
+                                    <label><?php echo wc_attribute_label($attribute_name); ?></label>
+
+                                    <select 
+                                        name="attribute_<?php echo esc_attr($attribute_name); ?>" 
+                                        data-attribute_name="attribute_<?php echo esc_attr($attribute_name); ?>" 
+                                        class="th-var-select"
+                                        >
+                                        <option value=""><?php echo esc_html('Choose','th-store-one');?></option>
+
+                                        <?php foreach ($options as $option): ?>
+                                            <option value="<?php echo esc_attr(strtolower($option)); ?>">
+                                                <?php echo esc_html($option); ?>
+                                            </option>
+                                        <?php endforeach; ?>
+
+                                    </select>
+                                </div>
+
+                            <?php endforeach; ?>
+
+                        </div>
+
+                        <input type="hidden" name="variation_id" class="variation_id" value="0">
 
                         <?php if (!empty($c['show_qty'])): ?>
                             <input type="number" name="quantity" value="1" min="1" class="th-qty" />
@@ -224,21 +222,40 @@ class Th_Store_One_Sticky_Cart_Frontend {
                             name="add-to-cart"
                             value="<?php echo esc_attr($product->get_id()); ?>"
                             class="th-btn"
-                            data-action="<?php echo esc_attr($c['button_action']); ?>"
-                            style="background:<?php echo esc_attr($s['btn_bg_color']); ?>;color:<?php echo esc_attr($s['btn_text_color']); ?>">
+                            data-action="<?php echo esc_attr($c['button_action']); ?>">
 
                             <?php echo esc_html(
-                                !empty($c['button_text'])
-                                ? $c['button_text']
-                                : (($c['button_action'] ?? '') === 'buynow' ? 'Buy Now' : 'Add to Cart')
-                            ); ?>
+                                    !empty($c['button_text'])
+                                    ? $c['button_text']
+                                    : (($c['button_action'] ?? '') === 'buynow' ? 'Buy Now' : 'Add to Cart')
+                                ); ?>
                         </button>
+                        <?php else: ?>
 
-                    <?php endif; ?>
+                            <?php if (!empty($c['show_qty'])): ?>
+                                <input type="number" name="quantity" value="1" min="1" class="th-qty" />
+                            <?php endif; ?>
 
-                </div>
+                            <button type="submit"
+                                name="add-to-cart"
+                                value="<?php echo esc_attr($product->get_id()); ?>"
+                                class="th-btn"
+                                data-action="<?php echo esc_attr($c['button_action']); ?>"
+                                style="background:<?php echo esc_attr($s['btn_bg_color']); ?>;color:<?php echo esc_attr($s['btn_text_color']); ?>">
 
-            </form>
+                                <?php echo esc_html(
+                                    !empty($c['button_text'])
+                                    ? $c['button_text']
+                                    : (($c['button_action'] ?? '') === 'buynow' ? 'Buy Now' : 'Add to Cart')
+                                ); ?>
+                            </button>
+
+                        <?php endif; ?>
+
+                    </div>
+
+                </form>
+            </div>
 
         </div>
 

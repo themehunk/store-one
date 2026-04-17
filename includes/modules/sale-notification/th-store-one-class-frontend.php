@@ -430,10 +430,11 @@ else {
           'invoice' => $this->clean_value($invoice),
           'ref'     => $this->clean_value($ref),
           'time'    => $fake['fakeTime'] ?? '',
-          'image' => $fake['fakeprd_image_url'] ?? ''
+          'image' => $fake['fakeprd_image_url'] ?? '',
+          'fakeprd_url' => $fake['fakeprd_url'] ?? '',
      ];
      }
-     error_log("\n==== DATA CHECK ====\n" . print_r($data, true));
+     //error_log("\n==== DATA CHECK ====\n" . print_r($data, true));
     }
      return $data;
     }
@@ -542,10 +543,16 @@ else {
     // style setting
     $title_clr = th_store_one_normalize_color($rule['noti_title_clr'] ?? '#111');
     $text_clr  = th_store_one_normalize_color($rule['noti_text_clr'] ?? '#1e1e1e');
+    $product_link = '';
 
-    $product_link = !empty($item['product_id'])
-    ? get_permalink($item['product_id'])
-    : '';
+    if (!empty($item['product_id'])) {
+        // store product
+        $product_link = get_permalink($item['product_id']);
+    } elseif (!empty($item['fakeprd_url'])) {
+        // custom fake product
+        $product_link = $item['fakeprd_url'];
+    }
+    
 //     if (!empty($map['product_name']) && !empty($product_link)) {
 //     $map['product_name'] = '<a href="' . esc_url($product_link) . '" 
 //         target="_blank" 

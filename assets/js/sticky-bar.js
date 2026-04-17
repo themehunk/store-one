@@ -136,20 +136,20 @@ jQuery(function ($) {
     const action = btn.data("action");
     const variationID = form.find(".variation_id").val();
 
-    // ❌ block if variation not selected
+    //block if variation not selected
     if (form.find(".th-var-select").length && (!variationID || variationID == 0)) {
       e.preventDefault();
       return;
     }
 
-    /* 🔥 LOADING (NO disabled attribute) */
+    /*LOADING (NO disabled attribute) */
     btn.addClass("th-s1-loading");
 
     // optional text change
     btn.data("original-text", btn.text());
     btn.text(action === "buynow" ? "Processing..." : "Adding...");
 
-    /* 🔥 BUY NOW */
+    /* BUY NOW */
     if (action === "buynow") {
 
       if (!form.find('input[name="th_buy_now"]').length) {
@@ -160,5 +160,50 @@ jQuery(function ($) {
     }
 
   });
+
+});
+
+// time banner code
+document.querySelectorAll('.s1-offer-time').forEach(el => {
+
+  const endTime = new Date(el.dataset.end).getTime();
+
+  function updateTimer() {
+
+    const now = new Date().getTime();
+    const diff = endTime - now;
+
+    // 🔥 Auto hide
+    if (diff <= 0) {
+      const banner = el.closest('.s1-offer-banner');
+      if (banner) banner.style.display = 'none';
+      return;
+    }
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor(diff / (1000 * 60));
+    const seconds = Math.floor(diff / 1000);
+
+    let display = "";
+
+    if (days > 0) {
+      display = `${days} ${days === 1 ? 'day' : 'days'}`;
+    } 
+    else if (hours > 0) {
+      display = `${hours} ${hours === 1 ? 'hour' : 'hours'}`;
+    } 
+    else if (minutes > 0) {
+      display = `${minutes} ${minutes === 1 ? 'minute' : 'minutes'}`;
+    } 
+    else {
+      display = `${seconds} ${seconds === 1 ? 'second' : 'seconds'}`;
+    }
+
+    el.innerHTML = display;
+  }
+
+  updateTimer();
+  setInterval(updateTimer, 1000);
 
 });
