@@ -50,6 +50,7 @@ class Th_Store_One_Modules {
 			'product-video'     => false,
 			'sale-notification' => false,
 			'sticky-cart'       => false,
+			'buynow-button'     => false,
 		);
 	}
 	/**

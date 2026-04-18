@@ -122,6 +122,7 @@ class Th_Store_One_Sticky_Cart_Frontend {
 
         $position = $this->settings['general']['position'] ?? 'bottom';
         $show_ofrbnr = $c['show_ofrbnr'] ?? '';
+        $show_timer = $c['show_timer'] ?? '';
     
         ?>
         <div class="th-sticky-cart th-<?php echo esc_attr($position); ?>"
@@ -134,16 +135,21 @@ class Th_Store_One_Sticky_Cart_Frontend {
             $msg = $c['ofrbnr_msg'] ?? 'Hurry! Offer will expire soon';
             ?>
 
-            <?php if (!empty($end)): ?>
-            <div class="s1-offer-banner" style="background:<?php echo esc_attr($s['ofr_bnr_bg']); ?>;color:<?php echo esc_attr($s['ofr_bnr_clr']); ?>">
+            <?php if (!empty($show_ofrbnr)) : ?>
+            <div class="s1-offer-banner" 
+                style="background:<?php echo esc_attr($s['ofr_bnr_bg']); ?>;color:<?php echo esc_attr($s['ofr_bnr_clr']); ?>">
+
                 <?php echo esc_html($msg); ?>
 
-                <span 
-                class="s1-offer-time"
-                data-end="<?php echo esc_attr($end); ?>">
-                </span>
+                <?php if (!empty($end) && !empty($show_timer)) : ?>
+                    <span 
+                        class="s1-offer-time"
+                        data-end="<?php echo esc_attr($end); ?>">
+                    </span>
+                <?php endif; ?>
+
             </div>
-            <?php endif; ?>
+        <?php endif; ?>
 
             <div class="s1-sticky-content">
                 <div class="th-left">

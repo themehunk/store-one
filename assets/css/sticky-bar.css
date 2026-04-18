@@ -12,12 +12,12 @@
 
   background: rgba(255,255,255,0.75);
   backdrop-filter: blur(10px);
-/* 
+
   box-shadow: 
     0 6px 20px rgba(0,0,0,0.08),
-    inset 0 1px 0 rgba(255,255,255,0.6); */
+    inset 0 1px 0 rgba(255,255,255,0.6);
 
-  border: 1px solid rgba(0,0,0,0.05);
+  /* //border: 1px solid rgba(0,0,0,0.05); */
 
   /* hidden state */
   opacity: 0;
@@ -29,7 +29,7 @@
  display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 14px;
+  padding: 10px 34px;
 }
 
 .s1-offer-time{
@@ -291,4 +291,10 @@ text-align: center;
  .th-sticky-cart .th-variations{
      flex-wrap: nowrap!important;
  }
+ .s1-sticky-content{
+ display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+}
 }

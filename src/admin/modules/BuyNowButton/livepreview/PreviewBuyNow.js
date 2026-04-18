@@ -2,7 +2,7 @@ import "./live-style.css";
 import { __ } from "@wordpress/i18n";
 import { useState } from "@wordpress/element";
 
-const PreviewStickyCart = ({ settings = {} }) => {
+const PreviewBuyNow = ({ settings = {} }) => {
   const s = settings || {};
 
   // devices
@@ -109,91 +109,11 @@ const PreviewStickyCart = ({ settings = {} }) => {
             </div>
           </div>
 
-          {/* STICKY BAR */}
-          <div
-            className={`s1-sticky-bar s1-${s?.general?.position || "bottom"}`}
-            style={{
-              background: s?.style?.bg_color,
-              color: s?.style?.text_color,
-            }}
-          >
-
-            {/* LEFT */}
-            {/* offer */}
-           {content?.show_ofrbnr && (
-          <div className="s1-offer-banner"style={{
-              background: s?.style?.ofr_bnr_bg,
-              color: s?.style?.ofr_bnr_clr,
-            }}>
-            <div className="s1-offer-conetnt"> {__("Hurry! Offer will expire soon", "th-store-one")}
-               {content?.show_timer && (
-              <span className="s1-offer-time">{__("4:00", "th-store-one")}</span>
-               )}
-              </div>
-          </div>
-          )}
-          <div className="s1-sticky-content">
-            <div className="s1-sticky-left">
-              {content?.show_image && (
-                <div className="static-skeleton s1-thumb"></div>
-              )}
-
-              <div className="s1-info">
-                {content?.show_title && (
-                  <div
-                    className="s1-title"
-                    style={{ color: s?.style?.text_color }}
-                  >
-                    {__("Product Title", "th-store-one")}
-                  </div>
-                )}
-
-                {content?.show_price && (
-                  <div
-                    className="s1-price"
-                    style={{ color: s?.style?.price_color }}
-                  >
-                    ₹120
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* RIGHT */}
-            <div className="s1-sticky-right">
-
-              {content?.show_variation && (
-                <div className="s1-variation">
-                  <select disabled>
-                    <option>{__("Select Size", "th-store-one")}</option>
-                    <option>S</option>
-                    <option>M</option>
-                    <option>L</option>
-                  </select>
-                </div>
-              )}
-
-              {content?.show_qty && (
-                <div className="static-skeleton s1-qty"></div>
-              )}
-
-              <div
-                className="s1-btn"
-                style={{
-                  background: s?.style?.btn_bg_color,
-                  color: s?.style?.btn_text_color,
-                }}
-              >
-                {getButtonText()}
-              </div>
-
-            </div>
-          </div>
-          </div>
+        
         </div>
       </div>
     </div>
   );
 };
 
-export default PreviewStickyCart;
+export default PreviewBuyNow;

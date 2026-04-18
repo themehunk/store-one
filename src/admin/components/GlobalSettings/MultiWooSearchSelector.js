@@ -31,6 +31,7 @@ export default function MultiWooSearchSelector({
     page: "wp/v2/pages",
     user: "wp/v2/users", //added
     order_status: null,
+    product_type: null,
   };
 
   const endpoint = endpointMap[searchType];
@@ -90,6 +91,12 @@ export default function MultiWooSearchSelector({
       name: s.label,
       type: "order_status",
     }),
+
+    product_type: (t) => ({
+  id: t.value,
+  name: t.label,
+  type: "product_type",
+}),
   };
 
   const normalize = normalizerMap[searchType];
@@ -152,6 +159,19 @@ if (isSingle) {
       setResults(formatted);
       return;
     }
+
+    if (searchType === "product_type") {
+  const PRODUCT_TYPES = [
+    { label: "Simple", value: "simple" },
+    { label: "Variable", value: "variable" },
+    { label: "Grouped", value: "grouped" },
+    { label: "External", value: "external" },
+  ];
+
+  const formatted = PRODUCT_TYPES.map(normalize);
+  setResults(formatted);
+  return;
+}
 
     if (!endpoint) return;
 
@@ -279,6 +299,8 @@ if (isSingle) {
         return __("Select roles…", "th-store-one");
       case "order_status":
         return __("Select order status…", "th-store-one");
+        case "product_type":
+  return __("Select product types…", "th-store-one");
 
       default:
         return __("Search…", "th-store-one");
@@ -323,6 +345,24 @@ if (isSingle) {
       setSelectedItems(ordered);
       return;
     }
+
+    if (searchType === "product_type") {
+  const PRODUCT_TYPES = [
+    { label: "Simple", value: "simple" },
+    { label: "Variable", value: "variable" },
+    { label: "Grouped", value: "grouped" },
+    { label: "External", value: "external" },
+  ];
+
+  const formatted = PRODUCT_TYPES.map(normalize);
+
+  const ordered = value
+    .map((id) => formatted.find((p) => p.id === id))
+    .filter(Boolean);
+
+  setSelectedItems(ordered);
+  return;
+}
 
     if (!endpoint) return;
 

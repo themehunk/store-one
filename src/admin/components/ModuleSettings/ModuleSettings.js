@@ -19,6 +19,8 @@ import TrustBadgesSettings from '../../modules/TrustBadges/TrustBadgesSettings';
 import ProductVideoSettings from '../../modules/ProductVideo/ProductVideoSettings';
 import SaleNotificationSettings from '../../modules/SaleNotification/SaleNotificationSettings';
 import StickyCartSettings from '../../modules/StickyCart/StickyCartSettings';
+import BuyNowButtonSettings from '../../modules/BuyNowButton/BuyNowButtonSettings';
+
 const ModuleSettings = ({ currentModule, modulesState, onToggleModule, saving, onSettingsChange, onLivePreview,onRegisterSave ,licenseActive}) => {
     const enabled = !!modulesState[currentModule.id];
 
@@ -77,6 +79,12 @@ const ModuleSettings = ({ currentModule, modulesState, onToggleModule, saving, o
                 />
             case 'sticky-cart':
                 return <StickyCartSettings
+                    onSettingsChange={onSettingsChange}
+                    onLivePreview={onLivePreview}
+                    onRegisterSave={onRegisterSave}
+                />
+            case 'buynow-button':
+                return <BuyNowButtonSettings
                     onSettingsChange={onSettingsChange}
                     onLivePreview={onLivePreview}
                     onRegisterSave={onRegisterSave}

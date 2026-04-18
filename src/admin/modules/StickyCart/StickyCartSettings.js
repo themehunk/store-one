@@ -58,6 +58,7 @@ const DEFAULT_SETTINGS = {
     },
     show_ofrbnr: false,
     ofrbnr_msg: __("Hurry! Offer will expire soon", "th-store-one"),
+    show_timer: false,
     start_datetime: "",
     end_datetime: "",
   },
@@ -90,9 +91,8 @@ const DEFAULT_SETTINGS = {
     btn_bg_color: "#facc15",
     btn_text_color: "#111",
     price_color: "#16a34a",
-    ofr_bnr_clr:"#111",
-    ofr_bnr_bg:"#f3f4f6",
-
+    ofr_bnr_clr: "#111",
+    ofr_bnr_bg: "#f3f4f6",
   },
 };
 export default function StickyCartSettings({
@@ -449,35 +449,55 @@ export default function StickyCartSettings({
                                 )}
                               />
                             </S1Field>
-                            
-                            <S1DateTimePicker
-                              label="Start Date & Time"
-                              value={settings.content.start_datetime}
-                              onChange={(v) =>
-                                setSettings({
-                                  ...settings,
-                                  content: {
-                                    ...settings.content,
-                                    start_datetime: v,
-                                  },
-                                })
-                              }
-                            />
-                            
-                            <S1DateTimePicker
-                              label="End Date & Time"
-                              value={settings.content.end_datetime}
-                              minDate={settings.content.start_datetime} // 🔥 LINKED
-                              onChange={(v) =>
-                                setSettings({
-                                  ...settings,
-                                  content: {
-                                    ...settings.content,
-                                    end_datetime: v,
-                                  },
-                                })
-                              }
-                            />
+                            <S1Field
+                              label={__("Show Timer", "th-store-one")}
+                              classN="s1-toggle-wrpapper"
+                            >
+                              <ToggleControl
+                                checked={settings.content.show_timer}
+                                onChange={(v) =>
+                                  setSettings({
+                                    ...settings,
+                                    content: {
+                                      ...settings.content,
+                                      show_timer: v,
+                                    },
+                                  })
+                                }
+                              />
+                            </S1Field>
+                            {settings.content.show_timer == true && (
+                              <>
+                                <S1DateTimePicker
+                                  label="Start Date & Time"
+                                  value={settings.content.start_datetime}
+                                  onChange={(v) =>
+                                    setSettings({
+                                      ...settings,
+                                      content: {
+                                        ...settings.content,
+                                        start_datetime: v,
+                                      },
+                                    })
+                                  }
+                                />
+
+                                <S1DateTimePicker
+                                  label="End Date & Time"
+                                  value={settings.content.end_datetime}
+                                  minDate={settings.content.start_datetime}
+                                  onChange={(v) =>
+                                    setSettings({
+                                      ...settings,
+                                      content: {
+                                        ...settings.content,
+                                        end_datetime: v,
+                                      },
+                                    })
+                                  }
+                                />
+                              </>
+                            )}
                           </>
                         )}
                       </S1FieldGroup>

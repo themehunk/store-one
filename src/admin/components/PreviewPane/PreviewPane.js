@@ -9,6 +9,7 @@ import TrustBadges from '../../modules/TrustBadges/livepreview/PreviewTrustBadge
 import ProductVideo from '../../modules/ProductVideo/livepreview/PreviewProductVideo';
 import SaleNotification from '../../modules/SaleNotification/livepreview/PreviewSaleNotification';
 import PreviewStickyCart from '../../modules/StickyCart/livepreview/PreviewStickyCart';
+import PreviewBuyNow from '../../modules/BuyNowButton/livepreview/PreviewBuyNow';
 import { useSelect } from '@wordpress/data';
 
 import { STORE_NAME } from '@th-storeone/store/productVideoStore';
@@ -99,6 +100,14 @@ const PreviewPane = ({ currentModule, settings }) => {
                                     settings={activeRule}
                                 />
                             )}
+                             {currentModule?.id === "buynow-button" && activeRule && (
+                                <PreviewBuyNow
+                                    key={currentModule.id}
+                                    settings={activeRule}
+                                />
+                            )}
+
+                           
                             
                         </div>
                     </div>

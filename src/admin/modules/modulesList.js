@@ -337,5 +337,46 @@ export const modulesList = [
     </svg>
   ),
   premium: false,
+},
+{
+  id: "buynow-button",
+  label: __("Buy Now Button", "th-store-one"),
+  description: __(
+    "Adds a direct Buy Now button that skips the cart and takes customers straight to checkout, helping increase quick conversions.",
+    "th-store-one"
+  ),
+  icon: (
+    <svg
+  className="w-6 h-6"
+  viewBox="0 0 24 24"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  {/* Button Background */}
+  <rect
+    x="2"
+    y="5"
+    width="20"
+    height="14"
+    rx="4"
+    stroke="currentColor"
+    strokeWidth="2"
+  />
+
+  {/* Cart */}
+  <path
+    d="M7 9H8.5L9.5 14H15L16.5 10H9"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  />
+
+  {/* Wheels */}
+  <circle cx="10.5" cy="16.5" r="1" fill="currentColor" />
+  <circle cx="14.5" cy="16.5" r="1" fill="currentColor" />
+</svg>
+  ),
+  premium: false,
 }
 ];
